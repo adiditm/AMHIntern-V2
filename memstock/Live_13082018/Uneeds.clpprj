@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="W:\ProjectsX\uneeds\system\memstock\Uneeds.clpprj">
+	<settings><PM_URL><![CDATA[C:/Users/Didit/AppData/Roaming/ClPhpEd/Projects/]]></PM_URL><PM_HOME_URL><![CDATA[C:/Users/Didit/AppData/Roaming/ClPhpEd/Projects/]]></PM_HOME_URL><PM_LIBS><![CDATA[]]></PM_LIBS><PM_FTP_CONNECTION><![CDATA[]]></PM_FTP_CONNECTION><PM_FTP_DIR><![CDATA[]]></PM_FTP_DIR><PM_FTP_UPLOAD_ON_SAVE><![CDATA[INT:0]]></PM_FTP_UPLOAD_ON_SAVE></settings><removed value=";"/><added value=""/><lastopfiles>
+	</lastopfiles>
+	<errors version="5.3">
+	</errors>
+	<codestructure version="5.0">
+		<phptree>
+			<treenode node="../config.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f14;4;27;4;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/footer.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\registersetengah.php;f20;280;43;280;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f20;166;43;166;;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;773;43;773;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f20;538;43;538;;W:\ProjectsX\uneeds\system\memstock\register.php;f20;850;43;850;;W:\ProjectsX\uneeds\system\memstock\indexmem.php;f12;136;35;136;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/headeradmin.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;364;48;364;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/headermem.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\registersetengah.php;f15;9;41;9;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f15;17;41;17;;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;366;46;366;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;51;41;51;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;362;41;362;;W:\ProjectsX\uneeds\system\memstock\indexmem.php;f20;13;46;13;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/leftadmin.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;355;46;355;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/leftmem.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\registersetengah.php;f15;5;39;5;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f15;13;39;13;;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;357;44;357;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;47;39;47;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;358;39;358;;W:\ProjectsX\uneeds\system\memstock\indexmem.php;f16;6;40;6;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="../framework/masterheader.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\registersetengah.php;f17;0;46;0;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f17;0;46;0;;W:\ProjectsX\uneeds\system\memstock\profile.php;f17;1;46;1;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f17;0;46;0;;W:\ProjectsX\uneeds\system\memstock\register.php;f17;0;46;0;;W:\ProjectsX\uneeds\system\memstock\indexmem.php;f17;0;46;0;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="config.php;PHP:PHP Include;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f18;3;28;3;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="_GET;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f13;37;18;37;;W:\ProjectsX\uneeds\system\memstock\profile.php;f5;2;10;2;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f12;3;17;3;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f12;1;17;1;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="_POST;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f30;20;36;20;;W:\ProjectsX\uneeds\system\memstock\profile.php;f31;10;37;10;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f9;8;15;8;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f9;5;15;5;;W:\ProjectsX\uneeds\system\memstock\register.php;f31;3;37;3;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="_SERVER;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f29;9;37;9;;W:\ProjectsX\uneeds\system\memstock\profile.php;f57;373;65;373;;W:\ProjectsX\uneeds\system\memstock\register.php;f57;367;65;367;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="_SESSION;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f18;33;27;33;;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f5;4;14;4;;W:\ProjectsX\uneeds\system\memstock\profile.php;f6;16;15;16;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f110;202;119;202;;W:\ProjectsX\uneeds\system\memstock\register.php;f6;9;15;9;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="CLASS_DIR;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f16;25;26;25;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="db;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;26;6;26;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f2;131;5;131;;W:\ProjectsX\uneeds\system\memstock\profile.php;f1;7;4;7;;W:\ProjectsX\uneeds\system\memstock\register.php;f2;346;5;346;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="dbin;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\profile.php;f12;448;17;448;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="hTot;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f293;14;298;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="i;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f37;171;39;171;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f12;70;14;70;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f6;82;8;82;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f9;160;11;160;;W:\ProjectsX\uneeds\system\memstock\register.php;f2;347;4;347;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="j;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f10;159;12;159;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="ji;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f21;160;24;160;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="key;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f14;20;18;20;;W:\ProjectsX\uneeds\system\memstock\profile.php;f15;10;19;10;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;3;19;3;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmColor;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f99;57;107;57;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmCountry;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f103;14;113;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmCountryBank;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f207;14;221;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmKode;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f53;25;60;25;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmKota;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f122;14;129;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmNation;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f76;14;85;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmProp;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f114;14;121;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="lmSize;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f77;57;84;57;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oMember;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f8;43;16;43;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f17;28;25;28;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f19;14;27;14;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f9;62;17;62;;W:\ProjectsX\uneeds\system\memstock\register.php;f8;14;16;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oNetwork;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f15;47;24;47;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f6;19;15;19;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f8;19;17;19;;W:\ProjectsX\uneeds\system\memstock\register.php;f8;15;17;15;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oPhpdate;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f19;137;28;137;;W:\ProjectsX\uneeds\system\memstock\profile.php;f91;433;100;433;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f12;12;21;12;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oProduct;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f52;179;61;179;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oRules;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f14;68;21;68;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="oSystem;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\profile.php;f49;593;57;593;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f3;30;11;30;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f4;25;12;25;;W:\ProjectsX\uneeds\system\memstock\register.php;f8;16;16;16;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="rbPaket;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f299;14;307;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="rbPosition;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f281;14;292;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="sColor;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;186;42;186;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="sKode;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;184;41;184;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="sSize;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;185;41;185;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="taAlamat;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f93;14;102;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfAtasNama;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f169;14;180;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfBank;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f154;14;161;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfBranchBank;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f193;14;206;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfEmail;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f145;14;153;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfEmailSpon;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f268;14;280;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfHP;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f139;14;144;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfIdent;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f37;14;45;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfKotaBank;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f181;14;192;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfNama;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f46;14;53;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfNPWP;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f308;14;315;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfPhone;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f130;14;138;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfPhoneSpon;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f255;14;267;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfRek;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f162;14;168;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfSerno;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f28;14;36;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfSernoSpon;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f242;14;254;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfSex;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f86;14;92;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfSponsor;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f231;14;241;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfSwift;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f222;14;230;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfTempat;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f54;14;63;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="tfTglLahir;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register.php;f64;14;75;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vAction;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f2;9;10;9;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;8;10;8;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vAkhir;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;6;9;6;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vAktif;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;118;13;118;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="val;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f19;20;23;20;;W:\ProjectsX\uneeds\system\memstock\profile.php;f20;10;24;10;;W:\ProjectsX\uneeds\system\memstock\register.php;f20;3;24;3;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vAlamat;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;115;14;115;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vArrDel;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f8;62;16;62;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vArrDiff;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;77;12;77;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vArrTemp;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;83;12;83;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vAwal;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;5;8;5;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vBaseUrl;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;21;12;21;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vCntID;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\profile.php;f12;500;19;500;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vCode;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f15;133;21;133;;W:\ProjectsX\uneeds\system\memstock\register.php;f6;349;12;349;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vColor;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f15;137;22;137;;W:\ProjectsX\uneeds\system\memstock\register.php;f6;350;13;350;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vColorText;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f12;131;23;131;;W:\ProjectsX\uneeds\system\memstock\register.php;f12;782;23;782;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vCount;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f32;169;39;169;;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;10;10;10;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vCountArrBaru;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;80;17;80;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vCrit;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f2;8;8;8;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;7;8;7;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDataNation;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\profile.php;f12;449;24;449;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDeep;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f7;68;13;68;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f2;81;8;81;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDelno;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f10;63;17;63;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDown;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f17;181;23;181;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDown11;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;456;23;456;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDown13;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;468;23;468;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDown31;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;481;23;481;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDown33;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f15;493;23;493;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDownline;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f6;156;16;156;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDownline1;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f4;174;15;174;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDownline3;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f6;279;17;279;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vDup;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f5;32;10;32;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vEmail;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;116;13;116;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vHarga;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f15;135;22;135;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;786;22;786;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vHargaX;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;189;43;189;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vIsArr;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f3;199;10;199;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vJmlDown;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f3;197;12;197;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vJmlDown1;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f3;198;13;198;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vJmlDown3;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f3;211;13;211;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vJmlX;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;188;41;188;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vJumlah;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f5;84;13;84;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vKota;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;114;12;114;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vKurang;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f24;92;32;92;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vNama;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;28;9;28;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;785;21;785;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vNamaX;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;187;42;187;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vName;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f6;62;12;62;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;113;12;113;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vNo;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f12;128;16;128;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vNoHP;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;117;12;117;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vOp;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;29;7;29;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vOpsi;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;15;8;15;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vOut;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f4;155;9;155;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vOutCount;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f7;157;17;157;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vPerfect;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f24;79;33;79;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vPriv;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f26;11;32;11;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRefName;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;37;12;37;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRefUser;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f2;3;11;3;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;1;11;1;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRegistrar;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f5;133;16;133;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRegular;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f7;162;16;162;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRegular1;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f7;181;17;181;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vRegular3;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f7;284;17;284;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vScriptName;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;9;15;9;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vSize;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f15;136;21;136;;W:\ProjectsX\uneeds\system\memstock\register.php;f15;787;21;787;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vSponsor;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f5;47;14;47;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vsql;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f3;130;8;130;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vSQL;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f3;25;8;25;;W:\ProjectsX\uneeds\system\memstock\profile.php;f1;5;6;5;;W:\ProjectsX\uneeds\system\memstock\register.php;f1;345;6;345;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vSubTotX;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f35;190;44;190;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vTot;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f32;170;37;170;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vTotJum;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php;f40;170;48;170;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vTotJumlah;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f4;69;15;69;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vTotKurang;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f18;69;29;69;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vUp;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f9;59;13;59;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;109;10;109;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vUpline;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f7;63;15;63;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f6;120;14;120;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vURL;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;14;8;14;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vUser;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php;f3;18;9;18;;W:\ProjectsX\uneeds\system\memstock\stjaringan.php;f41;28;47;28;;W:\ProjectsX\uneeds\system\memstock\profile.php;f4;3;10;3;;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f14;5;20;5;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f4;3;10;3;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="vUserChoosed;PHP:Var Name;W:\ProjectsX\uneeds\system\memstock\genealogi2.php;f5;11;18;11;;W:\ProjectsX\uneeds\system\memstock\genealogi.php;f2;9;15;9;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+		</phptree>
+		<jstree>
+		</jstree>
+		<scsstree>
+		</scsstree>
+		<lesstree>
+		</lesstree>
+	</codestructure><cakedata>
+	</cakedata>
+	<dplmenupath>
+	</dplmenupath><laravael>
+	</laravael><smartyassings>
+	</smartyassings><twigtemplate>
+	</twigtemplate><yiidata>
+	</yiidata>
+	<todoblock>
+	</todoblock>
+	<dbgurls>
+	</dbgurls>
+	<filescache>
+		<file name="W:\ProjectsX\uneeds\system\memstock\scp42976\public_html\trial\system\index.php" crc="-216710951"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\stjaringan.php" crc="144033460"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\registersetengah.php" crc="-940623122"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\register_purc_ajax.php" crc="937086245"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\register.php" crc="798002155"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\profile.php" crc="454724560"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\indexmem.php" crc="-911987091"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\genealogi2.php" crc="835458188"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\_vti_cnf\genealogi.php" crc="952736927"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\stjaringan.php" crc="-209410687"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\registersetengah.php" crc="79085523"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\register_purc_ajax.php" crc="-2135215688"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\register.php" crc="79396453"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\profile.php" crc="-1915164452"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\indexmem.php" crc="351357052"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\genealogi2.php" crc="-1445524737"/>
+		<file name="W:\ProjectsX\uneeds\system\memstock\genealogi.php" crc="1809384483"/>
+	</filescache>
+</project>

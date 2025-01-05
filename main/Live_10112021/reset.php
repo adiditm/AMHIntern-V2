@@ -1,0 +1,158 @@
+<?
+  include_once "../server/config.php";
+  include_once CLASS_DIR."networkclass.php";
+ // echo "Resetting tables...!";
+  $vDate = $_GET['uDate'];
+  $vNow = date("Y-m-d H:i");
+  $vOP=$_GET['uOP'];
+  if ($vOP=="reset" && $vNow==$vDate) {
+	  echo "<b>Resetting tables...!</b><br>";
+	  $vsql="truncate table tb_mutasi;"; 
+	  $db->query($vsql);
+
+
+
+	  echo "<br>Resetting member &amp; stockist table..done<br>";
+	  $vsql="delete from m_anggota where fidsys> 1;"; 
+	  $db->query($vsql);
+	  $vsql="truncate table tb_stockist_temp;"; 
+	  $db->query($vsql);
+
+	  
+	  echo "Resetting MLM tree table..done<br>";
+	  $vsql="delete from  tb_updown where fidsys > 1;"; 
+	  $db->query($vsql);
+	 
+	  echo "Resetting withdraw table..done<br>";
+	  $vsql="truncate table tb_withdraw;";
+	  $db->query($vsql);
+
+	  echo "Resetting TRX table..done<br>";
+	  $vsql="truncate table tb_trxstok_member;";
+	  $db->query($vsql);
+
+	  echo "Resetting TRX Temp table..done<br>";
+	  $vsql="truncate table tb_trxstok_member_temp;";
+	   $db->query($vsql);
+	   
+	  
+	  echo "Resetting sponsor bonus table..done<br>";
+	  $vsql="truncate table tb_kom_spon;";
+	  $db->query($vsql);	  
+	  
+	  echo "Resetting unilevel bonus table..done<br>";
+	  $vsql="truncate table tb_kom_mtx;";
+	  $db->query($vsql);	  
+
+	  echo "Resetting pairing bonus table..done<br>";
+	  $vsql="truncate table tb_kom_couple;";
+	  $db->query($vsql);	 
+	  
+	  echo "Resetting pairing CF bonus table..done<br>";
+	  $vsql="truncate table tb_kom_coupcf;";
+	  $db->query($vsql);	  
+
+
+	  echo "Resetting PR bonus table..done<br>";
+	  $vsql="truncate table tb_kom_pr;";
+	  $db->query($vsql);	
+	  
+	  echo "Resetting PR CF bonus table..done<br>";
+	  $vsql="truncate table tb_kom_prcf;";
+	  $db->query($vsql);	  
+
+	  echo "Resetting payment tables..done<br>";
+	  $vsql="truncate table tb_cftrans;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftransmo;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftransmost;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftransreal;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftransweek;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftransrwd;";
+	  $db->query($vsql);	  
+	  
+	  $vsql="truncate table tb_cftrans_sday;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftrans_sweek;";
+	  $db->query($vsql);	    
+	  $vsql="truncate table tb_cftrans_smo;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftrans_smost;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftrans_srwd;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_cftrans_sreal;";
+	  $db->query($vsql);	  
+
+	  $vsql="truncate table tb_logchange;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_promo;";
+	  $db->query($vsql);	  
+	  
+	  	  $vsql="truncate table tb_withdraw;";
+	  $db->query($vsql);	  
+
+
+
+	  echo "Resetting mutation table..done<br>";
+	  $vsql="truncate table tb_mutasi_stok;";
+	  $db->query($vsql);	  
+
+	  echo "Resetting TRX Stock  tables..done<br>";
+	  $vsql="truncate table tb_trxstok;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_trxstok_temp;";
+	  $db->query($vsql);	  
+
+		
+      echo "Resetting TRX KIT  tables..done<br>";
+	  $vsql="truncate table tb_trxkit;";
+	  $db->query($vsql);	  
+	  $vsql="truncate table tb_stok_position;";
+	  $db->query($vsql);	  
+
+	  $vsql="truncate table tb_kit_active;";
+	  $db->query($vsql);	  
+
+	  $vsql="truncate table tb_mutasi_wprod;";
+	  $db->query($vsql);	  
+
+	  $vsql="truncate table tb_mutasi_wkit;";
+	  $db->query($vsql);	  
+
+	  $vsql="truncate table tb_mutasi_wacc;";
+	  $db->query($vsql);
+
+
+      echo "Resetting Bonus Stockist  tables..done<br>";
+	  $vsql="truncate table tb_kom_stockist;";
+	  $db->query($vsql);	  
+	  
+	  echo "Resetting Reward tables..done<br>";
+	  $vsql="truncate table tb_rewards;";
+	  $db->query($vsql);	  
+
+	  //$vsql="truncate table tb_skit;";
+	  $vsql="update  tb_skit set fstatus='3';";
+	  $db->query($vsql);	  
+
+	 // update tb_skit set fstatus='1',fpendistribusi='', ftgldist=null, ftglused=null;
+	  //$db->query($vsql);	  
+
+	  //$vsql="update tb_skit_upg set fstatus='1', ftgldist=null, ftglused=null, fpendistribusi='', frefpurc='', frefsell='' ";
+	  //$db->query($vsql);	  
+
+	  
+	  $vsql="update m_anggota set fsaldovcr=0,fsaldowprod=0,fsaldowkit=0,fsaldowacc=0,fsaldoro=0 where fidmember='ONOTOP';";
+	  $db->query($vsql);	  
+	  
+
+
+	  echo "<BR><b>System resetted!!</b>";
+  } else echo "<b>Reset failed!</b>";
+  
+?>

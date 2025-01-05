@@ -1,0 +1,1078 @@
+{
+    "data": [
+        {
+            "id": 140,
+            "code": "aladin_syar",
+            "name": "Bank Aladin Syariah",
+            "swift": "NETBIDJA",
+            "createdtime": "2024-08-03T08:29:02.0975Z",
+            "updatedtime": "2024-08-03T08:29:02.097546Z"
+        },
+        {
+            "id": 41,
+            "code": "banten",
+            "name": "Bank Banten",
+            "swift": "PDBBIDJ1",
+            "createdtime": "2024-07-02T02:49:37.412203Z",
+            "updatedtime": "2024-07-02T02:49:37.412283Z"
+        },
+        {
+            "id": 45,
+            "code": "bisnis",
+            "name": "Bank Bisnis Internasional",
+            "swift": "BUSTIDJ1",
+            "createdtime": "2024-07-02T02:55:05.244316Z",
+            "updatedtime": "2024-07-02T02:55:05.244401Z"
+        },
+        {
+            "id": 10,
+            "code": "147",
+            "name": "Bank Muamalat",
+            "swift": "MUABIDJA",
+            "createdtime": "2022-09-12T13:17:09.497Z",
+            "updatedtime": "2022-09-12T13:17:09.497Z"
+        },
+        {
+            "id": 47,
+            "code": "bjb_syar",
+            "name": "Bank Jawa Barat Banten (BJB) Syariah",
+            "swift": "SYJBIDJ1",
+            "createdtime": "2024-07-02T02:58:26.50601Z",
+            "updatedtime": "2024-07-02T02:58:26.506101Z"
+        },
+        {
+            "id": 141,
+            "code": "btpn_syar",
+            "name": "Bank BTPN Syariah",
+            "swift": "PUBAIDJ1",
+            "createdtime": "2024-08-03T08:29:02.0975Z",
+            "updatedtime": "2024-08-03T08:29:02.097546Z"
+        },
+        {
+            "id": 1,
+            "code": "013",
+            "name": "Bank Permata",
+            "swift": "BBBAIDJA",
+            "createdtime": "2022-09-12T12:20:56.382Z",
+            "updatedtime": "2024-03-28T04:21:10.086Z"
+        },
+        {
+            "id": 2,
+            "code": "002",
+            "name": "Bank Rakyat Indonesia (BRI)",
+            "swift": "BRINIDJA",
+            "createdtime": "2022-09-12T12:41:39.009Z",
+            "updatedtime": "2024-03-28T04:19:49.678Z"
+        },
+        {
+            "id": 4,
+            "code": "011",
+            "name": "Bank Danamon",
+            "swift": "BDINIDJA",
+            "createdtime": "2022-09-12T12:46:58.536Z",
+            "updatedtime": "2024-03-28T04:17:57.082Z"
+        },
+        {
+            "id": 5,
+            "code": "111",
+            "name": "Bank DKI Jakarta",
+            "swift": "BDKIID",
+            "createdtime": "2022-09-12T12:48:15.322Z",
+            "updatedtime": "2022-09-12T12:48:15.322Z"
+        },
+        {
+            "id": 7,
+            "code": "948",
+            "name": "Bank OCBC Indonesia",
+            "swift": "NISPIDJA",
+            "createdtime": "2022-09-12T12:54:54.41Z",
+            "updatedtime": "2022-09-12T12:54:54.41Z"
+        },
+        {
+            "id": 8,
+            "code": "153",
+            "name": "Bank Sinarmas",
+            "swift": "SBJKIDJA",
+            "createdtime": "2022-09-12T13:12:47.104Z",
+            "updatedtime": "2022-09-12T13:12:47.104Z"
+        },
+        {
+            "id": 9,
+            "code": "023",
+            "name": "Bank UOB Indonesia",
+            "swift": "BBIJIDJA",
+            "createdtime": "2022-09-12T13:13:44.313Z",
+            "updatedtime": "2022-09-12T13:13:44.313Z"
+        },
+        {
+            "id": 11,
+            "code": "426",
+            "name": "Bank Mega",
+            "swift": "MEGAIDJA",
+            "createdtime": "2022-09-12T13:17:57.223Z",
+            "updatedtime": "2022-09-12T13:17:57.223Z"
+        },
+        {
+            "id": 12,
+            "code": "016",
+            "name": "Bank Maybank",
+            "swift": "IBBKIDJA",
+            "createdtime": "2022-09-12T13:18:47.882Z",
+            "updatedtime": "2022-09-12T13:18:47.882Z"
+        },
+        {
+            "id": 14,
+            "code": "046",
+            "name": "Bank DBS Indonesia",
+            "swift": "DBSBIDJA",
+            "createdtime": "2022-09-12T13:21:35.414Z",
+            "updatedtime": "2022-09-12T13:21:35.414Z"
+        },
+        {
+            "id": 15,
+            "code": "022",
+            "name": "Bank CIMB Niaga",
+            "swift": "BNIAIDJA",
+            "createdtime": "2022-09-12T13:23:12.213Z",
+            "updatedtime": "2024-03-28T04:20:53.688Z"
+        },
+        {
+            "id": 16,
+            "code": "009",
+            "name": "Bank Negara Indonesia (BNI)",
+            "swift": "BNINIDJA",
+            "createdtime": "2022-08-14T14:27:11.763Z",
+            "updatedtime": "2024-04-01T07:12:50.42Z"
+        },
+        {
+            "id": 17,
+            "code": "014",
+            "name": "Bank Central Asia (BCA)",
+            "swift": "CENAIDJA",
+            "createdtime": "2022-08-10T02:09:22.241Z",
+            "updatedtime": "2024-03-28T04:15:39.631Z"
+        },
+        {
+            "id": 18,
+            "code": "008",
+            "name": "Bank Mandiri",
+            "swift": "BMRIIDJA",
+            "createdtime": "2022-08-14T16:45:01.334Z",
+            "updatedtime": "2024-03-28T04:14:06.457Z"
+        },
+        {
+            "id": 19,
+            "code": "542",
+            "name": "Bank Jago",
+            "swift": "ATOSIDJ1",
+            "createdtime": "2022-09-12T12:50:10.553Z",
+            "updatedtime": "2023-01-30T16:46:36.775Z"
+        },
+        {
+            "id": 22,
+            "code": "523",
+            "name": "Bank Sahabat Sampoerna",
+            "swift": "SAHMIDJA",
+            "createdtime": "2023-05-06T06:26:05.668Z",
+            "updatedtime": "2023-05-06T06:26:05.669Z"
+        },
+        {
+            "id": 26,
+            "code": "451",
+            "name": "Bank Syariah Indonesia (BSI)",
+            "swift": "BSMDIDJA",
+            "createdtime": "2024-06-14T03:28:34.131755Z",
+            "updatedtime": "2024-06-14T03:28:34.131955Z"
+        },
+        {
+            "id": 21,
+            "code": "ovo",
+            "name": "OVO",
+            "swift": "SCOVO",
+            "createdtime": "2023-03-23T09:53:09.672Z",
+            "updatedtime": "2023-03-23T09:53:09.672Z"
+        },
+        {
+            "id": 27,
+            "code": "indomaret",
+            "name": "Indomaret",
+            "swift": "NA",
+            "createdtime": "2024-03-25T05:51:21.754Z",
+            "updatedtime": "2024-03-27T07:46:56.451Z"
+        },
+        {
+            "id": 23,
+            "code": "dana",
+            "name": "DANA Wallet",
+            "swift": "SCDANA",
+            "createdtime": "2023-03-23T08:56:54.914Z",
+            "updatedtime": "2023-07-11T06:13:39.345Z"
+        },
+        {
+            "id": 24,
+            "code": "gopay",
+            "name": "GOPAY",
+            "swift": "SCGOPAY",
+            "createdtime": "2023-03-23T09:48:55.974Z",
+            "updatedtime": "2023-07-11T06:13:53.067Z"
+        },
+        {
+            "id": 28,
+            "code": "114",
+            "name": "Bank Jatim",
+            "swift": "PDJTIDJ1",
+            "createdtime": "2024-06-14T03:30:05.503306Z",
+            "updatedtime": "2024-06-14T03:30:05.503344Z"
+        },
+        {
+            "id": 20,
+            "code": "shopeepay",
+            "name": "Shopee Pay",
+            "swift": "SCSHOPEE",
+            "createdtime": "2023-03-23T09:15:39.532Z",
+            "updatedtime": "2023-03-23T09:15:39.532Z"
+        },
+        {
+            "id": 29,
+            "code": "117",
+            "name": "Bank Sumut",
+            "swift": "PDSUIDJ1",
+            "createdtime": "2024-06-14T03:30:30.631357Z",
+            "updatedtime": "2024-06-14T03:30:30.631385Z"
+        },
+        {
+            "id": 34,
+            "code": "andara",
+            "name": "Bank Andara",
+            "swift": "RIPAIDJ1\t",
+            "createdtime": "2024-07-02T02:42:33.655738Z",
+            "updatedtime": "2024-07-02T02:42:33.655832Z"
+        },
+        {
+            "id": 48,
+            "code": "bnp_paribas",
+            "name": "Bank BNP Paribas Indonesia",
+            "swift": "BNPAIDJA",
+            "createdtime": "2024-07-02T02:59:59.685768Z",
+            "updatedtime": "2024-07-02T02:59:59.6859Z"
+        },
+        {
+            "id": 49,
+            "code": "033",
+            "name": "Bank of America NA",
+            "swift": "BOFAID2X",
+            "createdtime": "2024-07-02T03:00:39.483569Z",
+            "updatedtime": "2024-07-31T02:57:40.305806Z"
+        },
+        {
+            "id": 50,
+            "code": "200",
+            "name": "Bank Tabungan Negara (BTN)",
+            "swift": "BTANIDJA",
+            "createdtime": "2024-07-02T03:01:43.022684Z",
+            "updatedtime": "2024-07-02T03:01:43.022785Z"
+        },
+        {
+            "id": 36,
+            "code": "anz",
+            "name": "Bank ANZ Indonesia",
+            "swift": "ANZBIDJX",
+            "createdtime": "2024-07-02T02:44:46.86966Z",
+            "updatedtime": "2024-07-02T02:44:46.869745Z"
+        },
+        {
+            "id": 38,
+            "code": "artha",
+            "name": "Bank Artha Graha Internasional",
+            "swift": "ARTGIDJA",
+            "createdtime": "2024-07-02T02:46:28.449596Z",
+            "updatedtime": "2024-07-02T02:46:28.449683Z"
+        },
+        {
+            "id": 39,
+            "code": "bali",
+            "name": "Bank Bali",
+            "swift": "ABALIDBS",
+            "createdtime": "2024-07-02T02:47:10.915806Z",
+            "updatedtime": "2024-07-02T02:47:10.915864Z"
+        },
+        {
+            "id": 40,
+            "code": "040",
+            "name": "Bangkok Bank Public",
+            "swift": "BKKBIDJA",
+            "createdtime": "2024-07-02T02:47:51.298437Z",
+            "updatedtime": "2024-07-31T02:58:01.72324Z"
+        },
+        {
+            "id": 65,
+            "code": "diy_syar",
+            "name": "BPD DIY Syariah",
+            "swift": "SYYKIDJ1",
+            "createdtime": "2024-07-02T08:02:30.947551Z",
+            "updatedtime": "2024-07-02T08:02:30.947622Z"
+        },
+        {
+            "id": 111,
+            "code": "490",
+            "name": "Bank Neo Commerce",
+            "swift": "YUDBIDJ1",
+            "createdtime": "2024-08-01T05:00:59.476204Z",
+            "updatedtime": "2024-08-01T05:00:59.476256Z"
+        },
+        {
+            "id": 114,
+            "code": "134",
+            "name": "Bank Sulawesi Tengah",
+            "swift": "PDWGIDJ1",
+            "createdtime": "2024-08-01T05:02:34.807678Z",
+            "updatedtime": "2024-08-01T05:02:34.807716Z"
+        },
+        {
+            "id": 115,
+            "code": "135",
+            "name": "Bank Sulawesi Tenggara",
+            "swift": "PDWRIDJ1",
+            "createdtime": "2024-08-01T05:03:13.082484Z",
+            "updatedtime": "2024-08-01T05:03:13.082528Z"
+        },
+        {
+            "id": 116,
+            "code": "120",
+            "name": "Bank Sumsel Babel",
+            "swift": "BSSPIDSP",
+            "createdtime": "2024-08-01T05:03:37.588083Z",
+            "updatedtime": "2024-08-01T05:03:37.588114Z"
+        },
+        {
+            "id": 118,
+            "code": "115",
+            "name": "Bank Jambi",
+            "swift": "PDJMIDJ1",
+            "createdtime": "2024-08-01T05:05:22.995683Z",
+            "updatedtime": "2024-08-01T05:05:22.99572Z"
+        },
+        {
+            "id": 142,
+            "code": "",
+            "name": "",
+            "swift": "",
+            "createdtime": "2024-09-27T09:48:49.989848Z",
+            "updatedtime": "2024-09-27T09:48:49.989848Z"
+        },
+        {
+            "id": 80,
+            "code": "042",
+            "name": "Bank MUFG",
+            "swift": "BOTKIDJX",
+            "createdtime": "2024-07-31T03:09:59.137213Z",
+            "updatedtime": "2024-07-31T03:09:59.137268Z"
+        },
+        {
+            "id": 81,
+            "code": "116",
+            "name": "Bank Aceh Syariah",
+            "swift": "SYACIDJ1",
+            "createdtime": "2024-07-31T03:10:43.570645Z",
+            "updatedtime": "2024-07-31T03:10:43.570683Z"
+        },
+        {
+            "id": 97,
+            "code": "167",
+            "name": "Bank QNB Indonesia",
+            "swift": "AWANIDJA",
+            "createdtime": "2024-07-31T09:49:11.615826Z",
+            "updatedtime": "2024-07-31T09:49:11.615857Z"
+        },
+        {
+            "id": 82,
+            "code": "567",
+            "name": "Bank Harda International / Allo Bank",
+            "swift": "HRDAIDJ1",
+            "createdtime": "2024-07-31T03:23:41.127383Z",
+            "updatedtime": "2024-07-31T03:23:41.127436Z"
+        },
+        {
+            "id": 83,
+            "code": "164",
+            "name": "Bank ICBC",
+            "swift": "ICBKIDJA",
+            "createdtime": "2024-07-31T09:11:25.897573Z",
+            "updatedtime": "2024-07-31T09:11:25.897879Z"
+        },
+        {
+            "id": 84,
+            "code": "513",
+            "name": "Bank Ina Perdana",
+            "swift": "IAPTIDJA",
+            "createdtime": "2024-07-31T09:12:28.422706Z",
+            "updatedtime": "2024-07-31T09:12:28.422748Z"
+        },
+        {
+            "id": 98,
+            "code": "548",
+            "name": "Bank Multi Arta Sentosa",
+            "swift": "BMSEIDJA",
+            "createdtime": "2024-07-31T09:51:42.006276Z",
+            "updatedtime": "2024-07-31T09:51:42.006326Z"
+        },
+        {
+            "id": 86,
+            "code": "484",
+            "name": "Bank KEB Hana",
+            "swift": "HNBNIDJA",
+            "createdtime": "2024-07-31T09:18:07.406738Z",
+            "updatedtime": "2024-07-31T09:18:07.406777Z"
+        },
+        {
+            "id": 99,
+            "code": "119",
+            "name": "Bank Riau Kepri",
+            "swift": "PDRIIDJA",
+            "createdtime": "2024-07-31T10:12:08.151977Z",
+            "updatedtime": "2024-07-31T10:12:08.152028Z"
+        },
+        {
+            "id": 102,
+            "code": "494",
+            "name": "Bank Raya",
+            "swift": "AGTBIDJA",
+            "createdtime": "2024-08-01T04:50:21.802193Z",
+            "updatedtime": "2024-08-01T04:50:21.802484Z"
+        },
+        {
+            "id": 103,
+            "code": "547",
+            "name": "Bank Jago Syariah",
+            "swift": "NA",
+            "createdtime": "2024-08-01T04:51:49.995747Z",
+            "updatedtime": "2024-08-01T04:51:49.995793Z"
+        },
+        {
+            "id": 104,
+            "code": "047",
+            "name": "Bank Resona Perdania",
+            "swift": "BPIAIDJA",
+            "createdtime": "2024-08-01T04:53:17.833474Z",
+            "updatedtime": "2024-08-01T04:53:17.833523Z"
+        },
+        {
+            "id": 107,
+            "code": "126",
+            "name": "Bank Sulselbar",
+            "swift": "PDWSIDJ1",
+            "createdtime": "2024-08-01T04:55:52.439033Z",
+            "updatedtime": "2024-08-01T04:55:52.439067Z"
+        },
+        {
+            "id": 87,
+            "code": "564",
+            "name": "Bank Mandiri Taspen",
+            "swift": "SIHBIDJ1",
+            "createdtime": "2024-07-31T09:26:14.549623Z",
+            "updatedtime": "2024-07-31T09:26:14.549674Z"
+        },
+        {
+            "id": 108,
+            "code": "521",
+            "name": "Bank Bukopin Syariah",
+            "swift": "SDOBIDJ1",
+            "createdtime": "2024-08-01T04:56:36.867315Z",
+            "updatedtime": "2024-08-01T04:56:36.867357Z"
+        },
+        {
+            "id": 109,
+            "code": "566",
+            "name": "Bank Victoria International",
+            "swift": "VICTIDJ1",
+            "createdtime": "2024-08-01T04:57:30.14829Z",
+            "updatedtime": "2024-08-01T04:57:30.148333Z"
+        },
+        {
+            "id": 90,
+            "code": "947",
+            "name": "Bank Maybank Syariah",
+            "swift": "SYBKIDJ1",
+            "createdtime": "2024-07-31T09:41:00.713602Z",
+            "updatedtime": "2024-07-31T09:41:00.713649Z"
+        },
+        {
+            "id": 91,
+            "code": "146",
+            "name": "Bank of India Indonesia",
+            "swift": "BKIDIDJA",
+            "createdtime": "2024-07-31T09:43:56.841066Z",
+            "updatedtime": "2024-07-31T09:43:56.841109Z"
+        },
+        {
+            "id": 60,
+            "code": "citibank",
+            "name": "CITIBANK",
+            "swift": "CITIIDJX",
+            "createdtime": "2024-07-02T06:28:57.704646Z",
+            "updatedtime": "2024-07-02T06:28:57.704708Z"
+        },
+        {
+            "id": 92,
+            "code": "506",
+            "name": "Bank Mega Syariah",
+            "swift": "BUTGIDJ1",
+            "createdtime": "2024-07-31T09:44:17.179523Z",
+            "updatedtime": "2024-07-31T09:44:17.17956Z"
+        },
+        {
+            "id": 94,
+            "code": "151",
+            "name": "Bank Mestika Dharma",
+            "swift": "MEDHIDS1",
+            "createdtime": "2024-07-31T09:45:49.294932Z",
+            "updatedtime": "2024-07-31T09:45:49.294972Z"
+        },
+        {
+            "id": 96,
+            "code": "048",
+            "name": "Bank Mizuho Indonesia",
+            "swift": "MHCCIDJA",
+            "createdtime": "2024-07-31T09:48:52.736972Z",
+            "updatedtime": "2024-07-31T09:48:52.737147Z"
+        },
+        {
+            "id": 62,
+            "code": "danamon_syar",
+            "name": "Bank Danamon Syariah",
+            "swift": "SYBDIDJ1",
+            "createdtime": "2024-07-02T07:58:38.429929Z",
+            "updatedtime": "2024-07-02T07:58:38.430019Z"
+        },
+        {
+            "id": 63,
+            "code": "deutsche",
+            "name": "Deutsche Bank",
+            "swift": "DEUTIDJA",
+            "createdtime": "2024-07-02T08:00:51.146666Z",
+            "updatedtime": "2024-07-02T08:00:51.146748Z"
+        },
+        {
+            "id": 64,
+            "code": "diy",
+            "name": "BPD DIY",
+            "swift": "PDYKIDJ1",
+            "createdtime": "2024-07-02T08:02:00.596264Z",
+            "updatedtime": "2024-07-02T08:02:00.596336Z"
+        },
+        {
+            "id": 69,
+            "code": "nobu",
+            "name": "Bank Nationalnobu",
+            "swift": "NOBUIDJA",
+            "createdtime": "2024-07-02T08:10:42.957631Z",
+            "updatedtime": "2024-07-02T08:10:42.957725Z"
+        },
+        {
+            "id": 71,
+            "code": "panin",
+            "name": "Bank Panin",
+            "swift": "PINBIDJA",
+            "createdtime": "2024-07-02T08:16:01.735735Z",
+            "updatedtime": "2024-07-02T08:16:01.735826Z"
+        },
+        {
+            "id": 78,
+            "code": "161",
+            "name": "Bank Ganesha",
+            "swift": "GNESIDJA",
+            "createdtime": "2024-07-31T01:55:45.161421Z",
+            "updatedtime": "2024-07-31T01:55:45.161503Z"
+        },
+        {
+            "id": 79,
+            "code": "555",
+            "name": "Bank Index Selindo",
+            "swift": "BIDXIDJA",
+            "createdtime": "2024-07-31T02:56:38.587568Z",
+            "updatedtime": "2024-07-31T02:56:38.587644Z"
+        },
+        {
+            "id": 128,
+            "code": "128",
+            "name": "Bank Nusa Tenggara Barat (NTB)",
+            "swift": "PDNBIDJ1",
+            "createdtime": "2024-08-01T05:25:57.369409Z",
+            "updatedtime": "2024-08-01T05:25:57.369441Z"
+        },
+        {
+            "id": 126,
+            "code": "122",
+            "name": "Bank Kalimantan Selatan",
+            "swift": "PDKSIDJ1",
+            "createdtime": "2024-08-01T05:24:30.138351Z",
+            "updatedtime": "2024-08-01T05:24:30.138393Z"
+        },
+        {
+            "id": 127,
+            "code": "124",
+            "name": "Bank Kalimantan Timur",
+            "swift": "PDKTIDJ1",
+            "createdtime": "2024-08-01T05:25:09.284926Z",
+            "updatedtime": "2024-08-01T05:25:09.284967Z"
+        },
+        {
+            "id": 112,
+            "code": "133",
+            "name": "Bank Bengkulu",
+            "swift": "PDBKIDJ1",
+            "createdtime": "2024-08-01T05:01:30.015525Z",
+            "updatedtime": "2024-08-01T05:01:30.015557Z"
+        },
+        {
+            "id": 120,
+            "code": "121",
+            "name": "Bank Lampung",
+            "swift": "PDLPIDJ1",
+            "createdtime": "2024-08-01T05:06:16.965695Z",
+            "updatedtime": "2024-08-01T05:06:16.965732Z"
+        },
+        {
+            "id": 113,
+            "code": "125",
+            "name": "Bank Kalimantan Tengah",
+            "swift": "PDKGIDJ1",
+            "createdtime": "2024-08-01T05:02:00.276101Z",
+            "updatedtime": "2024-08-01T05:02:00.276135Z"
+        },
+        {
+            "id": 117,
+            "code": "520",
+            "name": "Bank Prima Master",
+            "swift": "PRMBIDJA",
+            "createdtime": "2024-08-01T05:04:58.235727Z",
+            "updatedtime": "2024-08-01T05:04:58.235795Z"
+        },
+        {
+            "id": 122,
+            "code": "130",
+            "name": "Bank NTT",
+            "swift": "PDNTIDJ1",
+            "createdtime": "2024-08-01T05:07:09.357043Z",
+            "updatedtime": "2024-08-01T05:07:09.357082Z"
+        },
+        {
+            "id": 121,
+            "code": "131",
+            "name": "Bank Maluku",
+            "swift": "PDMLIDJ1",
+            "createdtime": "2024-08-01T05:06:44.850043Z",
+            "updatedtime": "2024-08-01T05:06:44.850086Z"
+        },
+        {
+            "id": 124,
+            "code": "050",
+            "name": "Bank Standard Chartered",
+            "swift": "SCBLIDJX",
+            "createdtime": "2024-08-01T05:08:07.518448Z",
+            "updatedtime": "2024-08-01T05:08:07.518486Z"
+        },
+        {
+            "id": 123,
+            "code": "132",
+            "name": "Bank Papua",
+            "swift": "PAPUIDJA",
+            "createdtime": "2024-08-01T05:07:36.389482Z",
+            "updatedtime": "2024-08-01T05:07:36.389515Z"
+        },
+        {
+            "id": 130,
+            "code": "linkaja",
+            "name": "Linkaja",
+            "swift": "LINKIDJA",
+            "createdtime": "2024-08-01T07:37:46.182526Z",
+            "updatedtime": "2024-08-01T07:37:46.182625Z"
+        },
+        {
+            "id": 119,
+            "code": "123",
+            "name": "Bank Kalimantan Barat",
+            "swift": "PDKBIDJ1",
+            "createdtime": "2024-08-01T05:05:53.04804Z",
+            "updatedtime": "2024-08-01T05:05:53.048074Z"
+        },
+        {
+            "id": 125,
+            "code": "113",
+            "name": "Bank Jawa Tengah",
+            "swift": "PDJGIDJ1",
+            "createdtime": "2024-08-01T05:23:51.460365Z",
+            "updatedtime": "2024-08-01T05:23:51.460403Z"
+        },
+        {
+            "id": 13,
+            "code": "HSBC",
+            "name": "The Hongkong & Shanghai B.C. (Bank HSBC)",
+            "swift": "HSBCIDJA",
+            "createdtime": "2022-09-12T13:20:31.203Z",
+            "updatedtime": "2024-07-31T01:54:29.29146Z"
+        },
+        {
+            "id": 76,
+            "code": "mayora",
+            "name": "Bank Mayora",
+            "swift": "MAYOIDJA",
+            "createdtime": "2024-07-02T08:20:44.55628Z",
+            "updatedtime": "2024-07-02T08:20:44.556352Z"
+        },
+        {
+            "id": 52,
+            "code": "bukopin",
+            "name": "Bank KB Bukopin",
+            "swift": "BBUKIDJA",
+            "createdtime": "2024-07-02T03:11:24.796241Z",
+            "updatedtime": "2024-07-02T03:11:24.796321Z"
+        },
+        {
+            "id": 3,
+            "code": "213",
+            "name": "Bank Tabungan Pensiunan Nasional (BTPN)",
+            "swift": "SUNIIDJA",
+            "createdtime": "2022-09-12T12:44:19.143Z",
+            "updatedtime": "2024-07-02T06:18:32.213003Z"
+        },
+        {
+            "id": 30,
+            "code": "aceh",
+            "name": "Bank Aceh",
+            "swift": "SYACIDJ1",
+            "createdtime": "2024-07-02T02:32:42.651948Z",
+            "updatedtime": "2024-07-02T06:13:30.283653Z"
+        },
+        {
+            "id": 33,
+            "code": "amar",
+            "name": "Bank Amar Indonesia",
+            "swift": "LOMAIDJ1",
+            "createdtime": "2024-07-02T02:39:59.70217Z",
+            "updatedtime": "2024-07-02T02:39:59.702242Z"
+        },
+        {
+            "id": 35,
+            "code": "antar_daerah",
+            "name": "Bank Antar Daerah",
+            "swift": "ANTDIDJD",
+            "createdtime": "2024-07-02T02:44:00.98924Z",
+            "updatedtime": "2024-07-02T02:44:00.989311Z"
+        },
+        {
+            "id": 42,
+            "code": "barclays",
+            "name": "Bank Barclays Indonesia",
+            "swift": "BARCGB21",
+            "createdtime": "2024-07-02T02:50:46.833934Z",
+            "updatedtime": "2024-07-02T06:07:34.565609Z"
+        },
+        {
+            "id": 43,
+            "code": "bca_syar",
+            "name": "Bank Central Asia (BCA) Syariah",
+            "swift": "SYCAIDJ1",
+            "createdtime": "2024-07-02T02:51:16.935598Z",
+            "updatedtime": "2024-07-02T02:51:16.935646Z"
+        },
+        {
+            "id": 53,
+            "code": "bumi_artha",
+            "name": "Bank Bumi Artha",
+            "swift": "BBAIIDJA",
+            "createdtime": "2024-07-02T06:21:46.947188Z",
+            "updatedtime": "2024-07-02T06:21:46.947269Z"
+        },
+        {
+            "id": 46,
+            "code": "bjb",
+            "name": "Bank Jawa Barat dan Banten (BJB)",
+            "swift": "PDJBIDJA",
+            "createdtime": "2024-07-02T02:57:07.829064Z",
+            "updatedtime": "2024-07-02T02:57:07.829143Z"
+        },
+        {
+            "id": 51,
+            "code": "btn_syar",
+            "name": "Bank Tabungan Negara (BTN) Syariah",
+            "swift": "SYBTIDJ1",
+            "createdtime": "2024-07-02T03:04:13.911221Z",
+            "updatedtime": "2024-07-02T06:10:42.284446Z"
+        },
+        {
+            "id": 54,
+            "code": "capital",
+            "name": "Bank Capital Indonesia",
+            "swift": "BCIAIDJA",
+            "createdtime": "2024-07-02T06:22:45.460601Z",
+            "updatedtime": "2024-07-02T06:22:45.460673Z"
+        },
+        {
+            "id": 57,
+            "code": "china_cons",
+            "name": "Bank China Construction Bank Indonesia",
+            "swift": "BWKIIDJA",
+            "createdtime": "2024-07-02T06:25:05.292473Z",
+            "updatedtime": "2024-07-02T06:25:05.292549Z"
+        },
+        {
+            "id": 55,
+            "code": "chase",
+            "name": "KC JPMorgan Chase Bank, N.A.",
+            "swift": "CHASIDJX",
+            "createdtime": "2024-07-02T06:23:31.617216Z",
+            "updatedtime": "2024-07-02T06:23:31.61729Z"
+        },
+        {
+            "id": 56,
+            "code": "china",
+            "name": "KC Bank of China Limited",
+            "swift": "BKCHIDJA",
+            "createdtime": "2024-07-02T06:24:16.469043Z",
+            "updatedtime": "2024-07-02T06:24:16.46917Z"
+        },
+        {
+            "id": 59,
+            "code": "cimb_syar",
+            "name": "Bank Cimb Niaga Syariah",
+            "swift": "SYNAIDJ1",
+            "createdtime": "2024-07-02T06:27:53.377581Z",
+            "updatedtime": "2024-07-02T06:27:53.377642Z"
+        },
+        {
+            "id": 61,
+            "code": "commonwealth",
+            "name": "Bank Commonwealth",
+            "swift": "BICNIDJA",
+            "createdtime": "2024-07-02T07:57:07.988265Z",
+            "updatedtime": "2024-07-02T07:57:07.988436Z"
+        },
+        {
+            "id": 67,
+            "code": "dki_syar",
+            "name": "Bank DKI Syariah",
+            "swift": "SYDKIDJ1",
+            "createdtime": "2024-07-02T08:03:55.317747Z",
+            "updatedtime": "2024-07-02T08:03:55.317797Z"
+        },
+        {
+            "id": 68,
+            "code": "fama",
+            "name": "Bank Fama International",
+            "swift": "FAMAIDJ1",
+            "createdtime": "2024-07-02T08:04:49.164742Z",
+            "updatedtime": "2024-07-02T08:04:49.16483Z"
+        },
+        {
+            "id": 70,
+            "code": "ocbc_syar",
+            "name": "Bank OCBC NISP Syariah",
+            "swift": "SYONIDJ1",
+            "createdtime": "2024-07-02T08:15:10.555763Z",
+            "updatedtime": "2024-07-02T08:15:10.555825Z"
+        },
+        {
+            "id": 73,
+            "code": "permata_syar",
+            "name": "Bank Permata Syariah",
+            "swift": "SYBBIDJ1",
+            "createdtime": "2024-07-02T08:16:56.988408Z",
+            "updatedtime": "2024-07-02T08:16:56.988467Z"
+        },
+        {
+            "id": 75,
+            "code": "sinarmas_syar",
+            "name": "Bank Sinarmas Syariah",
+            "swift": "SYTBIDJ1",
+            "createdtime": "2024-07-02T08:19:24.035738Z",
+            "updatedtime": "2024-07-02T08:19:24.035793Z"
+        },
+        {
+            "id": 77,
+            "code": "mnc",
+            "name": "Bank MNC Internasional",
+            "swift": "BUMIIDJA",
+            "createdtime": "2024-07-02T08:21:51.52944Z",
+            "updatedtime": "2024-07-02T08:21:51.529496Z"
+        },
+        {
+            "id": 85,
+            "code": "472",
+            "name": "Bank Jasa Jakarta",
+            "swift": "JSABIDJ1",
+            "createdtime": "2024-07-31T09:17:00.608968Z",
+            "updatedtime": "2024-07-31T09:17:00.609017Z"
+        },
+        {
+            "id": 88,
+            "code": "157",
+            "name": "Bank Maspion",
+            "swift": "MASDIDJ1",
+            "createdtime": "2024-07-31T09:27:48.141673Z",
+            "updatedtime": "2024-07-31T09:27:48.141716Z"
+        },
+        {
+            "id": 89,
+            "code": "097",
+            "name": "Bank Mayapada",
+            "swift": "MAYAIDJA",
+            "createdtime": "2024-07-31T09:31:26.274855Z",
+            "updatedtime": "2024-07-31T09:31:26.27491Z"
+        },
+        {
+            "id": 93,
+            "code": "526",
+            "name": "Bank Oke Indonesia",
+            "swift": "LMANIDJ1",
+            "createdtime": "2024-07-31T09:44:35.527489Z",
+            "updatedtime": "2024-07-31T09:44:35.527522Z"
+        },
+        {
+            "id": 95,
+            "code": "491",
+            "name": "Bank Mitraniaga",
+            "swift": "MGABIDJ1",
+            "createdtime": "2024-07-31T09:48:02.821704Z",
+            "updatedtime": "2024-07-31T09:48:02.821755Z"
+        },
+        {
+            "id": 100,
+            "code": "535",
+            "name": "Bank Seabank Indonesia",
+            "swift": "SSPIIDJA",
+            "createdtime": "2024-08-01T01:54:36.476437Z",
+            "updatedtime": "2024-08-01T01:54:36.47649Z"
+        },
+        {
+            "id": 101,
+            "code": "127",
+            "name": "Bank Sulawesi Utara Gorontalo (SULUTGO)",
+            "swift": "PDWUIDJ1",
+            "createdtime": "2024-08-01T02:05:46.875782Z",
+            "updatedtime": "2024-08-01T02:05:46.875834Z"
+        },
+        {
+            "id": 105,
+            "code": "498",
+            "name": "Bank SBI Indonesia",
+            "swift": "SBIDIDJA",
+            "createdtime": "2024-08-01T04:54:33.161129Z",
+            "updatedtime": "2024-08-01T04:54:33.161171Z"
+        },
+        {
+            "id": 106,
+            "code": "152",
+            "name": "Bank Shinhan Indonesia",
+            "swift": "MEEKIDJ1",
+            "createdtime": "2024-08-01T04:55:13.084838Z",
+            "updatedtime": "2024-08-01T04:55:13.08488Z"
+        },
+        {
+            "id": 110,
+            "code": "212",
+            "name": "Bank Woori Saudara Indonesia 1906",
+            "swift": "BSDRIDJA",
+            "createdtime": "2024-08-01T04:58:44.707232Z",
+            "updatedtime": "2024-08-01T04:58:44.707292Z"
+        },
+        {
+            "id": 131,
+            "code": "727",
+            "name": "Bank Kalbar Syariah",
+            "swift": "SYKBIDJ1",
+            "createdtime": "2024-08-03T06:54:56.924668Z",
+            "updatedtime": "2024-08-03T06:54:56.924911Z"
+        },
+        {
+            "id": 37,
+            "code": "artajasa",
+            "name": "Artajasa Pembayaran Elektronik",
+            "swift": "DJARIDJ1",
+            "createdtime": "2024-07-02T02:45:32.108155Z",
+            "updatedtime": "2024-07-02T06:17:34.498728Z"
+        },
+        {
+            "id": 132,
+            "code": "jatim_syar",
+            "name": "Bank Jatim Syariah",
+            "swift": "SYJTIDJ1",
+            "createdtime": "2024-08-03T07:11:00.295172Z",
+            "updatedtime": "2024-08-03T07:11:00.295222Z"
+        },
+        {
+            "id": 58,
+            "code": "chinatrust",
+            "name": "Bank CTBC Indonesia",
+            "swift": "CTCBIDJA",
+            "createdtime": "2024-07-02T06:25:50.8195Z",
+            "updatedtime": "2024-07-02T06:25:50.819598Z"
+        },
+        {
+            "id": 133,
+            "code": "sumbar",
+            "name": "Bank Nagari",
+            "swift": "PDSBIDSP",
+            "createdtime": "2024-08-03T07:35:05.640556Z",
+            "updatedtime": "2024-08-03T07:35:05.640605Z"
+        },
+        {
+            "id": 72,
+            "code": "panin_syar",
+            "name": "Bank Panin Syariah",
+            "swift": "PNBSIDJA",
+            "createdtime": "2024-07-02T08:16:31.405084Z",
+            "updatedtime": "2024-07-02T08:16:31.405153Z"
+        },
+        {
+            "id": 134,
+            "code": "kalsel_syar",
+            "name": "Bank Kalsel Syariah",
+            "swift": "SYKSIDJ1",
+            "createdtime": "2024-08-03T07:40:41.363663Z",
+            "updatedtime": "2024-08-03T07:40:41.36371Z"
+        },
+        {
+            "id": 135,
+            "code": "sumut_syar",
+            "name": "Bank Sumut Syariah",
+            "swift": "SYSUIDJ1",
+            "createdtime": "2024-08-03T07:50:13.475197Z",
+            "updatedtime": "2024-08-03T07:50:13.475245Z"
+        },
+        {
+            "id": 136,
+            "code": "945",
+            "name": "Bank IBK Indonesia",
+            "swift": "IBKOIDJA",
+            "createdtime": "2024-08-03T07:57:15.780038Z",
+            "updatedtime": "2024-08-03T07:57:15.780086Z"
+        },
+        {
+            "id": 137,
+            "code": "405",
+            "name": "Bank Victoria Syariah",
+            "swift": "SWAGIDJ1",
+            "createdtime": "2024-08-03T08:24:18.076397Z",
+            "updatedtime": "2024-08-03T08:24:18.076444Z"
+        },
+        {
+            "id": 139,
+            "code": "095",
+            "name": "Bank J-Trust",
+            "swift": "CICTIDJA",
+            "createdtime": "2024-08-03T08:29:02.0975Z",
+            "updatedtime": "2024-08-03T08:29:02.097546Z"
+        },
+        {
+            "id": 138,
+            "code": "kaltim_syar",
+            "name": "Bank Kaltim Syariah",
+            "swift": "SYKTIDJ1",
+            "createdtime": "2024-08-03T08:26:35.925677Z",
+            "updatedtime": "2024-08-03T08:26:35.925723Z"
+        }
+    ],
+    "status": "0001",
+    "message": "Request Successfully Proceed"
+}

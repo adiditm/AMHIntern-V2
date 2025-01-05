@@ -1,0 +1,23 @@
+http://younig.co.id/main/calculatepair.php?uStart=0_10000&uDate=2018-05-11
+http://younig.co.id/main/calculatematch.php?uStart=0_10000&uDate=2018-05-11
+http://younig.co.id/main/calcday.php?uStart=0_10000&uDate=2018-05-11
+http://younig.co.id/main/calctour.php
+http://younig.co.id/main/calcftrans.php?op=compile&dc1=2018-05-11
+http://younig.co.id/main/calcftransmo.php?op=compile&dc1=2018-05-11
+
+
+http://younig.mdmtechno.com/main/calculatepair.php?uStart=0_10000&uDate=2018-05-11
+http://younig.mdmtechno.com/main/calculatematch.php?uStart=0_10000&uDate=2018-05-11
+http://younig.mdmtechno.com/main/calcday.php?uStart=0_10000&uDate=2018-05-11
+http://younig.mdmtechno.com/main/calctour.php
+http://younig.mdmtechno.com/main/calcftrans.php?op=compile&dc1=2018-05-11
+http://younig.mdmtechno.com/main/calcftransmo.php?op=compile
+
+
+Delete mutasi
+Delete kom_coup
+Delete kom_coupcf
+Delete cfttans
+Delete cftrans_sday
+Fix balance
+Delete files folder

@@ -1,0 +1,7 @@
+{
+    "require": {
+        "google/apiclient": "^2.10",
+        "madcoda/php-youtube-api": "^1.2"
+    }
+
+}

@@ -1,0 +1,37 @@
+NO,MEMBER_CODE,MEMBER_NAME,B/F_AMOUNT,MCBP_SC,TTP,WBNS,WCH,BNSPAYCH,BNSPAY,MCBP_BR,AOLDC,RCBP_SC2M,MCBP_MSC,RCBP_MSC2M,MEBP_BR,MEBP_SC,REBP_SC2M,MEBP_MSC,REBP_MSC2M,EW_UNCLAIM_BNS,TRF_TO_EW,EBNS,RCBP_M2SC,RWT,RWC,RTPF,ANEWC,RCBP_B2M,MRRCBP_SC,RBNSPAY,RCBP_M2MSC,MRRCBP_MSC,REBP_B2M,REBP_M2SC,MRREBP_SC,REBP_M2MSC,MRREBP_MSC,BNS_FROM_BMS,BNS_TR_EW,C/F_AMOUNT
+1,'330003917,"JOSE LUIS GUILLEN MORENO  ",0.00,0.00,0.00,0.00,0.00,0.00,"1,191.01",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,"1,191.22",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.21
+2,'610015856,"CELIA JIMENA TUSCO DE MITA  ",-43.59,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,-43.59
+,,Total(EUR),-43.59,0.00,0.00,0.00,0.00,0.00,"1,191.01",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,"1,191.22",0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,-43.38
+
+Debit,Credit
+e-World
+"e-Point Bonus"
+,"EBNS - Entitled Bonus"
+"Withdraw Bonus and Refund"
+"WBNS - Withdraw Bonus","RWT - Refund Withdraw"
+"WCH - Withdraw Charge","RWC - Refund Withdraw Charge"
+"Bonus Transfer"
+"TTP - Transfer Funds To Third Party","RTPF - Received Third Party Funds"
+"AOLDC - Bonus Adjusted From Old Country","ANEWC - Bonus Adjusted To New Country"
+"BNSPAY - Bonus Payment","RBNSPAY - Refund Bonus Payment"
+"BNSPAYCH - Bonus Payment Charge","RBNSPAYCH - Refund Bonus Payment Charge"
+"OBS / ONLINE PURCHASE / MOBILE APP"
+"Contra Bonus Payment and Refund"
+"MCBP_BR - Member Contra Bonus Payment To Branch",
+"MCBP_MSC - Member Contra Bonus Payment To Main Stockist","RCBP_M2MSC - Receive Contra Bonus Payment From Member To Main Stockist"
+"MCBP_SC - Member Contra Bonus Payment To Stockist","RCBP_M2SC - Receive Contra Bonus Payment From Member To Stockist"
+
+,"RCBP_B2M - Refund Contra Bonus Payment From Branch To Member"
+"RCBP_MSC2M - Refund Contra Bonus Payment From Main Stockist To Member","MRRCBP_MSC - Member Receive Refund Contra Bonus Payment From Main Stockist"
+"RCBP_SC2M - Refund Contra Bonus Payment From Stockist To Member","MRRCBP_SC - Member Receive Refund Contra Bonus Payment From Stockist"
+"Encashment Bonus Payment and Refund"
+"MEBP_BR - Member Encashment Bonus Payment To Branch",
+"MEBP_MSC - Member Encashment Bonus Payment To Main Stockist","REBP_M2MSC - Receive Encashment Bonus Payment From Member To Main Stockist"
+"MEBP_SC - Member Encashment Bonus Payment To  Stockist","REBP_M2SC - Receive Encashment Bonus Payment From Member To Stockist"
+
+,"REBP_B2M - Refund Encashment Bonus Payment From Branch To Member"
+"REBP_MSC2M - Refund Encashment Bonus Payment From Main Stockist To Member","MRREBP_MSC - Member Receive Refund Encashment Bonus Payment From Main Stockist"
+"REBP_SC2M - Refund Encashment Bonus Payment From Stockist To Member","MRREBP_SC - Member Receive Refund Encashment Bonus Payment From Stockist"
+BMS,
+"e-Point Bonus",
+,"BNS_FROM_BMS - Bonus Transfer From BMS"

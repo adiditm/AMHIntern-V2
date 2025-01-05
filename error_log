@@ -1,0 +1,22 @@
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(../server/config.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 4
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../server/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 4
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(memberclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 32
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'memberclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 32
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(dateclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 33
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'dateclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 33
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(networkclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 34
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'networkclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 34
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(ifaceclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 35
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'ifaceclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 35
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(ruleconfigclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 36
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'ruleconfigclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 36
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(komisiclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 37
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'komisiclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 37
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(jualclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 38
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'jualclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 38
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(systemclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 39
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'systemclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 39
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(productclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 40
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'productclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 40
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(texttoimageclass.php): failed to open stream: No such file or directory in /home/amhw8583/public_html/intern/index.php on line 41
+[06-May-2019 04:48:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening 'texttoimageclass.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/amhw8583/public_html/intern/index.php on line 41

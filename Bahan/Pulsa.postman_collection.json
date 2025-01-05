@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "1f083ecc-b473-4d6a-8642-1933bd905002",
+		"name": "Pulsa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14501316"
+	},
+	"item": [
+		{
+			"name": "Pascabayar",
+			"item": [
+				{
+					"name": "Get List Pascabayar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{PATH_API}}/pascabayar/get_listpascabayar.php?type=hp",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"pascabayar",
+								"get_listpascabayar.php"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "hp",
+									"description": "electricity, bpjs, internet, tv, finance, pdam, hp, pbb, gas"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction Inquiry",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "hp",
+									"type": "text"
+								},
+								{
+									"key": "customer_id",
+									"value": "082232096774",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "pascahptselb",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PATH_API}}/pascabayar/inquiry_pascabayar.php",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"pascabayar",
+								"inquiry_pascabayar.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Process",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "hp",
+									"type": "text"
+								},
+								{
+									"key": "inquiry_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PATH_API}}/pascabayar/proses_pascabayar.php",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"pascabayar",
+								"proses_pascabayar.php"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "#1 Get List Pascabayar\n\nDigunakan untuk melakukan pengecekan kode layanan\n\nGET /pascabayar/get_listpascabayar.php?type=\\`type\\`\n\n`type` :\n\n- `electricity` (PLN Pasca)\n- `bpjs`\n- `internet`\n- `tv`\n- `finance`\n- `hp` (pulsa pasca)\n- `pdam`\n- `pbb`\n- `gas`\n    \n\n#2 Transaction Inquiry\n\nDigunakan untuk melakukan pengecekan tagihan\n\nPOST /pascabayar/inquiry_pascabayar.php\n\n`form data :`\n\n- `username`\n- `password`\n- `type`\n- `customer_id`\n- `code`\n    \n\n#3 Payment Process\n\nDigunakan untuk melakukan pembayaran setelah pengecekan tagihan\n\nPOST /pascabayar/payment_process.php\n\n`form data` :\n\n- `username`\n- `password`\n- `type`\n- `inquiry_id`"
+		},
+		{
+			"name": "Prabayar",
+			"item": [
+				{
+					"name": "Check Status Transaksi Prabayar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "request_id",
+									"value": "",
+									"description": "diperoleh setelah payment process",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PATH_API}}/prabayar/cek_prabayar.php",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"prabayar",
+								"cek_prabayar.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Prabayar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{PATH_API}}/prabayar/get_listprabayar.php?type=pulsa",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"prabayar",
+								"get_listprabayar.php"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "pulsa",
+									"description": "data, pulsa, game, emoney, token (listrik)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Process",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "pulsa",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "p-tsel-15k",
+									"type": "text"
+								},
+								{
+									"key": "customer_id",
+									"value": "082232096774",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PATH_API}}/prabayar/proses_prabayar.php",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"prabayar",
+								"proses_prabayar.php"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "#1 Get List Prabayar\n\nDigunakan untuk mencari layanan yang tersedia\n\nGET /prabayar/get_listprabayar.php?type=\\`type\\`\n\n`type` :\n\n- `data`\n- `pulsa`\n- `emoney`\n- `token`\n- `game`\n    \n\n#2 Payment Process\n\nDigunakan untuk melakukan pembayaran prabayar\n\nPOST /prabayar/proses_prabayar.php\n\n`form data` :\n\n- `username`\n- `password`\n- `type`\n- `code`\n- `customer_id`\n    \n\n#3. Check Payment Status\n\nDigunakan untuk melakukan cek pada status pembayaran prabayar\n\nPOST /prabayar/cek_prabayar.php\n\n`form data :`\n\n- `username`\n- `password`\n- `request_id`"
+		},
+		{
+			"name": "Check Saldo",
+			"item": [
+				{
+					"name": "Balance Info",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PATH_API}}/umum/cek_saldo.php",
+							"host": [
+								"{{PATH_API}}"
+							],
+							"path": [
+								"umum",
+								"cek_saldo.php"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Balance Info\n\nPOST /umum/cek_saldo.php\n\n`form data` :\n\n- `username`\n    \n- `password`"
+		}
+	],
+	"variable": [
+		{
+			"key": "PATH_API",
+			"value": "https://antautama.co.id/api_pulsa"
+		}
+	]
+}

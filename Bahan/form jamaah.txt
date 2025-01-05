@@ -1,0 +1,116 @@
+
+        
+Array
+(
+    [fjenis] => U
+    [fidmember] => 
+    [fnama] => Adri Badar
+    [frefer] => 
+    [fstorawal] => 0
+    [fangsur1] => 0
+    [fangsur2] => 0
+    [fangsur3] => 0
+    [fangsur4] => 0
+    [flunas] => 0
+    [ftotalbayar] => 0
+    [ftempat] => Surabaya
+    [ftgllahir] => 01-01-1978
+    [fnation] => ID
+    [fsex] => M
+    [fident] => 5674645645645645
+    [fpaspor] => 5464564564564
+    [femail] => adiditm@gmail.com
+    [falamat] => Alamat Lengkap
+    [fcountry] => ID
+    [fprop] => 62
+    [tfprop] => 
+    [fkota] => 02
+    [tfkota] => 
+    [fprefix] => +62
+    [fnohp] => 324324432
+    [lmCountryBank] => ID
+    [tfBank] => 
+    [tfRek] => 
+    [tfAtasNama] => Adri Badar
+    [tfKotaBank] => 
+    [tfBranchBank] => 
+    [tfSwift] => 
+    [tfNPWP] => 
+    [hShipCost] => 0
+    [lmCurr] => IDR
+    [cbTC] => on
+    [hKit] => 0
+    [hTotal] => 
+)
+
+
+
+
+INSERT INTO m_pilgrims
+	(fidsys, fidmember, fjenis, fstorawal, fangsur1, fangsur2, fangsur3, fangsur4, flunas, ftotalbayar, frefer, fnama, fnohp, fnamabank, fnorekening, ftempat, ftgllahir, falamat, fkota, fkodepos, fprop, femail, fpassword, fpaspor, fnamaspon, faktif, ftglaktif, fatasnama, fkotabank, ftgldaftar, fstatusrow, ftglentry, fcount, fcabbank, fcountrybank, fswift, flastuser, flastupdate, ftitle, fsex, fnation, fimage, fnoktp, fcountry, fket, fnpwp)
+VALUES 
+	('', '', '', , , , , , , , '', '', '', '', '', '', , '', '', '', '', '', '', '', '', , , '', '', , , , '', '', '', '', '', , '', '', '', '', '', '', '', '');
+	
+	
+	
+UPDATE
+	amhw8583_intern.m_pilgrims
+SET
+	fidsys = '',
+	fidmember = '',
+	fjenis = '',
+	fstorawal = ,
+	fangsur1 = ,
+	fangsur2 = ,
+	fangsur3 = ,
+	fangsur4 = ,
+	flunas = ,
+	ftotalbayar = ,
+	frefer = '',
+	fnama = '',
+	fnohp = '',
+	fnamabank = '',
+	fnorekening = '',
+	ftempat = '',
+	ftgllahir = ,
+	falamat = '',
+	fkota = '',
+	fkodepos = '',
+	fprop = '',
+	femail = '',
+	fpassword = '',
+	fpaspor = '',
+	fnamaspon = '',
+	faktif = ,
+	ftglaktif = ,
+	fatasnama = '',
+	fkotabank = '',
+	ftgldaftar = ,
+	fstatusrow = ,
+	ftglentry = ,
+	fcount = '',
+	fcabbank = '',
+	fcountrybank = '',
+	fswift = '',
+	flastuser = '',
+	flastupdate = ,
+	ftitle = '',
+	fsex = '',
+	fnation = '',
+	fimage = '',
+	fnoktp = '',
+	fcountry = '',
+	fket = '',
+	fnpwp = ''
+WHERE ;
+
+
+
+ Invalid SQL: INSERT INTO m_anggota (fidmember, fjenis, fstorawal, fangsur1, fangsur2, fangsur3, fangsur4, flunas, ftotalbayar, frefer, fnama, fnohp, fnamabank, fnorekening, ftempat, ftgllahir, falamat, fkota, fkodepos, fprop, femail, fpassword, fpaspor, fnamarefer, faktif, ftglaktif, fatasnama, fkotabank, ftgldaftar,  ftglentry, fcount, fcabbank, fcountrybank, fswift, flastuser, flastupdate, ftitle, fsex, fnation, ffoto, fdoc,fnoktp, fcountry, fket, fnpwp) VALUES ('ssssss', 'U', 0, 0, 0, 0, 0, 0, 0, 'HERI', 'Adri Badar', '23423424', '', '', 'Surabaya', '1977-01-01', 'Alamat', '02', '', '65', 'adiditm@gmail.com', 'MDV3S282cEhJOHlxVFVnZElIbVExZz09', '43534535', '', '', '', '', '', '',  '', ' '', '', '', '', '', '', 'M', 'ID', '','', '', 'ID', '', '');
+ 
+ : 1064 (You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'M', 'ID', '','', '', 'ID', '', '')' at line 1)
+
+ 
+ 
+ 
+  Invalid SQL: INSERT INTO m_anggota (fidmember, fjenis, fstorawal, fangsur1, fangsur2, fangsur3, fangsur4, flunas, ftotalbayar, frefer, fnama, fnohp, fnamabank, fnorekening, ftempat, ftgllahir, falamat, fkota, fkodepos, fprop, femail, fpassword, fpaspor, fnamarefer, faktif, ftglaktif, fatasnama, fkotabank, ftgldaftar,  ftglentry, fcount, fcabbank, fcountrybank, fswift, flastuser, flastupdate, ftitle, fsex, fnation, ffoto, fdoc,fnoktp, fcountry, fket, fnpwp) VALUES ('ssssss', 'U', 0, 0, 0, 0, 0, 0, 0, '', 'Adi Badari', '435345435', '', '', 'Surabaya', '1981-01-01', 'Alamat Saja', '05', '', '33', 'adiditm@gmail.com', 'MmRhMWl3ZDdSa2pLMlRXb1lnbEY2UT09', '868768686', '', '', '', '', '', '',  '', ' '', '', '', '', '', '', 'M', 'ID', '','', '', 'ID', '', '');

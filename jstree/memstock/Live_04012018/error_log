@@ -1,0 +1,531 @@
+[10-Sep-2015 02:26:52 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 638
+[10-Sep-2015 06:51:49 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 349
+[10-Sep-2015 06:55:23 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 353
+[10-Sep-2015 07:22:38 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 362
+[10-Sep-2015 07:22:42 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 362
+[10-Sep-2015 09:05:41 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '?>' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 590
+[10-Sep-2015 22:38:47 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[10-Sep-2015 22:38:49 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[10-Sep-2015 22:38:51 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[11-Sep-2015 01:24:54 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[11-Sep-2015 01:25:57 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[11-Sep-2015 01:27:54 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[11-Sep-2015 01:29:48 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/register.php:1) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[11-Sep-2015 04:36:31 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '=' in /home/unstyle/public_html/trial/system/memstock/stjaringan.php on line 71
+[11-Sep-2015 05:03:46 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ''decrypt\',$db->f(\'fpassword\' (T_CONSTANT_ENCAPSED_STRING), expecting identifier (T_STRING) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 590
+[11-Sep-2015 05:06:14 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ';' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 591
+[11-Sep-2015 05:07:13 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ';' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 591
+[11-Sep-2015 05:46:48 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 05:46:48 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 05:50:23 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 05:50:23 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 05:50:23 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 07:23:31 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 07:23:31 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 07:23:31 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 07:23:31 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 07:23:31 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[11-Sep-2015 11:35:13 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 19:15:41 Asia/Jakarta] PHP Warning:  Creating default object from empty value in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1101
+[13-Sep-2015 23:38:02 Asia/Jakarta] PHP Warning:  Missing argument 1 for network::getPos(), called in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1085 and defined in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 2157
+[13-Sep-2015 23:38:02 Asia/Jakarta] PHP Warning:  Missing argument 2 for network::getPos(), called in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1085 and defined in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 2157
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #2 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 02:50:44 Asia/Jakarta] PHP Warning:  array_merge(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1093
+[14-Sep-2015 03:18:58 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::findSpilloverLama() in /home/unstyle/public_html/trial/system/memstock/coba.php on line 20
+[14-Sep-2015 03:24:22 Asia/Jakarta] PHP Warning:  array_merge(): Argument #2 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1098
+[14-Sep-2015 03:24:22 Asia/Jakarta] PHP Warning:  Variable passed to each() is not an array or object in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1100
+[14-Sep-2015 03:24:22 Asia/Jakarta] PHP Warning:  array_diff(): Argument #1 is not an array in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1109
+[14-Sep-2015 03:24:22 Asia/Jakarta] PHP Warning:  Variable passed to each() is not an array or object in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1112
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 300
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 301
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 312
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 313
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 376
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 384
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 398
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 406
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 457
+[14-Sep-2015 04:47:12 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 469
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 300
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 301
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 312
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 313
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 376
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 384
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 398
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 406
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 457
+[14-Sep-2015 04:47:13 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 469
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 301
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 302
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 313
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 314
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 377
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 385
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 399
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 407
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 458
+[14-Sep-2015 04:50:25 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 470
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 301
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 302
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 313
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 314
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 377
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 385
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 399
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 407
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 458
+[14-Sep-2015 04:50:26 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 470
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 303
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 304
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 315
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 379
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 387
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 401
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 409
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 460
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 472
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:53:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 303
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 304
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 315
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 379
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 387
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 401
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 409
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 460
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 472
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:53:57 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:54:01 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:54:02 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:54:53 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:54:55 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:55:46 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:55:47 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:57:42 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:57:43 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:58:14 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 334
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 346
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 422
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 430
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 442
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 450
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'L' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 485
+[14-Sep-2015 04:58:15 Asia/Jakarta] PHP Warning:  Illegal string offset 'R' in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 497
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: tfCrit in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 10
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: hAction in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 11
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined variable: vUserChoosed in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 13
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: uUp in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 61
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 317
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 336
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 348
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 402
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 410
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 423
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 431
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 443
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 451
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 473
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 486
+[14-Sep-2015 04:59:20 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 498
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: tfCrit in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 10
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: hAction in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 11
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined variable: vUserChoosed in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 13
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: uUp in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 61
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 317
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 336
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 348
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 402
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 410
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 423
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 431
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 443
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 451
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 473
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 486
+[14-Sep-2015 04:59:21 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 498
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: tfCrit in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 10
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: hAction in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 11
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined variable: vUserChoosed in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 13
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: uUp in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 61
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 317
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 336
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 348
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 402
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 410
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 423
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 431
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 443
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 451
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 473
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 486
+[14-Sep-2015 04:59:54 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 498
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: tfCrit in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 10
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: hAction in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 11
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined variable: vUserChoosed in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 13
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: uUp in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 61
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 316
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 317
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 335
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 336
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 347
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 348
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 402
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 410
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 423
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 431
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 443
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 451
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Undefined index: R in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 473
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 486
+[14-Sep-2015 04:59:55 Asia/Jakarta] PHP Notice:  Uninitialized string offset: 0 in /home/unstyle/public_html/trial/system/memstock/genealogi2.php on line 498
+[14-Sep-2015 08:57:42 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ';' in /home/unstyle/public_html/trial/system/memstock/register.php on line 22
+[14-Sep-2015 08:58:22 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ';' in /home/unstyle/public_html/trial/system/memstock/register.php on line 22
+[14-Sep-2015 18:07:02 Asia/Jakarta] PHP Warning:  Missing argument 2 for network::getPos(), called in /home/unstyle/public_html/trial/system/memstock/stjaringan.php on line 56 and defined in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 2181
+[14-Sep-2015 18:07:03 Asia/Jakarta] PHP Warning:  Missing argument 2 for network::getPos(), called in /home/unstyle/public_html/trial/system/memstock/stjaringan.php on line 56 and defined in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 2181
+[15-Sep-2015 05:59:48 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::getDownlineCountAll() in /home/unstyle/public_html/trial/system/memstock/indexmem.php on line 48
+[15-Sep-2015 05:59:49 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::getDownlineCountAll() in /home/unstyle/public_html/trial/system/memstock/indexmem.php on line 48
+[15-Sep-2015 16:56:26 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on a non-object in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 32
+[15-Sep-2015 16:57:05 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on a non-object in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 32
+[15-Sep-2015 17:00:05 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on a non-object in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 32
+[15-Sep-2015 17:02:58 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on a non-object in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 32
+[15-Sep-2015 17:04:13 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on a non-object in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 32
+[15-Sep-2015 17:10:01 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[15-Sep-2015 17:10:01 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[15-Sep-2015 19:33:50 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[15-Sep-2015 19:33:50 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[16-Sep-2015 05:28:57 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[16-Sep-2015 05:28:57 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[16-Sep-2015 06:25:22 Asia/Jakarta] PHP Fatal error:  Cannot redeclare member::changeBal() in /home/unstyle/public_html/trial/system/classes/memberclass.php on line 1824
+[16-Sep-2015 06:26:17 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '' (T_ENCAPSED_AND_WHITESPACE), expecting identifier (T_STRING) or variable (T_VARIABLE) or number (T_NUM_STRING) in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1262
+[16-Sep-2015 06:27:03 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '' (T_ENCAPSED_AND_WHITESPACE), expecting identifier (T_STRING) or variable (T_VARIABLE) or number (T_NUM_STRING) in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1262
+[16-Sep-2015 06:27:47 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '' (T_ENCAPSED_AND_WHITESPACE), expecting identifier (T_STRING) or variable (T_VARIABLE) or number (T_NUM_STRING) in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 1262
+[16-Sep-2015 09:00:38 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[16-Sep-2015 09:01:13 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/unstyle/public_html/trial/system/framework/masterheader.php:71) in /home/unstyle/public_html/trial/system/memstock/ewalletbal.php on line 5
+[17-Sep-2015 03:50:49 Asia/Jakarta] PHP Fatal error:  Call to a member function getMailFrom() on a non-object in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 19
+[17-Sep-2015 03:55:31 Asia/Jakarta] PHP Fatal error:  Call to a member function getSettingByField() on a non-object in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 19
+[17-Sep-2015 03:56:28 Asia/Jakarta] PHP Fatal error:  Call to undefined method interfaces::getKetTRX() in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 155
+[17-Sep-2015 03:56:29 Asia/Jakarta] PHP Fatal error:  Call to undefined method interfaces::getKetTRX() in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 155
+[17-Sep-2015 03:56:29 Asia/Jakarta] PHP Fatal error:  Call to undefined method interfaces::getKetTRX() in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 155
+[17-Sep-2015 04:23:21 Asia/Jakarta] PHP Fatal error:  Call to undefined method member::getNextWDID() in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 31
+[17-Sep-2015 04:30:08 Asia/Jakarta] PHP Fatal error:  Call to undefined method member::regWithdraw() in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 32
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(mailheader.php): failed to open stream: No such file or directory in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(mailheader.php): failed to open stream: No such file or directory in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(): Failed opening 'mailheader.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(mailheader.php): failed to open stream: No such file or directory in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(mailheader.php): failed to open stream: No such file or directory in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[17-Sep-2015 04:42:14 Asia/Jakarta] PHP Warning:  include(): Failed opening 'mailheader.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/unstyle/public_html/trial/system/classes/systemclass.php on line 48
+[21-Sep-2015 16:50:35 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')' in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:50:56 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')' in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:51:02 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')' in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:00 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 16:55:02 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/unstyle/public_html/trial/system/classes/jualclass.php on line 376
+[21-Sep-2015 17:01:31 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ';' in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 165
+[21-Sep-2015 17:02:43 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:02:45 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:03:16 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:03:17 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:03:39 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:03:40 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:05:09 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[21-Sep-2015 17:05:11 Asia/Jakarta] PHP Fatal error:  Call to a member function getBuyedTot() on a non-object in /home/unstyle/public_html/trial/system/memstock/historyro.php on line 164
+[27-Sep-2015 03:16:15 Asia/Jakarta] PHP Warning:  Missing argument 2 for network::getDownLR(), called in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 277 and defined in /home/unstyle/public_html/trial/system/classes/networkclass.php on line 46
+[29-Sep-2015 17:29:48 Asia/Jakarta] PHP Warning:  Variable passed to each() is not an array or object in /home/unstyle/public_html/trial/system/memstock/register.php on line 41
+[02-Oct-2015 18:11:21 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[02-Oct-2015 18:11:30 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[02-Oct-2015 18:12:11 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[02-Oct-2015 18:14:18 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[03-Oct-2015 03:42:12 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home/unstyle/public_html/trial/system/memstock/pairingcf.php on line 167
+[03-Oct-2015 03:57:12 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[03-Oct-2015 03:58:14 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vNomFee' (T_VARIABLE) in /home/unstyle/public_html/trial/system/memstock/reorder.php on line 43
+[03-Oct-2015 06:47:23 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '<' in /home/unstyle/public_html/trial/system/memstock/geninfo.php on line 2
+[03-Oct-2015 06:47:24 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '<' in /home/unstyle/public_html/trial/system/memstock/geninfo.php on line 2
+[06-Oct-2015 04:48:10 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 628
+[06-Oct-2015 04:48:49 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 628
+[06-Oct-2015 05:41:05 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 425
+[07-Oct-2015 05:23:11 Asia/Jakarta] PHP Parse error:  syntax error, unexpected ')' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 34
+[08-Oct-2015 05:06:48 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '?>', expecting identifier (T_STRING) or variable (T_VARIABLE) or '{' or '$' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 62
+[08-Oct-2015 05:08:12 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '?>', expecting identifier (T_STRING) or variable (T_VARIABLE) or '{' or '$' in /home/unstyle/public_html/trial/system/memstock/profile.php on line 62
+[08-Oct-2015 08:54:32 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'select' (T_STRING) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 27
+[08-Oct-2015 09:04:41 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/unstyle/public_html/trial/system/memstock/profile.php on line 73
+[09-Oct-2015 15:04:22 Asia/Jakarta] PHP Warning:  Variable passed to each() is not an array or object in /home/unstyle/public_html/trial/system/memstock/register.php on line 41
+[10-Oct-2015 05:57:28 Asia/Jakarta] PHP Warning:  Variable passed to each() is not an array or object in /home/unstyle/public_html/trial/system/memstock/register.php on line 27
+[22-Oct-2015 12:29:07 Asia/Jakarta] PHP Fatal error:  Call to undefined method member::getStockPos() in /home/unstyle/public_html/trial/system/memstock/register.php on line 61
+[23-Oct-2015 06:46:38 Asia/Jakarta] PHP Warning:  Division by zero in /home/unstyle/public_html/trial/system/memstock/withdraw.php on line 164
+[24-Oct-2015 06:48:03 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '}' in /home/unstyle/public_html/trial/system/memstock/stockbal.php on line 259
+[24-Oct-2015 07:23:57 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/unstyle/public_html/trial/system/memstock/rptstock.php:2) in /home/unstyle/public_html/trial/system/framework/masterheader.php on line 2
+[29-Oct-2015 05:25:04 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'Admin' (T_STRING), expecting ',' or ';' in /home/unstyle/public_html/trial/system/memstock/register.php on line 211
+[29-Oct-2015 13:42:40 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vDesc' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/ewalletbal.php on line 226
+[29-Oct-2015 13:42:52 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vDesc' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/ewalletbal.php on line 226
+[29-Oct-2015 13:49:35 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vDesc' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/ewalletbal.php on line 226
+[29-Oct-2015 13:49:51 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vDesc' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/ewalletbal.php on line 226
+[29-Oct-2015 13:51:33 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vDesc' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/ewalletbal.php on line 226
+[29-Oct-2015 15:02:16 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:03:13 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:03:27 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:05:11 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:05:14 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:05:48 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[29-Oct-2015 15:05:49 Asia/Jakarta] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 267
+[24-Nov-2015 12:03:16 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '$vFirst' (T_VARIABLE) in /home/unstyle/public_html/xsystem/memstock/genealogi2.php on line 9
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/statementmo.php on line 363
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/statementmo.php on line 363
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/statementmo.php on line 363
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/statementmo.php on line 379
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/statementmo.php on line 379
+[09-Nov-2017 23:02:12 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/statementmo.php on line 379
+[15-Nov-2017 16:28:42 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptromember.php on line 1
+[15-Nov-2017 16:28:42 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptromember.php on line 1
+[15-Nov-2017 16:28:42 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptromember.php on line 18
+[16-Nov-2017 05:19:03 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/younigco/public_html/memstock/registerst.php:3) in /home/younigco/public_html/framework/member_headside.blade.php on line 2
+[16-Nov-2017 06:14:36 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptromember.php on line 1
+[16-Nov-2017 06:14:36 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptromember.php on line 1
+[16-Nov-2017 06:14:36 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptromember.php on line 18
+[17-Nov-2017 06:11:17 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/younigco/public_html/memstock/historypokit.php on line 252
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:40 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[18-Nov-2017 22:03:56 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[19-Nov-2017 07:33:59 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptautoro.php on line 1
+[19-Nov-2017 07:33:59 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptautoro.php on line 1
+[19-Nov-2017 07:33:59 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptautoro.php on line 18
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[19-Nov-2017 12:02:18 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[20-Nov-2017 13:09:37 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/younigco/public_html/memstock/requestpo.php on line 575
+[20-Nov-2017 13:09:41 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/younigco/public_html/memstock/requestpo.php on line 575
+[20-Nov-2017 13:09:42 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/younigco/public_html/memstock/requestpo.php on line 575
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[21-Nov-2017 10:45:21 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:42 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[22-Nov-2017 09:55:53 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[28-Nov-2017 09:47:30 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptromember.php on line 1
+[28-Nov-2017 09:47:30 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptromember.php on line 1
+[28-Nov-2017 09:47:30 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptromember.php on line 18
+[28-Nov-2017 09:47:37 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptautoro.php on line 1
+[28-Nov-2017 09:47:37 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptautoro.php on line 1
+[28-Nov-2017 09:47:37 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptautoro.php on line 18
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[28-Nov-2017 15:59:47 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[04-Dec-2017 09:39:11 Asia/Jakarta] PHP Fatal error:  Call to a member function query() on null in /home/younigco/public_html/classes/networkclass.php on line 1410
+[07-Dec-2017 20:55:28 Asia/Jakarta] PHP Warning:  number_format() expects parameter 1 to be double, string given in /home/younigco/public_html/memstock/requestpo.php on line 575
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 1
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 1
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(../framework/headermem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 22
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/headermem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 22
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(../framework/leftmem.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/info.php on line 37
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Warning:  include(): Failed opening '../framework/leftmem.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/info.php on line 37
+[10-Dec-2017 20:47:19 Asia/Jakarta] PHP Fatal error:  Call to a member function getSponsor() on null in /home/younigco/public_html/memstock/geninfo.php on line 1
+[27-Dec-2017 03:29:11 Asia/Jakarta] PHP Warning:  include_once(../framework/masterheader.php): failed to open stream: No such file or directory in /home/younigco/public_html/memstock/rptromember.php on line 1
+[27-Dec-2017 03:29:11 Asia/Jakarta] PHP Warning:  include_once(): Failed opening '../framework/masterheader.php' for inclusion (include_path='.:/opt/cpanel/ea-php56/root/usr/share/pear') in /home/younigco/public_html/memstock/rptromember.php on line 1
+[27-Dec-2017 03:29:11 Asia/Jakarta] PHP Fatal error:  Call to a member function getNowYMD() on null in /home/younigco/public_html/memstock/rptromember.php on line 18
+[27-Dec-2017 20:12:25 Asia/Jakarta] PHP Warning:  Missing argument 3 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[27-Dec-2017 20:12:25 Asia/Jakarta] PHP Warning:  Missing argument 4 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[28-Dec-2017 08:21:07 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::getSponsorshipCountSto() in /home/younigco/public_html/memstock/rptrewardtour.php on line 346
+[28-Dec-2017 08:21:07 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::getSponsorshipCountSto() in /home/younigco/public_html/memstock/rptrewardtour.php on line 346
+[28-Dec-2017 08:21:13 Asia/Jakarta] PHP Fatal error:  Call to undefined method network::getSponsorshipCountSto() in /home/younigco/public_html/memstock/rptrewardtour.php on line 346
+[28-Dec-2017 21:32:10 Asia/Jakarta] PHP Warning:  Missing argument 3 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[28-Dec-2017 21:32:10 Asia/Jakarta] PHP Warning:  Missing argument 4 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[28-Dec-2017 21:41:07 Asia/Jakarta] PHP Warning:  Missing argument 3 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[28-Dec-2017 21:41:07 Asia/Jakarta] PHP Warning:  Missing argument 4 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[02-Jan-2018 23:28:34 Asia/Jakarta] PHP Warning:  Missing argument 3 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[02-Jan-2018 23:28:34 Asia/Jakarta] PHP Warning:  Missing argument 4 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[02-Jan-2018 23:51:33 Asia/Jakarta] PHP Warning:  Missing argument 3 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[02-Jan-2018 23:51:33 Asia/Jakarta] PHP Warning:  Missing argument 4 for msystem::sendSMS(), called in /home/younigco/public_html/memstock/registerst.php on line 159 and defined in /home/younigco/public_html/classes/systemclass.php on line 402
+[04-Jan-2018 16:59:32 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/younigco/public_html/memstock/pairingcf.php:2) in /home/younigco/public_html/framework/admin_headside.blade.php on line 2
+[04-Jan-2018 16:59:57 Asia/Jakarta] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/younigco/public_html/memstock/pairingcf.php:2) in /home/younigco/public_html/framework/admin_headside.blade.php on line 2
