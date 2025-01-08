@@ -12,6 +12,7 @@ include_once("../server/config.php");
 $clientId = $oRules->getSettingByField('factpayclientid');
 $clientSecret = $oRules->getSettingByField('factpayclientsec');
 $apiSecret = $oRules->getSettingByField('factpayapisec');
+$url_sign = $oRules->getSettingByField("factpaysign");
 $vNorek = "1010588100";
 $vJumlah = 15000000;
 $vNamaAlias = 'Bambang Susetyo';
@@ -28,15 +29,23 @@ $vRef = 'adawdawda';
     \"refId\":\"$vRef\"
 }"; 
 
+
+
 $data_inquiry = '';
 
 
  //$accessToken = getAuthToken($clientId, $clientSecret);
 
 // Get signature
+echo "Client ID: $clientId <br>";
+echo "Client Secret: $clientSecret <br>";
+echo "API Secret: $apiSecret <br>";
+echo "Data Inquiry: $data_inquiry (kosong)<br>";
+echo "URL SIGNature : $url_sign <br>";
  $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
   $signature = $signatureAll['data']['signature'];
-
+ // echo "<br>Signature: "; print_r($signatureAll);
+exit;
 //  echo "Sig: $signature <br>";
 // Example usage
  $accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);

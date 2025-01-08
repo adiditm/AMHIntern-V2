@@ -81,7 +81,7 @@
 		//Getting signature
 			function getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry) {
 				global $oRules;
-				$url = $oRules->getSettingByField("factpaysign");
+				 $url = $oRules->getSettingByField("factpaysign");
 				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
 				$options = [
 					'http' => [
@@ -95,6 +95,7 @@
 						'content' => $data_inquiry
 						]
 					];	   
+					print_r($options);
 				$context  = stream_context_create($options);
 				$result = file_get_contents($url, false, $context);
 			

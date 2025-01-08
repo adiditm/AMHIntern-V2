@@ -3,6 +3,10 @@ include_once ("../server/config.php");
 include_once ("../classes/ruleconfigclass.php");
 include_once("../classes/actionpayclass.php");
 
+$clientId = $oRules->getSettingByField('factpayclientid');
+$clientSecret = $oRules->getSettingByField('factpayclientsec');
+echo $token = $oActionPay->getAuthToken($clientId, $clientSecret);
+exit;
 $url = $oRules->getSettingByField('factpaytoken');
 // URL to send the request to
 //$url = "https://api-omni.actionpay.id/v1/access-token";
