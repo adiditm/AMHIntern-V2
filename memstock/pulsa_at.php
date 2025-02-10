@@ -571,7 +571,7 @@ $vHargaP=$db->f('Harga') + $vFeePublic;
                   <td><select class="cbProd form-control" onChange="changeTRX(this)" name="cbProd5" id="cbProd5">
                     <option selected="selected" value="">--Pilih--</option>
                     <?
-                         $vSQL="select * from m_voucherhp where Brand in ('XL / AXIS') and Jenis='pulsa' and kode like 'p-xl%' and status='OK' order by Nom";
+                         $vSQL="select * from m_voucherhp where Brand in ('XL') and Jenis='pulsa' and kode like 'p-xl%' and status='OK' order by Nom";
 						 $db->query($vSQL);
 						 while ($db->next_record()) {
 							 $vValue=$db->f('Kode');
@@ -597,7 +597,7 @@ $vHargaP=$db->f('Harga') + $vFeePublic;
                   <td><select class="cbProd form-control" onChange="changeTRX(this)" name="cbProd6" id="cbProd6">
                     <option selected="selected" value="">--Pilih--</option>
                     <?
-                         $vSQL="select * from m_voucherhp where Brand in ('XL / AXIS') and Jenis='data' and kode like 'd-xl%' and status='OK' order by Nom";
+                         $vSQL="select * from m_voucherhp where Brand in ('XL') and Jenis='data' and kode like 'd-xl%' and status='OK' order by Nom";
 						 $db->query($vSQL);
 						 while ($db->next_record()) {
 							 $vValue=$db->f('Kode');
@@ -623,7 +623,7 @@ $vHargaP=$db->f('Harga') + $vFeePublic;
                   <td><select class="cbProd form-control" onChange="changeTRX(this)" name="cbProd7" id="cbProd7">
                     <option selected="selected" value="">--Pilih--</option>
                     <?
-                         $vSQL="select * from m_voucherhp where Brand in ('XL / AXIS') and Jenis='pulsa' and kode like 'p-axis%' and status='OK' order by Nom";
+                         $vSQL="select * from m_voucherhp where Brand in ('AXIS') and Jenis='pulsa' and kode like 'p-axis%' and status='OK' order by Nom";
 						 $db->query($vSQL);
 						 while ($db->next_record()) {
 							 $vValue=$db->f('Kode');
@@ -649,7 +649,7 @@ $vHargaP=$db->f('Harga') + $vFeePublic;
                   <td><select class="cbProd form-control" onChange="changeTRX(this)" name="cbProd8" id="cbProd8">
                     <option selected="selected" value="">--Pilih--</option>
                     <?
-                         $vSQL="select * from m_voucherhp where Brand in ('XL / AXIS') and Jenis='data' and kode like 'd-axis%' and status='OK' order by Nom";
+                         $vSQL="select * from m_voucherhp where Brand in ('AXIS') and Jenis='data' and kode like 'd-axis%' and status='OK' order by Nom";
 						 $db->query($vSQL);
 						 while ($db->next_record()) {
 							 $vValue=$db->f('Kode');
@@ -1011,3 +1011,5 @@ s/d
 
 </div>
 <? include_once("../framework/outer_footside.blade.php") ; ?>
+tside.blade.php") ; ?>
+?>
