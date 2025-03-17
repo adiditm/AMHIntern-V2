@@ -35,25 +35,27 @@ $data_inquiry = '';
 
 
  //$accessToken = getAuthToken($clientId, $clientSecret);
+ $accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);
+
 
 // Get signature
 echo "Client ID: $clientId <br>";
 echo "Client Secret: $clientSecret <br>";
 echo "API Secret: $apiSecret <br>";
-echo "Data Inquiry: $data_inquiry (kosong)<br>";
-echo "URL SIGNature : $url_sign <br>";
+echo "Data Inquiry: $data_inquiry (dikosongi)<br>";
+echo "URL Get SIGNature : $url_sign <br>";
  $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
   $signature = $signatureAll['data']['signature'];
- // echo "<br>Signature: "; print_r($signatureAll);
-exit;
+  echo "<br>Signature: $signature"; 
+
 //  echo "Sig: $signature <br>";
 // Example usage
- $accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);
+ 
 
 //echo "Data Inquiry: ".$data_inquiry."<br>";
 
 $response = $oActionPay->depositRoute($accessToken, $signature);
-//echo "Withdraw Inquiry Response: ";
+echo "<br>Deposit Route Response: "; print_r($response);
 
  $vChannelID = $response['data'][0]['chId'];
  //$accessToken = getAuthToken($clientId, $clientSecret);
@@ -73,19 +75,20 @@ $vRand=  rand(100, 999);
 }";
 
 $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
+//print_r($signatureAll);
 $signature = $signatureAll['data']['signature'];
 
-//echo "Signature: $signature <br>";
+echo "<br>Signature: $signature <br>";
 //echo "Access Token: $accessToken <br>";
-
+echo "<br>Deposit Param: ($accessToken, $signature, "; print_r($data_inquiry);
 $response = $oActionPay->doDeposit($accessToken, $signature, $data_inquiry);
-//echo "Withdraw Confirm Response: ";
+echo "<br>Deposit  Response: $response <br>";
 
-echo "Deposit Payload: <br>";
-print_r($data_inquiry);
+//echo "Deposit Payload: <br>";
+//print_r($data_inquiry);
 
-echo "Deposit Response: <br>";
-print_r($response);
+//cho "Deposit Response: <br>";
+//print_r($response);
 
 $response = json_encode($response, JSON_PRETTY_PRINT);
 //$response = json_encode($response, JSON_PRETTY_PRINT);

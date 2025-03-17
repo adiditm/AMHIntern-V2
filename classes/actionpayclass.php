@@ -83,7 +83,7 @@
 				global $oRules;
 				 $url = $oRules->getSettingByField("factpaysign");
 				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
-				$options = [
+				/*$options = [
 					'http' => [
 						'header'  => [
 							"Content-Type: application/json",
@@ -98,12 +98,33 @@
 					print_r($options);
 				$context  = stream_context_create($options);
 				$result = file_get_contents($url, false, $context);
+			*/
 			
-				if ($result === FALSE) {
-					die('Error during get signature');
+				$ch = curl_init();
+				curl_setopt_array($ch, [
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $data_inquiry,
+					CURLOPT_HTTPHEADER => [
+						"Content-Type: application/json",
+						'Authorization: Basic ' . base64_encode("$clientId:$clientSecret"),
+						"api-secret: $apiSecret"
+					]
+				]);
+				
+				$result = curl_exec($ch);
+				
+				if (curl_errno($ch)) {
+					die('Error during get signature: ' . curl_error($ch));
 				}
+				
+				
+
+				curl_close($ch);
 				$response = json_decode($result, true);
 				return $response;
+				
 			}
 
 			//Withdraw Inquiry
@@ -209,10 +230,10 @@
 			function doDeposit($accessToken, $signature, $data_inquiry) {
 				global $oRules;
 
-				echo $url = $oRules->getSettingByField("factpaydep");
+				$url = $oRules->getSettingByField("factpaydep");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
 
-				$header = ["platform: api",
+				/*$header = ["platform: api",
 				"accesstoken: Bearer $accessToken",
 				"signature: $signature",
 				"platform: api",
@@ -232,10 +253,32 @@
 				//print_r($data_inquiry);
 				$context  = stream_context_create($options);
 				$result = file_get_contents($url, false, $context);
+*/
 
-				if ($result === FALSE) {
-					die('Error during deposit ');
+				$ch = curl_init();
+				curl_setopt_array($ch, [
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $data_inquiry,
+					CURLOPT_HTTPHEADER => [
+						"platform: api",
+						"accesstoken: Bearer $accessToken",
+						"signature: $signature",
+						"platform: api",
+						"Content-Type: application/json"
+					]
+				]);
+
+				$result = curl_exec($ch);
+
+				if (curl_errno($ch)) {
+					die('Error during request: ' . curl_error($ch));
 				}
+
+				curl_close($ch);
+
+				
 
 				$response = json_decode($result, true);
 				return $response;
