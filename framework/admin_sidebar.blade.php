@@ -100,7 +100,16 @@
 
                       
 
-                      <li ><a href="<?=$vLinkIn?>?op=<?=$vOP?>&current=<?=$vParent?>&menu=<?=$vMenuIDIn?>">&equiv; <?=$vMenuTitleIn?></a></li>
+                      <li ><a href="<?=$vLinkIn?>?op=<?=$vOP?>&current=<?=$vParent?>&menu=<?=$vMenuIDIn?>">&equiv; <?=$vMenuTitleIn?></a>
+                      <? if ($vMenuIDIn=='spon_trans_prd') { ?>
+                      <ul class="nav child_menu" style="display: block;">
+                            <li class="sub_menu"><a href="../memstock/statustrans.php">Status Transaksi</a>
+                            </li>
+                           
+                          </ul>
+                          <? } ?>
+                    
+                    </li>
 
                       <? } ?>
 

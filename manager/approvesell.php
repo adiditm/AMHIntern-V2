@@ -242,8 +242,8 @@ function doReject(pIdSys,pIdTrx) {
             <td width="12%" align="center" style="height: 24px"><strong>Seller</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>&nbsp;Detail Product </strong></td>
             <td width="35%" align="center" style="height: 24px"><strong>Note</strong></td>
-            <td width="14%" align="center" style="height: 24px"><strong>Ongkos Kirim</strong></td>
-            <td width="14%" align="center" style="height: 24px"><strong>Total </strong></td>
+            <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
+            <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Status</strong></td>
            <? if ($_SESSION['Priv'] !='seller') {?> <td width="14%" align="center" style="height: 24px"><strong>Action</strong> <? } ?></td>
           </tr>
@@ -286,19 +286,28 @@ function doReject(pIdSys,pIdTrx) {
 				    $vKind='acc';
 			     else		
 				    $vKind='prd';
-				 if ($vStat=='0')
-				    $vStatus='Pending';
-				 else if ($vStat=='1')   
-				    $vStatus='Approved';
-				 else if ($vStat=='4')  
-				    $vStatus='Rejected';    
+				 
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				 $vSQL = "select * from  (select fidpenjualan, fidproduk from tb_trxstok_member union  select fidpenjualan, fidproduk from tb_trxstok_member_temp) as a where fidpenjualan='$vIDJual' ";
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
+        $vAMHFee = $dbin->f('am_fee');
+
+        $vPaid = $dbin->f('fpaid');
+
+        if ($vStat=='0' && $vPaid=='0')
+          $vStatus='Pending';
+        else if ($vStat=='0' && $vPaid=='1')
+          $vStatus='Diproses (Sudah Dibayar)';
+        else if ($vStat=='1')   
+            $vStatus='Approved';
+        else if ($vStat=='4')  
+            $vStatus='Rejected';   
+
+       // echo "$vSQL <br>";
 				
 				
 				
@@ -331,6 +340,8 @@ function doReject(pIdSys,pIdTrx) {
             <td valign="top" style="vertical-align:top"><?=$vKet?></td>
             <td valign="top" align="right"><?
              $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
+           
+             if ($vAMHFee=='') $vAMHFee=0;
 			 if ($vOngkir == 0) $vOngkir=$oJual->getOngkirTemp($db->f('fidpenjualan'));
 			 
 			echo number_format($vOngkir,0,",",".");?></td>
@@ -341,8 +352,8 @@ function doReject(pIdSys,pIdTrx) {
 			 
 			
 			 
-             echo  number_format($vSubTot+$vOngkir,0,",",".");
-             $vTotalJual+=($vSubTot + $vOngkir);
+             echo  number_format($vSubTot+$vOngkir+$vAMHFee,0,",",".");
+             $vTotalJual+=($vSubTot + $vOngkir + $vAMHFee);
             
             ?>
 			</div></td>

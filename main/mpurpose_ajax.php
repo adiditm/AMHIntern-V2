@@ -2035,83 +2035,87 @@ $vUser=$_SESSION['LoginUser'];
 
 
   } else if ($vOp=='generateva') {
+		$vJumlah = $_POST['amount'];
+		$vRef = $_POST['ref'];
+		$vBuyer = $_POST['buyer'];
+		$vBankVA = $_POST['bankva'];
+
+		$clientId = $oRules->getSettingByField('factpayclientid');
+		$clientSecret = $oRules->getSettingByField('factpayclientsec');
+		$apiSecret = $oRules->getSettingByField('factpayapisec');
+		$vNamaAlias = $oRules->getSettingByField('factpaycompname');
+		$vNorek = $oRules->getSettingByField('frekbank1');
+		$vBankCode = $oRules->getSettingByField('factpaybankva');
+
+		$vRemark = "Pembayaran VA $vRef";
+
+		$vBankCodeVA = $oRules->getSettingByField('factpaybankva');
+		$data_inquiry = "{
+			\"address\":\"$vNorek\",
+			\"amount\":$vJumlah,
+			\"alias\":\"$vNamaAlias\",
+			\"bankCode\":\"$vBankCodeVA\",
+			\"remarks\":\"$vRemark\",
+			\"refId\":\"$vRef\"
+		}"; 
+
+		$data_inquiry = '';
+
+
+		//$accessToken = getAuthToken($clientId, $clientSecret);
+
+		// Get signature
+		$signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
+		$signature = $signatureAll['data']['signature'];
+
+		//  echo "Sig: $signature <br>";
+		// Example usage
+		$accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);
+
+		//echo "Data Inquiry: ".$data_inquiry."<br>";
+
+		$response = $oActionPay->depositRoute($accessToken, $signature);
+
+		//echo "Withdraw Inquiry Response: ";
+		//print_r($response);
+
+		
+		$vChannelID = $response['data'][$vBankVA]['chId'];
+		$vBankCodeVA = $response['data'][$vBankVA]['mId'];
+		//$accessToken = getAuthToken($clientId, $clientSecret);
+
+		//$vRef = 'MyRef' . rand(100, 999);
+
+
+		$data_inquiry = "{
+		\"address\":\"\",
+		\"amount\":$vJumlah,
+		\"bankCode\":\"$vBankCodeVA\",
+		\"alias\":\"$vNamaAlias\",
+		\"remarks\":\"$vRemark\",
+		\"type\":\"va\",
+		\"addressName\":\"$vBuyer\",
+		\"channelId\":\"$vChannelID\",
+		\"refId\":\"$vRef\"
+		}";
+
+		$signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
+		$signature = $signatureAll['data']['signature'];
+
+		//echo "Signature: $signature <br>";
+		//echo "Data Inquiry: ".$data_inquiry."<br>";
+		//echo "Access Token: $accessToken <br>";
+
+		$response = $oActionPay->doDeposit($accessToken, $signature, $data_inquiry);
+		//echo "Withdraw Confirm Response: ";
+
+		$response = json_encode($response, JSON_PRETTY_PRINT);
+		//$response = json_encode($response, JSON_PRETTY_PRINT);
+		echo $response;
 
 	
-$vJumlah = $_POST['amount'];
-$vRef = $_POST['ref'];
-$clientId = $oRules->getSettingByField('factpayclientid');
-$clientSecret = $oRules->getSettingByField('factpayclientsec');
-$apiSecret = $oRules->getSettingByField('factpayapisec');
-$vNamaAlias = $oRules->getSettingByField('factpaycompname');
-$vNorek = $oRules->getSettingByField('frekbank1');
-$vBankCode = $oRules->getSettingByField('factpaybankva');
-
-$vRemark = "Pembayaran VA $vRef";
-
-$vBankCodeVA = $oRules->getSettingByField('factpaybankva');
- $data_inquiry = "{
-    \"address\":\"$vNorek\",
-    \"amount\":$vJumlah,
-    \"alias\":\"$vNamaAlias\",
-    \"bankCode\":\"$vBankCodeVA\",
-    \"remarks\":\"$vRemark\",
-    \"refId\":\"$vRef\"
-}"; 
-
-$data_inquiry = '';
-
-
- //$accessToken = getAuthToken($clientId, $clientSecret);
-
-// Get signature
- $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
-  $signature = $signatureAll['data']['signature'];
-
-//  echo "Sig: $signature <br>";
-// Example usage
- $accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);
-
-//echo "Data Inquiry: ".$data_inquiry."<br>";
-
-$response = $oActionPay->depositRoute($accessToken, $signature);
-
-//echo "Withdraw Inquiry Response: ";
-//print_r($response);
-
- $vChannelID = $response['data'][0]['chId'];
- //$accessToken = getAuthToken($clientId, $clientSecret);
-
-//$vRef = 'MyRef' . rand(100, 999);
-$vRand=  rand(100, 999);
- $data_inquiry = "{
-\"address\":\"$vNorek\",
-\"amount\":$vJumlah,
-\"bankCode\":\"$vBankCodeVA\",
-\"alias\":\"$vNamaAlias\",
-\"remarks\":\"$vRemark\",
-\"type\":\"va\",
-\"addressName\":\"Aminah\",
-\"channelId\":\"$vChannelID\",
-\"refId\":\"$vRef\"
-}";
-
-$signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
-$signature = $signatureAll['data']['signature'];
-
-//echo "Signature: $signature <br>";
-//echo "Data Inquiry: ".$data_inquiry."<br>";
-//echo "Access Token: $accessToken <br>";
-
-$response = $oActionPay->doDeposit($accessToken, $signature, $data_inquiry);
-//echo "Withdraw Confirm Response: ";
-
-$response = json_encode($response, JSON_PRETTY_PRINT);
-//$response = json_encode($response, JSON_PRETTY_PRINT);
-echo $response;
-
 	
-	
-  } else if ($vOp=='saveva') {
+} else if ($vOp=='saveva') {
 	$vVA = $_POST['va_no'];
 	$vAmount = $_POST['va_amount'];
 	$vFee = $_POST['va_fee'];
@@ -2128,6 +2132,7 @@ echo $response;
 	$vAddress = $_POST['va_address'];
 	$vAddressName = $_POST['va_addressname'];
 	$vRefId = $_POST['va_refid'];
+	$vBankFee=$oRules->getSettingByField('fbyybank');
 
 	// Check if va_refid already exists
 	$vSQLCheck = "SELECT COUNT(*) AS count FROM tb_trx_va WHERE va_refid = '$vRefId'";
@@ -2137,8 +2142,8 @@ echo $response;
 
 	if ($vCount == 0) {
 		// Insert into tb_trx_va
-		 $vSQLInsert = "INSERT INTO tb_trx_va (va_no, va_amount, va_fee, va_bank, va_bankcode, va_trxdate, va_credit, va_debit, va_channelid, va_channelname, va_address, va_addressname, va_refid) 
-					   VALUES ('$vVA', $vAmount, $vFee, '$vBank', '$vBankCode', '$vTrxDate', $vCredit, $vDebit, '$vChannelId', '$vChannelName', '$vAddress', '$vAddressName', '$vRefId')";
+		 $vSQLInsert = "INSERT INTO tb_trx_va (va_no, va_amount, va_fee, va_bank, va_bankcode, va_trxdate, va_credit, va_debit, va_channelid, va_channelname, va_address, va_addressname, va_refid, am_fee) 
+					   VALUES ('$vVA', $vAmount, $vFee, '$vBank', '$vBankCode', '$vTrxDate', $vCredit, $vDebit, '$vChannelId', '$vChannelName', '$vAddress', '$vAddressName', '$vRefId','$vBankFee')";
 		$vResult = $db->query($vSQLInsert);
 
 		
@@ -2151,13 +2156,14 @@ echo $response;
 		$vBody = 'Yth. ' . $vMailToName . ", \n\n";
 		$vBody .= 'Nomor Virtual Account : ' . $vVA . "\n";
 		$vBody .= 'Jumlah Pembayaran : ' . number_format($vAmount,0,',','.') . "\n";
-		$vBody .= 'Bank : ' . $vBank . "\n";
+		$vBody .= 'Bank : ' . strtoupper($vBank) . "\n";
 		
 		$vBody .= 'Bank Code : ' . $vBankCode . "\n\n";
 		$vBody .= 'Segera selesaikan pembayaran Anda'."\n";
 		
-		$vBody .= 'Catatan: Pembayaran Virtual Account akan dikenakan fee sebesar ' . number_format($vFee,0,',','.') . "\n";
+		$vBody .= 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' . number_format($vFee,0,',','.') . "\n";
 		
+		if ($vMailTo == '' || $vMailTo == '-')  $vMailTo = 'amhtechs@gmail.com';
 		$oSystem->smtpmailerHosting($vMailTo,$vMailToName,$vMailFrom,'AMH Techno',"Pembayaran Virtual Account",$vBody,$oRules->getSettingByField('fmailbcc'),'',false);
 
 		if ($vResult) {
@@ -2172,6 +2178,56 @@ echo $response;
 		echo json_encode($vArrOut, true);
 	}
 
+  } else if ($vOp=='banklist') {
+	$clientId = $oRules->getSettingByField('factpayclientid');
+	$clientSecret = $oRules->getSettingByField('factpayclientsec');
+	$apiSecret = $oRules->getSettingByField('factpayapisec');
+	$vNamaAlias = $oRules->getSettingByField('factpaycompname');
+	$vBankCode = $oRules->getSettingByField('factpaybankva');
+	
+
+	
+	$vBankCodeVA = $oRules->getSettingByField('factpaybankva');
+	 $data_inquiry = "{
+		\"address\":\"-\",
+		\"amount\":0,
+		\"alias\":\"$vNamaAlias\",
+		\"bankCode\":\"$vBankCode\",
+		\"remarks\":\"-\",
+		\"refId\":\"-\"
+	}"; 
+	
+	$data_inquiry = '';
+	
+	
+	 //$accessToken = getAuthToken($clientId, $clientSecret);
+	
+	// Get signature
+	 $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
+	  $signature = $signatureAll['data']['signature'];
+	
+	//  echo "Sig: $signature <br>";
+	// Example usage
+	 $accessToken = $oActionPay->getAuthToken($clientId, $clientSecret);
+	
+	//echo "Data Inquiry: ".$data_inquiry."<br>";
+	
+	$response = $oActionPay->depositRoute($accessToken, $signature);
+
+	$bankList = [
+		'mandiri'    => 'Virtual Account Bank Mandiri',
+		'bri'        => 'Virtual Account Bank BRI',
+		'bni'        => 'Virtual Account Bank BNI',
+		'cimb_niaga' => 'Virtual Account Bank CIMB Niaga',
+		'permata'    => 'Virtual Account Bank Permata',
+	];
+
+	echo '<option value="">--Pilih--</option>';
+	foreach($response['data'] as $key => $value) {
+		$vOption='';
+		echo $vOption .= '<option value="' . $key . '">' . $bankList[$value['mId']] . '</option>';
+		
+	}
   }
  
 

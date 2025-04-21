@@ -1,7 +1,7 @@
 <?
-	if(!headers_sent()) {
-         session_start();  
-    }
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
 	include_once("../classes/simple_html_dom.php");
 	include_once("../classes/productclass.php");
 	$regexViewstate = '/viewState\" value=\"(.*)\"/i';

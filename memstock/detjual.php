@@ -154,10 +154,16 @@
     <td><strong>:</strong></td>
     <td><strong>
       <? 
+      $vSQL = "select * from tb_trx_va where va_refid ='".$_GET['uNoJual']."';";
+      $db->query($vSQL);
+      $db->next_record();
+      $vBank = strtoupper($db->f('va_bankcode'));
 	   $vMethod=$oJual->getPayMethod($_GET['uNoJual']);
 	   if ($vMethod=='ctr' || $vMethod=='mTrans') 
 	      echo 'Cash/Transfer';
-	   else echo 'eWallet'; 	  
+	   else if ($vMethod=='tva' ) 
+        echo "Transfer Virtual Account $vBank";
+     else echo 'eWallet'; 	  
 	   
 	   ?>
     </strong></td>
@@ -179,16 +185,19 @@
     </tr>
     <?
 	  $vNoJual=$_GET['uNoJual'];
-	  $vsql="select * from(select *, 2 as fstatus from tb_trxstok_member where fidpenjualan='$vNoJual' union all select *, 0 as fstatus from tb_trxstok_member_temp where fidpenjualan='$vNoJual') as a";
+	   $vsql="select a.*, b.am_fee from(select *, 2 as fstatus from tb_trxstok_member where fidpenjualan='$vNoJual' union all select *, 0 as fstatus from tb_trxstok_member_temp where fidpenjualan='$vNoJual') as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vNoJual'";
+
 	  $db->query($vsql);
 	  $vNoUrut=0;
 	  $vTot=0;
 	  $vTotPoint=0;
 	  while ($db->next_record()) {
-	     $vNoUrut+=1;
-		 $vIdProdList=$db->f("fidproduk");
-		 $vStatus=$db->f("fstatus");
-		 $vExpe = strtoupper($db->f("fexpe")).' Paket '.$db->f("fpack");
+	      $vNoUrut+=1;
+        $vIdProdList=$db->f("fidproduk");
+        $vStatus=$db->f("fstatus");
+        $vPaid=$db->f("fpaid");
+        $vAMHFee = $db->f("am_fee");
+        $vExpe = strtoupper($db->f("fexpe")).' Paket '.$db->f("fpack");
 	?>
 	<tr>
       <td><?=$vNoUrut?></td>
@@ -221,24 +230,31 @@
          echo number_format($vCost=$oJual->getJualField($_GET['uNoJual'],'fongkir'),0,",",".");
 	  ?>      </td>
     </tr>
+
+    <tr>
+      <td colspan="5" align="rifght">Biaya Admin</td>
+      <td align="right"><?
+         echo number_format($vAMHFee,0,",",".");
+	  ?>      </td>
+    </tr>
+
     <tr>
       <td colspan="5"><strong>Total</strong></td>
       <td><div align="right"><strong>
         <?
 		  
 		  $vTot+=$vSusTot;
-		  echo number_format($vTot+$vCost,0,",",".");
+		  echo number_format($vTot+$vCost+$vAMHFee,0,",",".");
 		?>
         
       </strong></div></td>
     </tr>
   </table>
-  <? if ($vStatus=='0')  {?> 
+  <? if ($vStatus=='0' && $vPaid=='0')  {?> 
   <br>
-  
-  <b style="color:red">Status : Pending</b><br>
-  
-  
+  <b style="color:red">Status: Pending</b><br>
+  <? } else if($vStatus=='0' && $vPaid=='1') {?>
+    <b style="color:blue">Status: Diproses</b><br>
   <? } ?>
   <? if (preg_match("/KIT/",$vIdProdList)) { ?>
   <br>

@@ -1,4 +1,7 @@
 <?php  
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
 error_reporting(E_ALL);
 date_default_timezone_set('Asia/Jakarta');
 
@@ -198,8 +201,8 @@ function sendEmail($toEmail, $toName, $subject, $body, $altBody = '') {
     return false;
   }
 }
-*/
+*///
 
- $oSystem->smtpmailerHosting('a_didit_m@yahoo.com','Didiet','info@aminahtour.co.id','AMH Techno','Percobaan Yahoo',"Pembayaran Virtual Account",'adiditm@gmail.com','',false,1);
- 
+ $a = $oSystem->smtpmailerHosting('amhtechs@gmail.com','Didiet','info@aminahtour.co.id','AMH Techno','Percobaan Gmail',"Pembayaran Virtual Account",'adiditm@gmail.com','',false,1);
+ print_r($a);
 ?>

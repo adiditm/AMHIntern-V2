@@ -57,6 +57,8 @@ if ($vCount=='') $vCount=1;
    $vRekBank1 = $oRules->getSettingByField('frekbank1');
    $vRekBank2 = $oRules->getSettingByField('frekbank2');
    $vRekBank3 = $oRules->getSettingByField('frekbank3');
+   
+   $vBankFee = $oRules->getSettingByField('fbyybank');
 
   
 
@@ -83,6 +85,7 @@ if ($vCount=='') $vCount=1;
     $vBuyer=$_POST['tfSernoSpon'];
     //$vPaket=$oMember->getMemField("fpaket",$vBuyer);
   //  $vAlamat=$oMember->getMemField('falamat',$vBuyer);
+    $vAlamat=$_POST['tfRecAddr'];
    // @mail("a_didit_m@yahoo.com","Entri RO Spectra by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true));
     $oSystem->smtpmailer('japri_s@yahoo.com',$vMailFrom,'Onotoko',"Entri RO Onotoko by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true),'','',false);
 	$db->query('START TRANSACTION;');
@@ -96,9 +99,10 @@ if ($vCount=='') $vCount=1;
 	   
     while (list($key,$val) = each($_SESSION['save'])) {
         //print_r($val);
-        
-    	 $vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed, fongkir, fberat, fcountry, fprop, fkota, fkec, fexpe, fpack)";
-    	$vSQL.=" values('$vNextJual','$vSeller','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$lmMethod','Repeat Order',now(),'2','1981-01-01 00:00:00',$vOngkir,{$_POST['hTotWeight']},'{$_POST['fcountry']}','{$_POST['fprop']}','{$_POST['fkota']}','{$_POST['fkec']}','{$_POST['fexpe']}','{$_POST['fpack']}')";
+         if ($vSeller == '')  $vSeller = $_POST['hSeller'];
+			
+    	 $vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed, fongkir, fberat, fcountry, fprop, fkota, fkec, fexpe, fpack, frecnohp, frecname)";
+    	$vSQL.=" values('$vNextJual','$vSeller','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$lmMethod','Repeat Order',now(),'2','1981-01-01 00:00:00',$vOngkir,{$_POST['hTotWeight']},'{$_POST['fcountry']}','{$_POST['fprop']}','{$_POST['fkota']}','{$_POST['fkec']}','{$_POST['fexpe']}','{$_POST['fpack']}','{$_POST['tfRecPhone']}','{$_POST['tfRecName']}')";
   	 	
   	 	$db->query($vSQL);
   	 	$vTotItem+=$val['txtJml'];
@@ -349,7 +353,7 @@ if ($vCount=='') $vCount=1;
 	 else if ($lmMethod=='ctr')	
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
 	 else if ($lmMethod=='tva') {
-		$oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, lanjutkan dengan transfer dana ke Virtual Account!");
+		$oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, klik OK dan lanjutkan dengan transfer dana ke Virtual Account! Mohon untuk tidak menutup browser Anda sebelum keluar nomor Virtual Account!");
 		?>
 
 
@@ -358,13 +362,15 @@ if ($vCount=='') $vCount=1;
 			 // Generate VA pembayaran sebelum submit form
 			 $.post('../main/mpurpose_ajax.php?op=generateva', {
 				amount: '<?=$_POST["hTotal"]?>',					
-				ref: '<?=$vNextJual?>'
+				ref: '<?=$vNextJual?>',
+				buyer: '<?=$_POST['tfRecName']?>',
+				bankva: '<?=$_POST['lmBank']?>'
 			}, function(response) {
 			  var result = JSON.parse(response);
 			  if (result.status == '0001') {
 				var vVA = result.data.address;
 				var vAmount = result.data.totAmount;
-				var vFee = result.data.feeAmount;
+				var vFee = <?=$vBankFee?>;
 				var vBank = result.data.channelName;
 				var vBankCode = result.data.bankCode;
 				var trxDate = result.data.trxDate;
@@ -382,10 +388,10 @@ if ($vCount=='') $vCount=1;
 						var vaInfo = '<h2>Informasi Pembayaran</h2> <br><br>';
 						vaInfo += '<b>Nomor Virtual Account</b> : ' + address + '<br>';
 						vaInfo += '<b>Jumlah Pembayaran</b> : ' + numberFormat(vAmount) + '<br>';
-						vaInfo += '<b>Bank</b> : ' + vBank + '<br>';
+						vaInfo += '<b>Bank</b> : ' + vBank.toUpperCase() + '<br>';
 						//vaInfo += '<b>Bank Code</b> : ' + vBankCode + '<br><br>';
 						vaInfo += 'Catatlah atau screenshot informasi ini. Anda juga akan mendapatkan informasi ini di email Anda (cek folder spam / junk juga).<br>';
-						vaInfo += 'Catatan: Pembayaran Virtual Account akan dikenakan fee sebesar ' + numberFormat(vFee) + '<br>';
+						vaInfo += 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' + numberFormat(vFee) + '<br>';
 						
 						var vObj = $.parseJSON(data);
 						console.log(vObj.status);
@@ -464,7 +470,10 @@ printTrx('<?=$vNextJual?>','<?=date('Y-m-d')?>','<?=$vUser?>');
 
   } 
 
-
+  .error {
+	color: red;
+	
+  }
 	</style>
 <script src="../js/jquery.validate.min.js"></script>
 <script language="javascript">
@@ -476,18 +485,30 @@ function numberFormat(number, decimals = 0, decPoint = ',', thousandsSep = '.') 
 }
 
 function changeRek(pThis){
+	var vDefault = '<option value="">--Pilih--</option><option value="CASH">Cash</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
+
+	var vBankList ='';
+	
    if (pThis.value=='ctr') {
 	  document.getElementById('lmBank').disabled=false;
 	  $('#lmBank').css('pointer-events','auto');
 	  $('#lmBank').css('background-color','#fff');
-	  $('#lmBank option[value="tva"]').remove();
+	 // $('#lmBank option[value="tva"]').remove();
    }  else {
 	  // document.getElementById('lmBank').disabled=true; 
-	   $('#lmBank').css('pointer-events','none');
-	   $('#lmBank').css('background-color','#ccc');
+	  // $('#lmBank').css('pointer-events','none');
+	   //$('#lmBank').css('background-color','#ccc');
 	   document.getElementById('lmBank').selectedIndex=0; 
 	   if (pThis.value=='tva') {
-		   $('#lmBank').append('<option value="tva" selected>Virtual Bank BNI</option>');
+			var vURL='../main/mpurpose_ajax.php?op=banklist';
+			$.post(vURL,function(data) {
+				vBankList = data;
+				$('#lmBank').html(vBankList);
+			//console.log(vBankList);
+			});
+		  
+	   } else {
+		   $('#lmBank').html(vDefault);
 	   }
    }
 }
@@ -725,7 +746,7 @@ $(document).ready(function(){
   
     
  function calcTot() {
-	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val()) + parseFloat($('#tfBankFee').val());
 		  $('#hTotal').val(xTot);
 	//	 alert(xTot);
 		  $('#totalpurc').html(xTot);  
@@ -920,7 +941,7 @@ function checkKitSpon(pParam) {
 		 <? if(count($_POST)<=0){ ?>
 		 $.post(vURLAddr, {sernospon : '<?=$vSeller?>'},function(data) {
 			 if (vYesAddr.test(data)) {
-			 	$('#statAddr').html('<font color="#060">, alamat seller (<?=$vSellerName?>) valid!</font>');
+			 	$('#statAddr').html('<font color="#060">, alamat seller (<?=$vSellerName?>) valid!</font><input type="hidden" name="hSeller" id="hSeller" value="<?=$vSeller?>">');
 			 } else {
 				 alert('Seller belum diset untuk produk ini, atau alamat seller (<?=$vSellerName?>) tidak valid, transaksi tidak dapat dilanjutkan. Hubungi admin untuk update data seller!');
 				 
@@ -1189,7 +1210,7 @@ function zeroOngkir(){
                                             
   <div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
-												<span style="font-weight:bold">Alamat Penerima Barang *</span></label>
+												<span style="font-weight:bold">Alamat Lengkap Penerima *</span></label>
 												<div class="input-group">
                                       <span class="input-group-addon"> <i class="fa fa-map"></i></span>
 													<input  type="text" class="form-control" id="tfRecAddr" name="tfRecAddr" placeholder="Contoh: Jl. Sawi 89 Jakarta">
@@ -1333,6 +1354,17 @@ function zeroOngkir(){
 													<input  type="text" class="form-control" id="tfOngkir" name="tfOngkir" placeholder="Contoh: 30000 (tanpa titik/koma)" onChange="calcTot()" value="0" readonly>
 												</div>
 										  </div>
+                                          
+                                          
+                                          
+      <div class="col-lg-6 col-md-6 divtr" >
+												<label for="exampleInputEmail1" >
+												<span style="font-weight:bold">Biaya Admin Bank*</span></label>
+												<div class="input-group">
+                                      <span class="input-group-addon"> <i class="fa fa-money"></i></span>
+													<input  type="text" class="form-control" id="tfBankFee" name="tfBankFee" placeholder="Contoh: 4500 (tanpa titik/koma)" onChange="calcTot()" value="<?=$vBankFee?>" readonly>
+												</div>
+										  </div>                                    
 
 											
 										
@@ -1462,7 +1494,9 @@ function zeroOngkir(){
            <option value="">--Pilih--</option>
            <option value="ctr">Cash / Transfer</option>
            <option value="wpr">Saldo Bonus</option>
+		   <? if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
            <option value="tva">Transfer Virtual Account</option>
+		   <? } ?>
            <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
          </select>
        </div>
@@ -1470,7 +1504,7 @@ function zeroOngkir(){
       <div class="col-lg-6">
        
          <label style="color:blue" for="lmMethod">Rekening</label>
-         <select name="lmBank" id="lmBank" class="form-control"  disabled>
+         <select name="lmBank" id="lmBank" class="form-control" required  >
            <option value="">--Pilih--</option>
            <option value="CASH">Cash</option>
            <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
@@ -1567,7 +1601,7 @@ function zeroOngkir(){
           <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
            <input type="hidden" id="hKind" name="hKind" value="" />
 
-          <button type="button" id="btClose" name="btClose" class="btn btn-default" data-dismiss="modal" onclick="document.location.href='../manager/indexnonadmin.php';">Close</button>
+          <button type="button" id="btClose" name="btClose" class="btn btn-default" data-dismiss="modal" onClick="document.location.href='../manager/indexnonadmin.php';">Close</button>
         </div>
       </div>
       

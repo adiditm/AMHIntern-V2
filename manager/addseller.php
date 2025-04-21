@@ -57,6 +57,7 @@
 	$vLevelL = $dbL->f('flevel');
 	$vAlamatL = $dbL->f('falamat');
 	$vNoHPL  = $dbL->f('fnohp');
+	$vEmail  = $dbL->f('femail');
 
 
 
@@ -2316,6 +2317,24 @@ function setNama(){
 
                               </div>
                               
+
+<div class="col-lg-6 divtr">
+  <label for="exampleInputEmail1">
+    <span style="font-weight:bold">&nbsp;Email*</span>
+  </label>
+
+  <div class="form-inline">
+    <div class="input-group">
+      <span class="input-group-addon">
+        <i class="fa fa-mobile"></i>
+      </span>
+     
+    </div>
+
+    <input type="email" class="form-control" id="femail" name="femail" placeholder="Contoh: budi@yahoo.com"  value="<?=$vEmail?>">
+  </div>
+</div>
+
 
 						</div> <!--form-group-->
 

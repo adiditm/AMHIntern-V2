@@ -256,7 +256,7 @@
 */
 
 				$ch = curl_init();
-				curl_setopt_array($ch, [
+				$opt = [
 					CURLOPT_URL => $url,
 					CURLOPT_RETURNTRANSFER => true,
 					CURLOPT_POST => true,
@@ -265,10 +265,10 @@
 						"platform: api",
 						"accesstoken: Bearer $accessToken",
 						"signature: $signature",
-						"platform: api",
 						"Content-Type: application/json"
 					]
-				]);
+				];
+				curl_setopt_array($ch,$opt);
 
 				$result = curl_exec($ch);
 
@@ -278,7 +278,8 @@
 
 				curl_close($ch);
 
-				
+				//echo "<BR>DATA INQUIRY ";print_r(curl_setopt_array);
+				//echo "<BR>CURL   ";print_r($opt);
 
 				$response = json_decode($result, true);
 				return $response;

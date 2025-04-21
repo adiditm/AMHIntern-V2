@@ -11,7 +11,7 @@
                 <ul class="nav side-menu">
                 
                 <?
-                    $vSQL="select * from m_lang_".$_SESSION['lang']." where 1  and fismenu='1' and flevel='1' order by fseq ";
+                   $vSQL="select * from m_lang_".$_SESSION['lang']." where 1  and fismenu='1' and flevel='1' order by fseq ";
                     $dbmenu->query($vSQL);
                     
                     while($dbmenu->next_record()) {
