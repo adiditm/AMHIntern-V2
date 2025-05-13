@@ -704,7 +704,7 @@
 					$mail->isHTML(true); // Set email format to HTML
 					$mail->Subject = $subject;
 					$mail->Body    = $body;
-					$mail->AltBody = $altBody; // Optional plain-text alternative body
+					$mail->AltBody = isset($altBody) ? $altBody : ''; // Optional plain-text alternative body
 			
 					if ($bcc != '')
 					$mail->addBCC($bcc);

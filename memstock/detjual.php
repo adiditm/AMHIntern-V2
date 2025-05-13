@@ -65,9 +65,10 @@
 }
 -->
 </style>
+<link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="loginfont" onLoad="window.print();">
+<body class="loginfont">
 <p align="center" class="style1"><span class="style5">Detail Pembelian 
 </span></p>
 <p align="center" class="style1"><span class="style5">
@@ -131,7 +132,7 @@
   <tr>
     <td valign="top"><strong>Alamat Kirim</strong></td>
     <td valign="top"><strong>:</strong></td>
-    <td valign="top"><strong>
+    <td valign="top" nowrap><strong>
       <?
     		echo $oJual->getJualField($_GET['uNoJual'],'frecname');
 			echo "<br>";
@@ -196,6 +197,7 @@
         $vIdProdList=$db->f("fidproduk");
         $vStatus=$db->f("fstatus");
         $vPaid=$db->f("fpaid");
+        $vSend=$db->f("fsend");
         $vAMHFee = $db->f("am_fee");
         $vExpe = strtoupper($db->f("fexpe")).' Paket '.$db->f("fpack");
 	?>
@@ -253,8 +255,14 @@
   <? if ($vStatus=='0' && $vPaid=='0')  {?> 
   <br>
   <b style="color:red">Status: Pending</b><br>
+  <? } else if($vStatus=='0' && $vPaid=='1' && $vSend=='1') {?>
+    <b style="color:blue">Status: Diproses (Sudah Dikirim Oleh Seller)</b><br>
   <? } else if($vStatus=='0' && $vPaid=='1') {?>
-    <b style="color:blue">Status: Diproses</b><br>
+    <b style="color:blue">Status: Diproses (Sudah Dibayar)</b><br>
+  <? } else if($vStatus=='2') {?>
+    <b style="color:green">Status: Approved</b><br>
+  <? } else if($vStatus=='4') {?>
+    <b style="color:red">Status: Rejected</b><br>
   <? } ?>
   <? if (preg_match("/KIT/",$vIdProdList)) { ?>
   <br>
@@ -295,4 +303,23 @@
 </span>
 </body>
 
-</html>
+<span style="font-family: Verdana, Arial, Helvetica, sans-serif">
+<iframe width=188 height=166 name="gToday:datetime:agenda.js:gfPop:plugins_timeSec.js" id="gToday:datetime:agenda.js:gfPop:plugins_time.js" src="ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; top:-500px; left:-500px;">
+</iframe>
+
+<div id="printBtn" style="position:fixed; bottom:20px; right:20px;">
+<input type="button" value="Print" onclick="printPage()" class="btn btn-primary btn-sm">
+<input type="button" value="Close" onclick="window.close()" class="btn btn-danger btn-sm" style="margin-left:5px;">
+</div>
+
+<script>
+function printPage() {
+    document.getElementById('printBtn').style.display = 'none';
+    window.print();
+    document.getElementById('printBtn').style.display = 'block';
+}
+</script>
+
+</span>
+</body>
+</html></html>

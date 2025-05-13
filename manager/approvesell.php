@@ -231,6 +231,8 @@ function doReject(pIdSys,pIdTrx) {
 
 
     <div class="table-responsive">
+      <label style="color: red;">Keterangan : Pembelian yang bisa diapprove adalah yang sudah dibayar dan sudah dikirim atau yang menggunakan cara pembayaran cash/transfer. <br>Untuk cara bayar Cash/Transfer, pastikan pembayaran sudah diterima di rekening bank!</label>
+
         <table width="90%" border="0" class="table table-striped">
           <tr >
             <td style="height: 24px; width: 5%;"><strong>No.</strong></td>
@@ -241,7 +243,7 @@ function doReject(pIdSys,pIdTrx) {
             <td align="center" style="width: 23%; height: 24px;"><strong>Name</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>Seller</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>&nbsp;Detail Product </strong></td>
-            <td width="35%" align="center" style="height: 24px"><strong>Note</strong></td>
+            <td width="35%" align="center" style="height: 24px"><strong>Cara Bayar</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Status</strong></td>
@@ -249,11 +251,11 @@ function doReject(pIdSys,pIdTrx) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus  from tb_trxstok_member where   1 "; 
+			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member where   1 "; 
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus  from tb_trxstok_member_temp where  1 "; 
+			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member_temp where  1 "; 
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -271,6 +273,9 @@ function doReject(pIdSys,pIdTrx) {
 				 $vTanggal=$db->f('ftanggal');
 				 $vIdMember=$db->f('fidmember');
 				 $vIdSeller=$db->f('fidseller');
+         $vPaid=$db->f('fpaid');
+         $vSend=$db->f('fsend');
+         $vMethod=$db->f('fmethod');
 				
 				 $vNama=$oMember->getMemberNameAdm($vIdMember,'sponsor');
 				 
@@ -290,22 +295,26 @@ function doReject(pIdSys,pIdTrx) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
         $vAMHFee = $dbin->f('am_fee');
 
-        $vPaid = $dbin->f('fpaid');
+       $vPaid = $dbin->f('fpaid');
+       $vSend = $dbin->f('fsend');  
 
-        if ($vStat=='0' && $vPaid=='0')
+       if ($vStat=='0' && $vPaid=='0')
           $vStatus='Pending';
+        else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
+          $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
         else if ($vStat=='1')   
             $vStatus='Approved';
         else if ($vStat=='4')  
             $vStatus='Rejected';   
+
 
        // echo "$vSQL <br>";
 				
@@ -337,7 +346,22 @@ function doReject(pIdSys,pIdTrx) {
 			?>
             </td>
             <td valign="top" nowrap><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
-            <td valign="top" style="vertical-align:top"><?=$vKet?></td>
+            <td valign="top" style="vertical-align:top">
+            <?php
+            // Display payment method instead of note
+            $vMethodDisplay = '';
+            if ($vMethod == 'ctr') {
+                $vMethodDisplay = 'Cash/Transfer';
+            } else if ($vMethod == 'tva') {
+                $vMethodDisplay = 'Transfer Virtual Account';
+            } else if ($vMethod == 'wpr') {
+                $vMethodDisplay = 'eWallet';
+            } else {
+                $vMethodDisplay = $vMethod;
+            }
+            echo $vMethodDisplay;
+            ?>
+            </td>
             <td valign="top" align="right"><?
              $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
            
@@ -358,7 +382,9 @@ function doReject(pIdSys,pIdTrx) {
             ?>
 			</div></td>
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
-            <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?><input <? if ($vStat!='0') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;<input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } ?>  
+            <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
+            <input <? if (!($vStat=='0' && $vPaid=='1' && $vSend =='1') && $vMethod != 'ctr') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;
+            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } ?>  
         <input type="button" class="btn btn-xs btn-success" name="button" id="button" value="Detail Receipt" onClick="printTrx('<?=$vIdTrx?>','<?=$vTanggal?>','<?=$vIdMember?>')">
             </td>  
           </tr>

@@ -296,16 +296,19 @@ function doReject(pIdSys,pIdTrx) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
         $vAMHFee = $dbin->f('am_fee');
 
         $vPaid = $dbin->f('fpaid');
+        $vSend = $dbin->f('fsend');
 
         if ($vStat=='0' && $vPaid=='0')
           $vStatus='Pending';
+        else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
+          $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
         else if ($vStat=='1')   
