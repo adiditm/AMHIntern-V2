@@ -14,12 +14,101 @@
    include_once($CLASS_DIR."systemclass.php");
    include_once($CLASS_DIR."productclass.php");
    include_once($CLASS_DIR."texttoimageclass.php");
-   
+   /*
+CREATE TABLE tb_actpcall_log (
+	id bigint(20) NOT NULL auto_increment,
+	endpoint varchar(255) NOT NULL,
+	method varchar(10) NOT NULL,
+	request_payload text(65535),
+	response_payload text(65535),
+	status_code int(10) NOT NULL,
+	response_time_ms int(10),
+	client_ip varchar(45),
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	PRIMARY KEY (id)
+
+   */
    
    class actionpay {
 
 			// Function to get list bank
+			
 			function getListBank() {
+				global $oRules, $oDB; // Use $oDB instead of $db
+				$url = $oRules->getSettingByField("factpaylistbank");
+
+				$header = ["platform: api",
+				"Content-Type: application/json"
+				];
+				// Create context with headers and body
+				$options = [
+				'http' => [
+					'method' => 'GET',
+					'header' => $header
+				]
+				];
+				// Create a stream context
+				$context = stream_context_create($options);
+
+				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
+				$startTime = microtime(true); // Start timer
+
+				$result = @file_get_contents($url, false, $context); //Use @ to suppress warnings
+				$endTime = microtime(true); // End timer
+				$responseTime = round($endTime - $startTime, 3); // Response time in milliseconds
+				$http_response_header_str = isset($http_response_header) ? implode("\r\n", $http_response_header) : '';
+
+				if ($result === FALSE) {
+						$error = error_get_last(); // Get last error
+						$errorMessage = $error['message';
+
+						// Log the API call failure
+						$vSQL = "INSERT INTO tb_actpcall_log (api_name, request_url, request_header, response_code, response_body, error_message) VALUES (
+							'getListBank',
+							'$url',
+							'".mysql_real_escape_string($requestHeader)."',
+							NULL,
+							NULL,
+							'".mysql_real_escape_string($errorMessage)."'
+						)";
+
+						$oDB->query($vSQL);
+
+
+						die('Error fetching auth token: ' . $errorMessage);
+				} else {
+					$response = json_decode($result, true);
+					//Get Response Code
+					$responseCode = 200;
+					if (isset($http_response_header)) {
+						foreach ($http_response_header as $headerLine) {
+						if (strpos($headerLine, 'HTTP/') === 0) {
+							preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+							$responseCode = (int)$match[1];
+							break;
+						}
+						}
+					}
+
+					$responseBody = json_encode($response); // Convert response to JSON string for logging
+
+					// Log the API call success
+					$vSQL = "INSERT INTO tb_actpcall_log (api_name, request_url, request_header, response_code, response_body, error_message) VALUES (
+						'getListBank',
+						'$url',
+						'".mysql_real_escape_string($requestHeader)."',
+						'$responseCode',
+						'".mysql_real_escape_string($responseBody)."',
+						NULL
+					)";
+					$oDB->query($vSQL);
+
+					return $response;
+				}
+			}
+			
+			function getListBankOld() {
 				global $oRules;
 				 $url = $oRules->getSettingByField("factpaylistbank");
 
