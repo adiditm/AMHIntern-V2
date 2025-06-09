@@ -54,7 +54,7 @@ CREATE TABLE tb_actpcall_log (
 				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
 				$startTime = microtime(true); // Start timer
 
-				$result = @file_get_contents($url, false, $context); //Use @ to suppress warnings
+				$result = file_get_contents($url, false, $context); //Use @ to suppress warnings
 				$endTime = microtime(true); // End timer
 				$responseTime = round($endTime - $startTime, 3); // Response time in milliseconds
 				$http_response_header_str = isset($http_response_header) ? implode("\r\n", $http_response_header) : '';

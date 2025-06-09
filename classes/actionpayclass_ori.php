@@ -14,27 +14,11 @@
    include_once($CLASS_DIR."systemclass.php");
    include_once($CLASS_DIR."productclass.php");
    include_once($CLASS_DIR."texttoimageclass.php");
-   /*
-CREATE TABLE tb_actpcall_log (
-	id bigint(20) NOT NULL auto_increment,
-	endpoint varchar(255) NOT NULL,
-	method varchar(10) NOT NULL,
-	request_payload text(65535),
-	response_payload text(65535),
-	status_code int(10) NOT NULL,
-	response_time_ms int(10),
-	client_ip varchar(45),
-	created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	PRIMARY KEY (id)
-
-   */
+   
    
    class actionpay {
 
-			// Function to get list bank
-			
-			function getListBank() {
+				function getListBank() {
 				global $oRules, $oDB; // Use $oDB instead of $db
 				$url = $oRules->getSettingByField("factpaylistbank");
 
@@ -54,7 +38,7 @@ CREATE TABLE tb_actpcall_log (
 				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
 				$startTime = microtime(true); // Start timer
 
-				$result = file_get_contents($url, false, $context); //Use @ to suppress warnings
+				$result = @file_get_contents($url, false, $context); //Use @ to suppress warnings
 				$endTime = microtime(true); // End timer
 				$responseTime = round($endTime - $startTime, 3); // Response time in milliseconds
 				$http_response_header_str = isset($http_response_header) ? implode("\r\n", $http_response_header) : '';
@@ -107,7 +91,8 @@ CREATE TABLE tb_actpcall_log (
 					return $response;
 				}
 			}
-			
+
+			// Function to get list bank
 			function getListBankOld() {
 				global $oRules;
 				 $url = $oRules->getSettingByField("factpaylistbank");
@@ -170,9 +155,9 @@ CREATE TABLE tb_actpcall_log (
 		//Getting signature
 			function getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry) {
 				global $oRules;
-				$url = $oRules->getSettingByField("factpaysign");
+				 $url = $oRules->getSettingByField("factpaysign");
 				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
-				$options = [
+				/*$options = [
 					'http' => [
 						'header'  => [
 							"Content-Type: application/json",
@@ -184,14 +169,36 @@ CREATE TABLE tb_actpcall_log (
 						'content' => $data_inquiry
 						]
 					];	   
+					print_r($options);
 				$context  = stream_context_create($options);
 				$result = file_get_contents($url, false, $context);
+			*/
 			
-				if ($result === FALSE) {
-					die('Error during get signature');
+				$ch = curl_init();
+				curl_setopt_array($ch, [
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $data_inquiry,
+					CURLOPT_HTTPHEADER => [
+						"Content-Type: application/json",
+						'Authorization: Basic ' . base64_encode("$clientId:$clientSecret"),
+						"api-secret: $apiSecret"
+					]
+				]);
+				
+				$result = curl_exec($ch);
+				
+				if (curl_errno($ch)) {
+					die('Error during get signature: ' . curl_error($ch));
 				}
+				
+				
+
+				curl_close($ch);
 				$response = json_decode($result, true);
 				return $response;
+				
 			}
 
 			//Withdraw Inquiry
@@ -229,7 +236,7 @@ CREATE TABLE tb_actpcall_log (
 			//Withdraw Confirm
 			function withdrawConfirm($accessToken, $signature, $data_inquiry) {
 				global $oRules;
-				$url = $oRules->getSettingByField("factpaywdconfirm");
+				echo $url = $oRules->getSettingByField("factpaywdconfirm");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
 			
 				$header = ["platform: api", 
@@ -252,6 +259,102 @@ CREATE TABLE tb_actpcall_log (
 					die('Error during withdraw confirmation');
 				}
 			
+				$response = json_decode($result, true);
+				return $response;
+			}
+			
+			
+			//Deposit Route
+			function depositRoute($accessToken, $signature, $data_inquiry) {
+				global $oRules;
+
+				$url = $oRules->getSettingByField("factpaydeproute");
+				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+
+				$header = ["platform: api", 
+							"accesstoken: Bearer $accessToken", 
+							"signature: $signature", 
+							"type: va",
+							"Content-Type: application/json"
+						];
+
+						//echo "Token $accessToken signature $signature <br>";
+
+				$options = [
+					'http' => [
+						'header'  => $header,
+						'method'  => 'GET',
+						//'content' => $data_inquiry,
+					],
+				];
+
+			$context  = stream_context_create($options);
+				$result = file_get_contents($url, false, $context);
+			
+				if ($result === FALSE) {
+					die('Error during deposit route');
+				}
+			
+				$response = json_decode($result, true);
+				return $response;
+			}
+
+
+			//Deposit
+			function doDeposit($accessToken, $signature, $data_inquiry) {
+				global $oRules;
+
+				$url = $oRules->getSettingByField("factpaydep");
+				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+
+				/*$header = ["platform: api",
+				"accesstoken: Bearer $accessToken",
+				"signature: $signature",
+				"platform: api",
+				"Content-Type: application/json"
+				];
+
+				//echo "Token $accessToken signature $signature <br>";
+
+				$options = [
+					'http' => [
+						'header'  => $header,
+						'method'  => 'POST',
+						'content' => $data_inquiry,
+					],
+				];
+
+				//print_r($data_inquiry);
+				$context  = stream_context_create($options);
+				$result = file_get_contents($url, false, $context);
+*/
+
+				$ch = curl_init();
+				$opt = [
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $data_inquiry,
+					CURLOPT_HTTPHEADER => [
+						"platform: api",
+						"accesstoken: Bearer $accessToken",
+						"signature: $signature",
+						"Content-Type: application/json"
+					]
+				];
+				curl_setopt_array($ch,$opt);
+
+				$result = curl_exec($ch);
+
+				if (curl_errno($ch)) {
+					die('Error during request: ' . curl_error($ch));
+				}
+
+				curl_close($ch);
+
+				//echo "<BR>DATA INQUIRY ";print_r(curl_setopt_array);
+				//echo "<BR>CURL   ";print_r($opt);
+
 				$response = json_decode($result, true);
 				return $response;
 			}
