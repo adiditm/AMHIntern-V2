@@ -61,7 +61,7 @@ CREATE TABLE tb_actpcall_log (
 
 				if ($result === FALSE) {
 						$error = error_get_last(); // Get last error
-						$errorMessage = $error['message';
+						$errorMessage = $error['message'];
 
 						// Log the API call failure
 						$vSQL = "INSERT INTO tb_actpcall_log (api_name, request_url, request_header, response_code, response_body, error_message) VALUES (

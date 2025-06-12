@@ -16,23 +16,26 @@
    include_once($CLASS_DIR."texttoimageclass.php");
    /*
 CREATE TABLE tb_actpcall_log (
-	id bigint(20) NOT NULL auto_increment,
-	endpoint varchar(255) NOT NULL,
-	method varchar(10) NOT NULL,
-	request_payload text(65535),
-	response_payload text(65535),
-	status_code int(10) NOT NULL,
-	response_time_ms int(10),
-	client_ip varchar(45),
-	created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	PRIMARY KEY (id)
+	fid bigint(19) NOT NULL auto_increment,
+	fendpoint varchar(255) NOT NULL,
+	fcalling_for varchar(100),
+	fmethod varchar(10) NOT NULL,
+	frequest_payload text(65535),
+	fresponse_payload text(65535),
+	fstatus_code int(10) NOT NULL,
+	fresponse_time_ms int(10),
+	fclient_ip varchar(45),
+	fcreated_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	fupdated_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	PRIMARY KEY (fid)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
    */
    
    class actionpay {
 
 			// Function to get list bank
+			
 			
 			function getListBank() {
 				global $oRules, $oDB; // Use $oDB instead of $db
@@ -52,6 +55,11 @@ CREATE TABLE tb_actpcall_log (
 				$context = stream_context_create($options);
 
 				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
+				echo $requestOptions = json_encode($options); // Convert options to JSON string for logging
+				
+			//	print_r($requestAll); // Debugging output
+
+
 				$startTime = microtime(true); // Start timer
 
 				$result = file_get_contents($url, false, $context); //Use @ to suppress warnings
@@ -61,16 +69,18 @@ CREATE TABLE tb_actpcall_log (
 
 				if ($result === FALSE) {
 						$error = error_get_last(); // Get last error
-						$errorMessage = $error['message';
+						$errorMessage = $error['message'];
 
 						// Log the API call failure
-						$vSQL = "INSERT INTO tb_actpcall_log (api_name, request_url, request_header, response_code, response_body, error_message) VALUES (
-							'getListBank',
+						$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
 							'$url',
-							'".mysql_real_escape_string($requestHeader)."',
+							'getListBank',
+							'GET',
+							'".$requestOptions."',
+							'".mysql_real_escape_string($errorMessage)."',
 							NULL,
-							NULL,
-							'".mysql_real_escape_string($errorMessage)."'
+							'$responseTime',
+							'".$_SERVER['REMOTE_ADDR']."'
 						)";
 
 						$oDB->query($vSQL);
@@ -94,13 +104,15 @@ CREATE TABLE tb_actpcall_log (
 					$responseBody = json_encode($response); // Convert response to JSON string for logging
 
 					// Log the API call success
-					$vSQL = "INSERT INTO tb_actpcall_log (api_name, request_url, request_header, response_code, response_body, error_message) VALUES (
-						'getListBank',
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
 						'$url',
+						'getListBank',
+						'GET',
 						'".mysql_real_escape_string($requestHeader)."',
-						'$responseCode',
 						'".mysql_real_escape_string($responseBody)."',
-						NULL
+						'$responseCode',
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
 					)";
 					$oDB->query($vSQL);
 
