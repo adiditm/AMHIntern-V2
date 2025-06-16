@@ -55,9 +55,9 @@ CREATE TABLE tb_actpcall_log (
 				$context = stream_context_create($options);
 
 				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
-				echo $requestOptions = json_encode($options); // Convert options to JSON string for logging
+				$requestOptions = json_encode($options); // Convert options to JSON string for logging
 				
-			//	print_r($requestAll); // Debugging output
+				print_r($requestOptions); // Debugging output
 
 
 				$startTime = microtime(true); // Start timer
@@ -108,7 +108,7 @@ CREATE TABLE tb_actpcall_log (
 						'$url',
 						'getListBank',
 						'GET',
-						'".mysql_real_escape_string($requestHeader)."',
+						'".mysql_real_escape_string($requestOptions)."',
 						'".mysql_real_escape_string($responseBody)."',
 						'$responseCode',
 						'$responseTime',
@@ -120,34 +120,99 @@ CREATE TABLE tb_actpcall_log (
 				}
 			}
 			
-			function getListBankOld() {
-				global $oRules;
-				 $url = $oRules->getSettingByField("factpaylistbank");
+			// Function to get the authentication token
+			
+			function getAuthToken($clientId, $clientSecret) {
 
-				$header = ["platform: api", 
-							"Content-Type: application/json"
-						];
-				// Create context with headers and body
-				$options = [
+					global $oRules, $oDB;
+					
+					
+					$url = $oRules->getSettingByField("factpaytoken");
+					
+					// "https://api-sandbox.actionpay.id/v1/access-token";
+					// Data for the POST request
+				
+					$data = json_encode([
+					'grant_type' => 'client_credentials'
+					]);
+
+					// Create context with headers and body
+					$options = [
 					'http' => [
-						'method' => 'GET',
-						'header' => $header
+						'method' => 'POST',
+						'header' => [
+						'Authorization: Basic ' . base64_encode("$clientId:$clientSecret"),
+						'Content-Type: application/json',
+						'Content-Length: ' . strlen($data)
+						],
+						'content' => $data
 					]
-				];
-				// Create a stream context
-				$context = stream_context_create($options);
-				// Use file_get_contents to make the request
-				$result = file_get_contents($url, false, $context);
-				if ($result === FALSE) {
-					die('Error fetching auth token');
-				}
-				$response = json_decode($result, true);
-				return $response;
+					];
+
+					// Create a stream context
+					$context = stream_context_create($options);
+
+					$requestOptions = json_encode($options); // Convert options to JSON string for logging
+					$requestPayload = $data; // Save the request payload
+					$startTime = microtime(true); // Start timer
+
+					$result = @file_get_contents($url, false, $context);
+
+					$endTime = microtime(true); // End timer
+					$responseTime = round($endTime - $startTime, 3); // Response time in milliseconds
+					$http_response_header_str = isset($http_response_header) ? implode("\r\n", $http_response_header) : '';
+					if ($result === FALSE) {
+					$error = error_get_last();
+					$errorMessage = $error['message'];
+
+					// Log the API call failure
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+						'$url',
+						'getAuthToken',
+						'POST',
+						'".mysql_real_escape_string($requestOptions)."',
+						'".mysql_real_escape_string($errorMessage)."',
+						NULL,
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
+					)";
+					$oDB->query($vSQL);
+					die('Error fetching auth token: ' . $errorMessage);
+					} else {
+					$response = json_decode($result, true);
+
+					//Get Response Code
+					$responseCode = 200;
+					if (isset($http_response_header)) {
+						foreach ($http_response_header as $headerLine) {
+						if (strpos($headerLine, 'HTTP/') === 0) {
+							preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+							$responseCode = (int)$match[1];
+							break;
+						}
+						}
+					}
+					$responseBody = json_encode($response);
+
+					// Log the API call success
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+						'$url',
+						'getAuthToken',
+						'POST',
+						'".mysql_real_escape_string($requestOptions)."',
+						'".mysql_real_escape_string($responseBody)."',
+						'$responseCode',
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
+					)";
+					$oDB->query($vSQL);
+
+					return $response['data']['access_token'];
+					}
 			}
 
 
-			// Function to get the authentication token
-			function getAuthToken($clientId, $clientSecret) {
+			function getAuthTokenOld($clientId, $clientSecret) {
 				global $oRules;
 				$url = $oRules->getSettingByField("factpaytoken");
 				// "https://api-sandbox.actionpay.id/v1/access-token";
@@ -181,6 +246,83 @@ CREATE TABLE tb_actpcall_log (
 		
 		//Getting signature
 			function getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry) {
+				global $oRules, $oDB;
+				$url = $oRules->getSettingByField("factpaysign");
+				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
+				$options = [
+					'http' => [
+						'header'  => [
+							"Content-Type: application/json",
+									  'Authorization: Basic ' . base64_encode("$clientId:$clientSecret"),
+								// "Content-Length: " . strlen($data),
+								 "api-secret: $apiSecret"
+						],
+						'method'  => 'POST',
+						'content' => $data_inquiry
+						]
+					];	   
+				$context  = stream_context_create($options);
+
+				$requestHeader = json_encode($options['http']['header']); // Convert header array to JSON string for logging
+				$requestBody = $data_inquiry; // Data inquiry is the request body
+				$requestMethod = 'POST';
+
+				$startTime = microtime(true);
+				$result = file_get_contents($url, false, $context);
+				$endTime = microtime(true);
+				$responseTime = round($endTime - $startTime, 3);
+
+				if ($result === FALSE) {
+					$error = error_get_last();
+					$errorMessage = $error['message'];
+
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+						'$url',
+						'getSignature',
+						'$requestMethod',
+						'".mysql_real_escape_string(json_encode($options))."',
+						'".mysql_real_escape_string($errorMessage)."',
+						NULL,
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
+					)";
+					$oDB->query($vSQL);
+					die('Error during get signature: ' . $errorMessage);
+				}
+				$response = json_decode($result, true);
+
+				//Get Response Code
+				$http_response_header = $GLOBALS['http_response_header'];
+				$responseCode = 200;
+				if (isset($http_response_header)) {
+					foreach ($http_response_header as $headerLine) {
+						if (strpos($headerLine, 'HTTP/') === 0) {
+							preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+							$responseCode = (int)$match[1];
+							break;
+						}
+					}
+				}
+
+				$responseBody = json_encode($response);
+
+				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+					'$url',
+					'getSignature',
+					'$requestMethod',
+					'".mysql_real_escape_string(json_encode($options))."',
+					'".mysql_real_escape_string($responseBody)."',
+					'$responseCode',
+					'$responseTime',
+					'".$_SERVER['REMOTE_ADDR']."'
+				)";
+				$oDB->query($vSQL);
+
+				return $response;
+			}
+
+			//Getting signature Old
+			function getSignatureOld($clientId, $clientSecret, $apiSecret, $data_inquiry) {
 				global $oRules;
 				$url = $oRules->getSettingByField("factpaysign");
 				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
@@ -207,7 +349,75 @@ CREATE TABLE tb_actpcall_log (
 			}
 
 			//Withdraw Inquiry
-			function withdrawInquiry($accessToken, $signature, $data_inquiry) {
+
+			 function withdrawInquiry($accessToken, $signature, $data_inquiry) {
+					global $oRules, $oDB;
+					$url = $oRules->getSettingByField("factpaywdinqu");
+					//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw/inquiry";
+					$header = ["platform: api",
+						"accesstoken: Bearer $accessToken",
+						"signature: $signature",
+						"Content-Type: application/json"
+					];
+					$options = [
+						'http' => [
+							'header' => $header,
+							'method' => 'POST',
+							'content' => $data_inquiry
+						]
+					];
+					$context = stream_context_create($options);
+					$requestOptions = json_encode($options);
+					$requestPayload = $data_inquiry;
+					$startTime = microtime(true);
+					$result = @file_get_contents($url, false, $context);
+					$endTime = microtime(true);
+					$responseTime = round($endTime - $startTime, 3);
+					if ($result === FALSE) {
+						$error = error_get_last();
+						$errorMessage = $error['message'];
+						$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+							'$url',
+							'withdrawInquiry',
+							'POST',
+							'".mysql_real_escape_string($requestOptions)."',
+							'".mysql_real_escape_string($errorMessage)."',
+							NULL,
+							'$responseTime',
+							'".$_SERVER['REMOTE_ADDR']."'
+						)";
+						$oDB->query($vSQL);
+						die('Error during withdraw inquiry');
+					}
+					$response = json_decode($result, true);
+					//Get Response Code
+					$http_response_header = $GLOBALS['http_response_header'];
+					$responseCode = 200;
+					if (isset($http_response_header)) {
+						foreach ($http_response_header as $headerLine) {
+							if (strpos($headerLine, 'HTTP/') === 0) {
+								preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+								$responseCode = (int)$match[1];
+								break;
+							}
+						}
+					}
+					$responseBody = json_encode($response);
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+						'$url',
+						'withdrawInquiry',
+						'POST',
+						'".mysql_real_escape_string($requestOptions)."',
+						'".mysql_real_escape_string($responseBody)."',
+						'$responseCode',
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
+					)";
+					$oDB->query($vSQL);
+					return $response;
+			}
+				
+			function withdrawInquiryOld($accessToken, $signature, $data_inquiry) {
 				global $oRules;
 				$url = $oRules->getSettingByField("factpaywdinqu");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw/inquiry";		
@@ -239,7 +449,93 @@ CREATE TABLE tb_actpcall_log (
 			
 			
 			//Withdraw Confirm
+
 			function withdrawConfirm($accessToken, $signature, $data_inquiry) {
+				global $oRules, $oDB;
+				$url = $oRules->getSettingByField("factpaywdconfirm");
+				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+
+				$header = ["platform: api",
+				"accesstoken: Bearer $accessToken",
+				"signature: $signature",
+				"Content-Type: application/json"
+				];
+				
+				 $options = [
+					'http' => [
+						'header'  => $header,
+						'method'  => 'POST',
+						'content' => $data_inquiry
+					]
+				];
+
+				$context  = stream_context_create($options);
+
+				$requestOptions = json_encode($options);
+				$requestPayload = $data_inquiry;
+				$startTime = microtime(true);
+				$result = file_get_contents($url, false, $context);
+				echo "Result: $result <br>";
+				exit;
+				$endTime = microtime(true);
+				$responseTime = round($endTime - $startTime, 3);
+
+				if ($result === FALSE) {
+						$error = error_get_last();
+						$errorMessage = $error['message'];
+
+						if ($responseCode === null) {
+							$responseCode = '500'; // Default to 500 if no response code is found
+						}
+						$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+							'$url',
+							'withdrawConfirm',
+							'POST',
+							'".mysql_real_escape_string($requestOptions)."',
+							'".mysql_real_escape_string($errorMessage)."',
+							'$responseCode',
+							'$responseTime',
+							'".$_SERVER['REMOTE_ADDR']."'
+						)";
+						$oDB->query($vSQL);
+						die('Error during withdraw confirmation');
+				}
+
+				$response = json_decode($result, true);
+
+				//Get Response Code
+				$http_response_header = $GLOBALS['http_response_header'];
+				$responseCode = 200;
+				if (isset($http_response_header)) {
+				foreach ($http_response_header as $headerLine) {
+					if (strpos($headerLine, 'HTTP/') === 0) {
+					preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+					$responseCode = (int)$match[1];
+					break;
+					}
+				}
+				}
+
+				$responseBody = json_encode($response);
+				
+				$responseCode = 500; 
+
+				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+				'$url',
+				'withdrawConfirm',
+				'POST',
+				'".mysql_real_escape_string($requestOptions)."',
+				'".mysql_real_escape_string($responseBody)."',
+				'$responseCode',
+				'$responseTime',
+				'".$_SERVER['REMOTE_ADDR']."'
+				)";
+				$oDB->query($vSQL);
+
+				return $response;
+			}
+
+			function withdrawConfirmOld($accessToken, $signature, $data_inquiry) {
 				global $oRules;
 				$url = $oRules->getSettingByField("factpaywdconfirm");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";

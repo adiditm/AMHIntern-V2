@@ -135,7 +135,10 @@ CREATE TABLE tb_actpcall_log (
 
 
 			// Function to get the authentication token
-			function getAuthToken($clientId, $clientSecret) {
+
+			
+
+			function getAuthTokenOld($clientId, $clientSecret) {
 				global $oRules;
 				$url = $oRules->getSettingByField("factpaytoken");
 				// "https://api-sandbox.actionpay.id/v1/access-token";
