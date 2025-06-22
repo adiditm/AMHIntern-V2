@@ -39,8 +39,8 @@ $signature = $signatureAll['data']['signature'];
 //echo "Data Inquiry: ".$data_inquiry."<br>";
 
 $response = $oActionPay->withdrawInquiry($accessToken, $signature, $data_inquiry);
-echo "Withdraw Inquiry Response: ";
-print_r($response); echo "<br>";
+//echo "Withdraw Inquiry Response: ";
+//print_r($response); echo "<br>";
 
  //$accessToken = getAuthToken($clientId, $clientSecret);
 
@@ -54,7 +54,8 @@ $data_inquiry = "{
     \"refId\":\"$vRef\"
 }"; 
 
-
+ $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
+$signature = $signatureAll['data']['signature'];
 
 $response = $oActionPay->withdrawConfirm($accessToken, $signature, $data_inquiry);
 echo "Withdraw Confirm Response: ";
