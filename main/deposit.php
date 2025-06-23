@@ -45,6 +45,7 @@ echo "Client Secret: $clientSecret <br>";
 echo "API Secret: $apiSecret <br>";
 echo "Data Inquiry: $data_inquiry (dikosongi)<br>";
 echo "URL Get SIGNature : $url_sign <br>";
+
  $signatureAll = $oActionPay->getSignature($clientId, $clientSecret, $apiSecret, $data_inquiry);
   $signature = $signatureAll['data']['signature'];
   echo "<br>Signature: $signature"; 

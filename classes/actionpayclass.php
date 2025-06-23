@@ -57,7 +57,7 @@ CREATE TABLE tb_actpcall_log (
 				$requestHeader = json_encode($header); // Convert header array to JSON string for logging
 				$requestOptions = json_encode($options); // Convert options to JSON string for logging
 				
-				print_r($requestOptions); // Debugging output
+				//print_r($requestOptions); // Debugging output
 
 
 				$startTime = microtime(true); // Start timer
@@ -495,21 +495,18 @@ CREATE TABLE tb_actpcall_log (
 				curl_setopt($ch, CURLOPT_POST, true);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $data_inquiry); // $data_inquiry harus sudah berupa JSON string
-				echo "MAMAMAMAMA<br<br>";
-				print_r($header);
-				echo "MOMOMOMOMO<br<br>";
-				print_r($data_inquiry);
+				
 				$requestPayload = $data_inquiry;
 				$startTime = microtime(true);
 
-				echo $response = curl_exec($ch);
+				 $response = curl_exec($ch);
 				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 				$error = curl_error($ch);
 				curl_close($ch);
 
 				$responseTime = round($endTime - $startTime, 3); 
 
-				if ($result === FALSE) {
+				if ($response === FALSE) {
 						$error = error_get_last();
 						$errorMessage = $error['message'];
 
@@ -530,7 +527,7 @@ CREATE TABLE tb_actpcall_log (
 						die('Error during withdraw confirmation');
 				}
 
-				$response = json_decode($result, true);
+				$response = json_decode($response, true);
 
 				//Get Response Code
 				$http_response_header = $GLOBALS['http_response_header'];

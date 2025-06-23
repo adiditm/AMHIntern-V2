@@ -106,6 +106,8 @@ if ($vRever == $vCheck && $_SESSION['LoginUser'] != "" && $vReverCancel == "") {
         $signature = $signatureAll['data']['signature'];
 
         $response_c = $oActionPay->withdrawConfirm($accessToken, $signature, $data_inquiry);
+       // print_r($response_c); echo "<br>";
+       // exit;
         if (is_array($response_c) && $response_c['status']=='0001') {
                 $vStatus = $response_c['status'];
                 $vMessage = $response_c['message'];
