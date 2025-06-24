@@ -496,7 +496,7 @@ CREATE TABLE tb_actpcall_log (
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $data_inquiry); // $data_inquiry harus sudah berupa JSON string
 				
-				$requestPayload = $data_inquiry;
+				$requestPayload = json_encode($header).$data_inquiry;
 				$startTime = microtime(true);
 
 				 $response = curl_exec($ch);
@@ -517,7 +517,7 @@ CREATE TABLE tb_actpcall_log (
 							'$url',
 							'withdrawConfirm',
 							'POST',
-							'".mysql_real_escape_string($requestOptions)."',
+							'".mysql_real_escape_string($requestPayload)."',
 							'".mysql_real_escape_string($errorMessage)."',
 							'$responseCode',
 							'$responseTime',
@@ -550,7 +550,7 @@ CREATE TABLE tb_actpcall_log (
 				'$url',
 				'withdrawConfirm',
 				'POST',
-				'".mysql_real_escape_string($requestOptions)."',
+				'".mysql_real_escape_string($requestPayload)."',
 				'".mysql_real_escape_string($responseBody)."',
 				'$responseCode',
 				'$responseTime',
@@ -586,6 +586,102 @@ CREATE TABLE tb_actpcall_log (
 					die('Error during withdraw confirmation');
 				}
 			
+				$response = json_decode($result, true);
+				return $response;
+			}
+
+			
+			//Deposit Route
+			function depositRoute($accessToken, $signature, $data_inquiry) {
+				global $oRules;
+
+				$url = $oRules->getSettingByField("factpaydeproute");
+				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+
+				$header = ["platform: api", 
+							"accesstoken: Bearer $accessToken", 
+							"signature: $signature", 
+							"type: va",
+							"Content-Type: application/json"
+						];
+
+						//echo "Token $accessToken signature $signature <br>";
+
+				$options = [
+					'http' => [
+						'header'  => $header,
+						'method'  => 'GET',
+						//'content' => $data_inquiry,
+					],
+				];
+
+			$context  = stream_context_create($options);
+				$result = file_get_contents($url, false, $context);
+			
+				if ($result === FALSE) {
+					die('Error during deposit route');
+				}
+			
+				$response = json_decode($result, true);
+				return $response;
+			}
+
+
+			//Deposit
+			function doDeposit($accessToken, $signature, $data_inquiry) {
+				global $oRules;
+
+				$url = $oRules->getSettingByField("factpaydep");
+				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+
+				/*$header = ["platform: api",
+				"accesstoken: Bearer $accessToken",
+				"signature: $signature",
+				"platform: api",
+				"Content-Type: application/json"
+				];
+
+				//echo "Token $accessToken signature $signature <br>";
+
+				$options = [
+					'http' => [
+						'header'  => $header,
+						'method'  => 'POST',
+						'content' => $data_inquiry,
+					],
+				];
+
+				//print_r($data_inquiry);
+				$context  = stream_context_create($options);
+				$result = file_get_contents($url, false, $context);
+*/
+
+				$ch = curl_init();
+				$opt = [
+					CURLOPT_URL => $url,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $data_inquiry,
+					CURLOPT_HTTPHEADER => [
+						"platform: api",
+						"accesstoken: Bearer $accessToken",
+						"signature: $signature",
+						"Content-Type: application/json"
+					]
+				];
+				curl_setopt_array($ch,$opt);
+
+				$result = curl_exec($ch);
+
+				if (curl_errno($ch)) {
+					die('Error during request: ' . curl_error($ch));
+				}
+
+				curl_close($ch);
+
+				//echo "<BR>DATA INQUIRY ";print_r(curl_setopt_array);
+				//echo "<BR>CURL   ";print_r($opt);
+
 				$response = json_decode($result, true);
 				return $response;
 			}
