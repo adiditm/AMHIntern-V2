@@ -680,13 +680,16 @@
 					$mail = new PHPMailer(true);
 
 					$mail->isSMTP();
-					$mail->Host       = 'amhtechno.com'; // Replace with your SMTP server
+					$mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server
 					$mail->SMTPAuth   = true;
-					$mail->Username   = 'no-reply@amhtechno.com'; // Replace with your SMTP username
-					$mail->Password   = 'N4siEn4k'; // Replace with your SMTP password
-					$mail->SMTPSecure = 'ssl';
+					//$mail->Username   = 'no-reply@amhtechno.com'; // Replace with your SMTP username
+					//$mail->Password   = 'N4siEn4k'; // Replace with your SMTP password
+					$mail->Username   = 'amhtechs.noreply@gmail.com'; // Replace with your SMTP username
+					$mail->Password   = 'fceu oysw donn pmdk'; // Replace with your SMTP password
+					
+					$mail->SMTPSecure = 'tls';
 					   
-					$mail->Port       = 465; // Adjust as needed (usually 587 or 465)
+					$mail->Port       = 587; // Adjust as needed (usually 587 or 465)
 					$mail->SMTPDebug = $debug;
 					$mail->SMTPOptions = array(
 					  'ssl' => array(
@@ -952,6 +955,7 @@
 				$vTanggal = $oDBAMHT->f("tanggal");
 			//	
 				//exit;
+			//	echo "Kodeee $vKode :: $vEmail <br>";
 				$vSQL ="select fidmember from m_pebisnis where fidmember='$vKode' ";
 				$oDB->query($vSQL);
 				$oDB->next_record();
@@ -967,15 +971,28 @@
 				} else {
 					$vUpdatedDate= 'Updated  '.date('Y-m-d H:i:s');
 					if ($oDB->frefer != $vKode || $oDB->fnama != $vNama || $oDB->fnohp != $vHP || $oDB->fnamabank != $vBank || $oDB->fnorekening != $vNorek || $oDB->fatasnama != $vAtasNama || $oDB->falamat != $vAlamat || $oDB->femail != $vEmail) {
-					 $vSQLIn = "update m_pebisnis set frefer='$vKode',  fnama= '$vNama', fnohp='$vHP',  fatasnama='$vAtasNama', falamat='$vAlamat', fcountry='ID',  femail='$vEmail',   fket='$vUpdatedDate' where fidmember='$vKode'";
+					 $vSQLIn = "update m_pebisnis set frefer='$vKode',  fnama= '$vNama', fnohp='$vHP',  fatasnama='$vAtasNama', falamat='$vAlamat', fcountry='ID',    fket='$vUpdatedDate' where fidmember='$vKode'";
 					  $oDB->query($vSQLIn);
+
+    					$is_valid = filter_var($vEmail, FILTER_VALIDATE_EMAIL);
+
+    					if ($is_valid) {
+    						$vSQLUpdEmail = "update m_pebisnis set femail='$vEmail' where fidmember='$vKode'";
+		  					$oDB->query($vSQLUpdEmail);
+							//echo "$vSQLUpdEmail<br>";
+    					}
+    					 
 					  
 					 $vMsg="Reference $vKode already exists, updated!<br>\n";	
 					$vMsgAll .=$vMsg;
 					}
+
+				//	echo "$vSQLIn<br>";
 				    
 				}
 			}
+
+			
 				 $vMsg="</body></html>";
 				
 				 return  $vMsgAll .= $vMsg;					

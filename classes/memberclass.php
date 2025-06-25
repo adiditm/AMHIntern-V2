@@ -2069,7 +2069,7 @@
 		function getBankAdm($pId,$pJenis) {
 		     global $oDB; 
 			 if ($pJenis=='sponsor')	
-  			 	$vsql="select fnamabank from m_pebisnis where fidmember='$pId' ";	
+  			 	 $vsql="select fnamabank from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select b.fnamabank from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
 			 $oDB->query($vsql);		

@@ -2220,6 +2220,7 @@ $vUser=$_SESSION['LoginUser'];
 		'bni'        => 'Virtual Account Bank BNI',
 		'cimb_niaga' => 'Virtual Account Bank CIMB Niaga',
 		'permata'    => 'Virtual Account Bank Permata',
+		'demo'    => 'Virtual Account Bank Demo',
 	];
 
 	echo '<option value="">--Pilih--</option>';

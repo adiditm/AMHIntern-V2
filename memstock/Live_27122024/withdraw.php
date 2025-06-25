@@ -233,7 +233,7 @@ function saveWithdraw() {
                  
 
                   <div class="col-lg-6">
-                   <label>Ditransfer ke Rekening</label>
+                   <label>Ditransfer ke Rekening <?=$oMember->getBankAdm($vUser,$vJenis);?></label>
                   
                     <select name="lmRekTo" id="lmRekTo" onchange="getData(this.value)" class="form-control">
                       <option value="<?=$oMember->getBankAdm($vUser,$vJenis);?> <?=$oMember->getAtasNamaAdm($vUser,$vJenis)?> <?=$oMember->getRekeningAdm($vUser,$vJenis)?>"><?=$oMember->getBankAdm($vUser,$vJenis)?> <?=$oMember->getAtasNamaAdm($vUser,$vJenis)?> <?=$oMember->getRekeningAdm($vUser,$vJenis)?></option>
