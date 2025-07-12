@@ -48,7 +48,7 @@
       $vAnd.=" and farea=$vKota ";  
 
    if (trim($vCat!="")) {
-     echo $vAnd.=" and fidcat='$vCat' "; 
+      $vAnd.=" and fidcat='$vCat' "; 
      // exit;
    }
    if (trim($vCnt!=""))

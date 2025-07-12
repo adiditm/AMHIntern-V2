@@ -680,16 +680,13 @@
 					$mail = new PHPMailer(true);
 
 					$mail->isSMTP();
-					$mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server
+					$mail->Host       = 'amhtechno.com'; // Replace with your SMTP server
 					$mail->SMTPAuth   = true;
-					//$mail->Username   = 'no-reply@amhtechno.com'; // Replace with your SMTP username
-					//$mail->Password   = 'N4siEn4k'; // Replace with your SMTP password
-					$mail->Username   = 'amhtechs.noreply@gmail.com'; // Replace with your SMTP username
-					$mail->Password   = 'fceu oysw donn pmdk'; // Replace with your SMTP password
-					
-					$mail->SMTPSecure = 'tls';
+					$mail->Username   = 'no-reply@amhtechno.com'; // Replace with your SMTP username
+					$mail->Password   = 'N4siEn4k'; // Replace with your SMTP password
+					$mail->SMTPSecure = 'ssl';
 					   
-					$mail->Port       = 587; // Adjust as needed (usually 587 or 465)
+					$mail->Port       = 465; // Adjust as needed (usually 587 or 465)
 					$mail->SMTPDebug = $debug;
 					$mail->SMTPOptions = array(
 					  'ssl' => array(
@@ -773,28 +770,6 @@
 		function smtpmailer($to, $from, $from_name, $subject, $body,$bcc='',$bcc2='',$html=true,$debug=0) {
 
 			mail($to, $subject,$body,"From: $from_name <$from>".PHP_EOL."Bcc: $bcc".PHP_EOL."X-Mailer: PHP/".phpversion());
-			return true;
-
-		}		
-
-		function generateRandomString($length = 6) {
-
-			$characters = '01234567989';
-
-			$charactersLength = strlen($characters);
-
-			$randomString = '';
-
-			for ($i = 0; $i < $length; $i++) {
-
-				$randomString .= $characters[rand(0, $charactersLength - 1)];
-
-			}
-
-			return $randomString;
-
-		}
-
 
 
 /*
@@ -842,10 +817,10 @@
 		//print_r($result);		
 
 		return $result;
-
+*/
 	}
 
-	*/
+	
 
 	
 
@@ -887,7 +862,53 @@
 
 	}
 
-	
+	function sendWAMessage($toNumber, $pMessage) {
+			global $oRules, $oDB;
+
+			$vFonnteUrl = $oRules->getSettingByField('ffonnteurl');
+			$vFonnteToken = $oRules->getSettingByField('ffonntetoken');
+
+			$vMessage = urlencode($pMessage);
+
+			$curl = curl_init();
+			
+//echo $vFonnteUrl . "?token=" . $vFonnteToken . "&target=" . $toNumber . "&message=" . $vMessage;
+			curl_setopt_array($curl, array(
+			CURLOPT_URL => $vFonnteUrl . "?token=" . $vFonnteToken . "&target=" . $toNumber . "&message=" . $vMessage,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_POST => false,
+
+			));
+
+			$response = curl_exec($curl);
+
+
+			$logEndpoint = $vFonnteUrl . "/send";
+			$logCallingFor = "WhatsApp Message";
+			$logMethod = "GET";
+			$logRequestPayload = "toNumber: $toNumber, message: $pMessage";
+			$logResponsePayload = $response;
+			$logStatusCode = $curlInfo['CURLINFO_HTTP_CODE'];
+			if ($logStatusCode =='')
+				$logStatusCode = 000; // Default to 200 if not set
+			$logResponseTime = $curlInfo[CURLINFO_TOTAL_TIME] * 1000; // Convert to milliseconds
+			$logClientIP = $_SERVER['REMOTE_ADDR'];
+
+			$vsql = "INSERT INTO tb_wacall_log (fendpoint, fcalling_for, fmethod, "
+				. "frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, "
+				. "fclient_ip) VALUES ('$logEndpoint', '$logCallingFor', '$logMethod', "
+				. "'" . addslashes($logRequestPayload) . "', '" . addslashes($logResponsePayload) . "', "
+				. "'$logStatusCode', '$logResponseTime', '$logClientIP')";
+			$oDB->query($vsql); 
+
+			curl_close($curl);
+			return $response;
+		}
 
        //Insert Access Log
 
@@ -971,7 +992,7 @@
 				} else {
 					$vUpdatedDate= 'Updated  '.date('Y-m-d H:i:s');
 					if ($oDB->frefer != $vKode || $oDB->fnama != $vNama || $oDB->fnohp != $vHP || $oDB->fnamabank != $vBank || $oDB->fnorekening != $vNorek || $oDB->fatasnama != $vAtasNama || $oDB->falamat != $vAlamat || $oDB->femail != $vEmail) {
-					 $vSQLIn = "update m_pebisnis set frefer='$vKode',  fnama= '$vNama', fnohp='$vHP',  fatasnama='$vAtasNama', falamat='$vAlamat', fcountry='ID',    fket='$vUpdatedDate' where fidmember='$vKode'";
+					 $vSQLIn = "update m_pebisnis set frefer='$vKode',  fnama= '$vNama',   fatasnama='$vAtasNama', falamat='$vAlamat', fcountry='ID',    fket='$vUpdatedDate' where fidmember='$vKode'";
 					  $oDB->query($vSQLIn);
 
     					$is_valid = filter_var($vEmail, FILTER_VALIDATE_EMAIL);
@@ -981,6 +1002,12 @@
 		  					$oDB->query($vSQLUpdEmail);
 							//echo "$vSQLUpdEmail<br>";
     					}
+
+						if (is_numeric($vHP) && strlen($vHP) >= 10) {
+							$vSQLUpdHP = "update m_pebisnis set fnohp='$vHP' where fidmember='$vKode'";
+		  					$oDB->query($vSQLUpdHP);
+							//echo "$vSQLUpdHP<br>";
+						}
     					 
 					  
 					 $vMsg="Reference $vKode already exists, updated!<br>\n";	

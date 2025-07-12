@@ -394,7 +394,7 @@ if ($vCount=='') $vCount=1;
 						vaInfo += '<b>Jumlah Pembayaran</b> : ' + numberFormat(vAmount) + '<br>';
 						vaInfo += '<b>Bank</b> : ' + vBank.toUpperCase() + '<br>';
 						//vaInfo += '<b>Bank Code</b> : ' + vBankCode + '<br><br>';
-						vaInfo += 'Catatlah atau screenshot informasi ini. Anda juga akan mendapatkan informasi ini di email Anda (cek folder spam / junk juga).<br>';
+						vaInfo += 'Catatlah atau screenshot informasi ini. Anda juga akan mendapatkan informasi ini di email dan WA Anda (cek folder spam / junk juga).<br>';
 						vaInfo += 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' + numberFormat(vFee) + '<br>';
 						
 						var vObj = $.parseJSON(data);
@@ -489,6 +489,7 @@ function numberFormat(number, decimals = 0, decPoint = ',', thousandsSep = '.') 
 }
 
 function changeRek(pThis){
+    $('#loadRek').show();
 	var vDefault = '<option value="">--Pilih--</option><option value="CASH">Cash</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
 
 	var vBankList ='';
@@ -497,23 +498,42 @@ function changeRek(pThis){
 	  document.getElementById('lmBank').disabled=false;
 	  $('#lmBank').css('pointer-events','auto');
 	  $('#lmBank').css('background-color','#fff');
+	  $('#lmBank').html(vDefault);
 	 // $('#lmBank option[value="tva"]').remove();
-   }  else {
-	  // document.getElementById('lmBank').disabled=true; 
-	  // $('#lmBank').css('pointer-events','none');
-	   //$('#lmBank').css('background-color','#ccc');
+	 $('#loadRek').hide();
+	 
+   } else if (pThis.value=='wpr') {
+	   document.getElementById('lmBank').disabled=true;
+	   $('#lmBank').css('pointer-events','none');
+	   $('#lmBank').css('background-color','#ccc');
+	   document.getElementById('lmBank').selectedIndex=0;
+	    $('#loadRek').hide();
+   }  else if (pThis.value=='tva') {
+	 document.getElementById('lmBank').disabled=false;
+	   $('#lmBank').css('pointer-events','auto');
+	   $('#lmBank').css('background-color','#fff');
 	   document.getElementById('lmBank').selectedIndex=0; 
 	   if (pThis.value=='tva') {
 			var vURL='../main/mpurpose_ajax.php?op=banklist';
 			$.post(vURL,function(data) {
 				vBankList = data;
 				$('#lmBank').html(vBankList);
+				$('#loadRek').hide();
 			//console.log(vBankList);
 			});
 		  
 	   } else {
 		   $('#lmBank').html(vDefault);
+		   $('#loadRek').hide();
 	   }
+   } else {
+	   document.getElementById('lmBank').disabled=false;
+	   $('#lmBank').css('pointer-events','auto');
+	   $('#lmBank').css('background-color','#fff');
+	   document.getElementById('lmBank').selectedIndex=0; 
+	   //$('#lmBank option[value="tva"]').remove();
+		 $('#lmBank').html(vDefault);
+		   $('#loadRek').hide();
    }
 }
 function validRO() {
@@ -1506,7 +1526,7 @@ function zeroOngkir(){
        </div>
        
       <div class="col-lg-6">
-       
+       <img id="loadRek"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
          <label style="color:blue" for="lmMethod">Rekening</label>
          <select name="lmBank" id="lmBank" class="form-control" required  >
            <option value="">--Pilih--</option>

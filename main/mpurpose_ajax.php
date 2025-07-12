@@ -2153,7 +2153,8 @@ $vUser=$_SESSION['LoginUser'];
 		$vMailToName = $oMember->getMemFieldBis('fnama',$vMember);
 		$vMailFrom=$oRules->getSettingByField('fmailadmin');
 
-		$vBody = 'Yth. ' . $vMailToName . ", \n\n";
+		$vBody = 'Yth. ' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
+		$vBody .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";
 		$vBody .= 'Nomor Virtual Account : ' . $vVA . "\n";
 		$vBody .= 'Jumlah Pembayaran : ' . number_format($vAmount,0,',','.') . "\n";
 		$vBody .= 'Bank : ' . strtoupper($vBank) . "\n";
@@ -2165,7 +2166,12 @@ $vUser=$_SESSION['LoginUser'];
 		
 		if ($vMailTo == '' || $vMailTo == '-')  $vMailTo = 'amhtechs@gmail.com';
 		$oSystem->smtpmailerHosting($vMailTo,$vMailToName,$vMailFrom,'AMH Techno',"Pembayaran Virtual Account",$vBody,$oRules->getSettingByField('fmailbcc'),'',false);
+		
+		$vToNumber = $oMember->getMemFieldBis('fnohp',$vMember);
+		if ($vToNumber == '' || $vToNumber == '-')
+			$vToNumber = $oRules->getSettingByField('fhpconf');
 
+		$oSystem->sendWAMessage($vToNumber,$vBody);
 		if ($vResult) {
 			$vArrOut['status'] = 'success';
 			$vArrOut['message'] = 'Data berhasil disimpan';
