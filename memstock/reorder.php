@@ -59,6 +59,7 @@ if ($vCount=='') $vCount=1;
    $vRekBank3 = $oRules->getSettingByField('frekbank3');
    
    $vBankFee = $oRules->getSettingByField('fbyybank');
+   $vFeeActpay  = $oRules->getSettingByField('ffeeactpay');
 
   
 
@@ -365,7 +366,7 @@ if ($vCount=='') $vCount=1;
 		$(document).ready(function() {
 			 // Generate VA pembayaran sebelum submit form
 			 $.post('../main/mpurpose_ajax.php?op=generateva', {
-				amount: '<?=$_POST["hTotal"]?>',					
+				amount: '<?=($_POST["hTotal"] - $vFeeActpay)?>',					
 				ref: '<?=$vNextJual?>',
 				buyer: '<?=$_POST['tfRecName']?>',
 				bankva: '<?=$_POST['lmBank']?>'
@@ -387,7 +388,7 @@ if ($vCount=='') $vCount=1;
 				var addressName = result.data.addressName;
 				var refId = result.data.refId;
 				$.post('../main/mpurpose_ajax.php?op=saveva',{
-					va_no:address, va_amount:vAmount, va_fee:vFee, va_bank:vBank, va_bankcode:vBankCode, va_trxdate:trxDate, va_credit:creditAmount, va_debit:debitAmount, va_bankcode:bankCode, va_channelid:channelId, va_channelname:channelName, va_address:address, va_addressname:addressName, va_refid:refId}, 
+					va_no:address, va_amount:vAmount, va_fee:vFee, va_bank:vBank, va_bankcode:vBankCode, va_trxdate:trxDate, va_credit:creditAmount, va_debit:debitAmount, va_bankcode:bankCode, va_channelid:channelId, va_channelname:channelName, va_address:address, va_addressname:addressName, va_refid:refId, va_recnohp:'<?=$_POST['tfRecPhone']?>' }, 
 					function(data){
 						var vaInfo = '<h2>Informasi Pembayaran</h2> <br><br>';
 						vaInfo += '<b>Nomor Virtual Account</b> : ' + address + '<br>';

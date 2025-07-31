@@ -2131,6 +2131,9 @@ $vUser=$_SESSION['LoginUser'];
 	$vChannelName = $_POST['va_channelname'];
 	$vAddress = $_POST['va_address'];
 	$vAddressName = $_POST['va_addressname'];
+	$vAddressNameSplit = explode('-', $vAddressName);
+	if (count($vAddressNameSplit) > 1 )
+		$vRecName = end($vAddressNameSplit);
 	$vRefId = $_POST['va_refid'];
 	$vBankFee=$oRules->getSettingByField('fbyybank');
 
@@ -2139,6 +2142,11 @@ $vUser=$_SESSION['LoginUser'];
 	$db->query($vSQLCheck);
 	$db->next_record();
 	$vCount = $db->f('count');
+
+	$vSQLGetTrx = "select * from tb_trxstok_member_temp where fidpenjualan='$vRefId' ";
+	$db->query($vSQLGetTrx);
+	$db->next_record();
+	$vIdSeller = $db->f('fidseller');
 
 	if ($vCount == 0) {
 		// Insert into tb_trx_va
@@ -2152,18 +2160,43 @@ $vUser=$_SESSION['LoginUser'];
 		$vMailTo = $oMember->getMemFieldBis('femail',$vMember);
 		$vMailToName = $oMember->getMemFieldBis('fnama',$vMember);
 		$vMailFrom=$oRules->getSettingByField('fmailadmin');
+		$vToNumberBuyer = $_POST['va_recnohp'];
+		$vToNumberSeller = $oMember->getMemFieldSell('fnohp',$vIdSeller);
+		$vNamaSeller = $oMember->getMemFieldSell('fnama',$vIdSeller);
 
-		$vBody = 'Yth. ' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
+		$vBody = 'Yth. pebisnis' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
 		$vBody .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";
+		$vBody .= 'Nama Pembeli Anda : ' . $vRecName . "\n";
+		$vBody .= 'No HP Pembeli Anda : ' . $vToNumberBuyer . "\n";
 		$vBody .= 'Nomor Virtual Account : ' . $vVA . "\n";
 		$vBody .= 'Jumlah Pembayaran : ' . number_format($vAmount,0,',','.') . "\n";
 		$vBody .= 'Bank : ' . strtoupper($vBank) . "\n";
 		
 		$vBody .= 'Bank Code : ' . $vBankCode . "\n\n";
-		$vBody .= 'Segera selesaikan pembayaran Anda'."\n";
+		$vBody .= 'Infokan kepada pembeli Anda, untuk segera selesaikan pembayaran'."\n";
 		
 		$vBody .= 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' . number_format($vFee,0,',','.') . "\n";
+
 		
+		$vBodyBuyer = 'Yth. ' . $vRecName . ", terima kasih sudah berbelanja di AMH Techno melalui pebisnis $vMailToName \n\n";
+		$vBodyBuyer .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";
+		$vBodyBuyer .= 'Nomor Virtual Account : ' . $vVA . "\n";
+		$vBodyBuyer .= 'Jumlah Pembayaran : ' . number_format($vAmount,0,',','.') . "\n";
+		$vBodyBuyer .= 'Bank : ' . strtoupper($vBank) . "\n";
+		
+		$vBodyBuyer .= 'Bank Code : ' . $vBankCode . "\n\n";
+		$vBodyBuyer .= 'Segera selesaikan pembayaran Anda'."\n";
+		
+		$vBodyBuyer .= 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' . number_format($vFee,0,',','.') . "\n";
+
+
+
+		$vBodySeller = 'Yth. seller ' . $vNamaSeller . ", ada transaksi pembelian dari pebisnis $vMailToName \n\n";
+		$vBodySeller .= 'Anda akan mendapatkan notifikasi berikutnya jika pembeli sudah melakukan pembayaran. ' . "\n";
+		
+		
+		$vBodySeller .= 'Silakan login sebagai seller di web https://intern.amhtechno.com untuk melihat detail transaksi' . "\n";
+
 		if ($vMailTo == '' || $vMailTo == '-')  $vMailTo = 'amhtechs@gmail.com';
 		$oSystem->smtpmailerHosting($vMailTo,$vMailToName,$vMailFrom,'AMH Techno',"Pembayaran Virtual Account",$vBody,$oRules->getSettingByField('fmailbcc'),'',false);
 		
@@ -2171,7 +2204,26 @@ $vUser=$_SESSION['LoginUser'];
 		if ($vToNumber == '' || $vToNumber == '-')
 			$vToNumber = $oRules->getSettingByField('fhpconf');
 
-		$oSystem->sendWAMessage($vToNumber,$vBody);
+		//Send WhatsApp message 
+		if($vToNumber != '' && $vToNumber != '') {
+			//To Pebisnis
+			$oSystem->sendWAMessage($vToNumber,$vBody);
+			
+		}
+
+		//Send WhatsApp to buyer
+		if ($vToNumberBuyer != '' && $vToNumberBuyer != '-') {	
+			//To Buyer
+			$oSystem->sendWAMessage($vToNumberBuyer,$vBodyBuyer);
+		}
+
+
+		//Send WhatsApp to Seller
+		if ($vToNumberSeller != '' && $vToNumberSeller != '-') {	
+			//To Seller
+			$oSystem->sendWAMessage($vToNumberSeller,$vBodySeller);
+		}
+
 		if ($vResult) {
 			$vArrOut['status'] = 'success';
 			$vArrOut['message'] = 'Data berhasil disimpan';
