@@ -13,7 +13,12 @@ include_once("../server/config.php");
     return $d;
     }
 
-    $vSQL = "select a.*, b.fnamakota, c.fpackname, d.fnama as fnamaprog, d.fket as fketprog from m_tour a left join m_kotav b on a.farea=b.fidsys  left join m_paket c on a.fpaket=c.fpackid left join m_program d on a.fprogram=d.fidprogram where fstatusrow='1'  and a.ftgldepart >= date(now()) and date(a.fexpired) >= date(now()) order by a.fidtour";
+    $vStatus = $_GET['status'];
+    if ($vStatus != '') {
+        $vAnd .= " and a.fstatusrow = '".$vStatus."'"; 
+    }
+
+    $vSQL = "select a.*, b.fnamakota, c.fpackname, d.fnama as fnamaprog, d.fket as fketprog,a.fstatusrow as fstatus from m_tour a left join m_kotav b on a.farea=b.fidsys  left join m_paket c on a.fpaket=c.fpackid left join m_program d on a.fprogram=d.fidprogram where 1 $vAnd  and a.ftgldepart >= date(now()) and date(a.fexpired) >= date(now()) order by a.fidtour";
    $a = $db->query($vSQL);
   
    $vArrTour=array();
@@ -47,6 +52,9 @@ include_once("../server/config.php");
 	   $vArrTour[$vIndex]['fkurs'] = $db->f('fkurs');
 	   $vArrTour[$vIndex]['fcountry'] = $db->f('fcountry');
        $vArrTour[$vIndex]['fgroup'] = $db->f('fgroup');
+       $vArrTour[$vIndex]['fstatus'] = $db->f('fstatus');
+       $vArrTour[$vIndex]['fexpired'] = $db->f('fexpired');
+       
 
 	   $vIndex++;
    }
