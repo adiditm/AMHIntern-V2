@@ -72,7 +72,7 @@
 
 
    
-    $vSQL="select * from m_tour where fstatusrow=1 and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='u'  $vAnd";
+    $vSQL="select * from m_tour where  ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='u'  $vAnd";
    $db->query($vSQL);
    
    $curpage=$_POST['hPageNum'];
@@ -308,7 +308,7 @@ function changeDay() {
 
 
 <?
-  $vSQL="select * from m_tour where fstatusrow=1 and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and  fgroup='u'  $vAnd order by fcountry";
+  $vSQL="select * from m_tour where  ftgldepart >= date(now()) and date(fexpired) >= date(now()) and  fgroup='u'  $vAnd order by fcountry";
   $vSQL.=" limit  $offset, $rowpage ";
   
   
@@ -327,7 +327,7 @@ function changeDay() {
 <div class="panel-body">
 <div class="row"> 
     <?
-  $vSQL="select * from m_tour where fstatusrow=1 and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='u'  $vAnd order by fcountry";
+  $vSQL="select * from m_tour where  ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='u'  $vAnd order by fcountry";
   $vSQL.=" limit  $offset, $rowpage ";
   $db->query($vSQL);
   $vNumRows=$db->num_rows();

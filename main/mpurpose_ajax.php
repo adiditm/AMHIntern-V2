@@ -2192,7 +2192,7 @@ $vUser=$_SESSION['LoginUser'];
 
 
 		$vBodySeller = 'Yth. seller ' . $vNamaSeller . ", ada transaksi pembelian dari pebisnis $vMailToName \n\n";
-		$vBodySeller .= 'Anda akan mendapatkan notifikasi berikutnya jika pembeli sudah melakukan pembayaran. ' . "\n";
+		$vBodySeller .= 'Anda akan mendapatkan notifikasi berikutnya jika pembeli sudah melakukan pembayaran.';
 		
 		
 		$vBodySeller .= 'Silakan login sebagai seller di web https://intern.amhtechno.com untuk melihat detail transaksi' . "\n";
