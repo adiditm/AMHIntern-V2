@@ -44,7 +44,7 @@ if ($vCount=='') $vCount=1;
    if ($vRef =='')
       $vRef = $vUser;
    
-   $vKotaAsal = $oMember->getMemFieldSell('fkota',$vSeller);
+   $vKotaAsal = $oMember->getMemFieldSell('fkec',$vSeller);
    $vHrgEco = $oRules->getSettingByField('fhrgeco');
    $vHrgBus = $oRules->getSettingByField('fhrgbus');
    $vHrgFirst = $oRules->getSettingByField('fhrgfirst');
@@ -1334,10 +1334,17 @@ function zeroOngkir(){
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Expedisi*</span></label>
   <select class="form-control m-bot15 " id="fexpe" name="fexpe" onChange="getPaket(this);zeroOngkir()">
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                <option  value="jne">JNE</option>
-                                <option  value="jnt">JNT</option>
-                                <option  value="wahana">Wahana</option>
-                                <option  value="pos">POS Indonesia</option>
+                                <option value="jne">JNE</option>
+									<option value="pos">POS Indonesia</option>
+									<option value="tiki">TIKI</option>
+									<option value="jt">J&amp;T Express</option>
+									<option value="sicepat">SiCepat Express</option>
+									<option value="ninja">Ninja Xpress</option>
+									<option value="lionparcel">Lion Parcel</option>
+									<option value="ide">ID Express</option>
+									<option value="anteraja">AnterAja</option>
+									<option value="wahana">Wahana</option>
+									<option value="sap">SAP Express</option>
 								</select>
 								
                                </div>                               

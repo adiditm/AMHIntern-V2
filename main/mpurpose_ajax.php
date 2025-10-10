@@ -66,7 +66,7 @@ $vUser=$_SESSION['LoginUser'];
 
 	   if ($vGetWil=='prop') {
 
-	       $vSQL="select * from m_wilayah where fkodeneg='$vWilID' and fkabkota='00' and fkec='00' and fdeskel='0000' order by fnamawil ";
+	       echo $vSQL="select * from m_wilayah where fkodeneg='$vWilID' and fkabkota='00' and fkec='00' and fdeskel='0000' order by fnamawil ";
 
 	      $db->query($vSQL);
 
@@ -92,7 +92,8 @@ $vUser=$_SESSION['LoginUser'];
 					
 					$curl = curl_init();
 					curl_setopt_array($curl, array(
-					  CURLOPT_URL            => "https://pro.rajaongkir.com/api/province",
+					 // CURLOPT_URL            => "https://pro.rajaongkir.com/api/province",
+					  CURLOPT_URL            => "https://rajaongkir.komerce.id/api/v1/destination/province",
 					  CURLOPT_SSL_VERIFYHOST => 0,
 					  CURLOPT_SSL_VERIFYPEER => 0,
 					  CURLOPT_RETURNTRANSFER => true,
@@ -110,10 +111,26 @@ $vUser=$_SESSION['LoginUser'];
 					$err               = curl_error($curl);
 					
 					curl_close($curl);
+					//print_r($response_propinsi);
 					 $array_propinsi = json_decode($response_propinsi, true);
- 					 $data_propinsi = $array_propinsi['rajaongkir']['results'];
+ 					
+
+					//{"meta":{"message":"Success Get Province","code":200,"status":"success"},"data":[{"id":1,"name":"NUSA TENGGARA BARAT (NTB)"},{"id":2,"name":"MALUKU"},{"id":3,"name":"KALIMANTAN SELATAN"},{"id":4,"name":"KALIMANTAN TENGAH"},{"id":5,"name":"JAWA BARAT"},{"id":6,"name":"BENGKULU"},{"id":7,"name":"KALIMANTAN TIMUR"},{"id":8,"name":"KEPULAUAN RIAU"},{"id":9,"name":"NANGGROE ACEH DARUSSALAM (NAD)"},{"id":10,"name":"DKI JAKARTA"},{"id":11,"name":"BANTEN"},{"id":12,"name":"JAWA TENGAH"},{"id":13,"name":"JAMBI"},{"id":14,"name":"PAPUA"},{"id":15,"name":"BALI"},{"id":16,"name":"SUMATERA UTARA"},{"id":17,"name":"GORONTALO"},{"id":18,"name":"JAWA TIMUR"},{"id":19,"name":"DI YOGYAKARTA"},{"id":20,"name":"SULAWESI TENGGARA"},{"id":21,"name":"NUSA TENGGARA TIMUR (NTT)"},{"id":22,"name":"SULAWESI UTARA"},{"id":23,"name":"SUMATERA BARAT"},{"id":24,"name":"BANGKA BELITUNG"},{"id":25,"name":"RIAU"},{"id":26,"name":"SUMATERA SELATAN"},{"id":27,"name":"SULAWESI TENGAH"},{"id":28,"name":"KALIMANTAN BARAT"},{"id":29,"name":"PAPUA BARAT"},{"id":30,"name":"LAMPUNG"},{"id":31,"name":"KALIMANTAN UTARA"},{"id":32,"name":"MALUKU UTARA"},{"id":33,"name":"SULAWESI SELATAN"},{"id":34,"name":"SULAWESI BARAT"}]}
 			
 
+				//	 $data_propinsi = $array_propinsi['rajadataongkir']['results'];
+						
+					// Ambil data propinsi dari response JSON
+					$data_propinsi = array();
+					if (isset($array_propinsi['data'])) {
+						foreach ($array_propinsi['data'] as $prop) {
+							$data_propinsi[] = array(
+								'province_id' => $prop['id'],
+								'province'    => $prop['name']
+							);
+						}
+					}
+									
 			
 					  echo "<option selected value=''>-- Pilih Propinsi --</option>";
 					  foreach ($data_propinsi as $propinsi) {
@@ -147,7 +164,8 @@ $vUser=$_SESSION['LoginUser'];
 					
 					$curl = curl_init();
 					curl_setopt_array($curl, array(
-					  CURLOPT_URL            => "https://pro.rajaongkir.com/api/city?province=" . $provinsi_id,
+					//  CURLOPT_URL            => "https://pro.rajaongkir.com/api/city?province=" . $provinsi_id,
+					    CURLOPT_URL            => "https://rajaongkir.komerce.id/api/v1/destination/city/$provinsi_id",
 					  CURLOPT_SSL_VERIFYHOST => 0,
 					  CURLOPT_SSL_VERIFYPEER => 0,
 					  CURLOPT_RETURNTRANSFER => true,
@@ -163,11 +181,28 @@ $vUser=$_SESSION['LoginUser'];
 					
 					$response_kota = curl_exec($curl);
 					$err           = curl_error($curl);
+					
 					curl_close($curl);
 					
 					 $array_kota = json_decode($response_kota, true);
 					  // var_dump($array_kota);
-					  $data_kota = $array_kota['rajaongkir']['results'];
+					//  $data_kota = $array_kota['rajaongkir']['results'];
+
+					//{"meta":{"message":"Success Get City By Province ID","code":200,"status":"success"},"data":[{"id":256,"name":"JEMBER"},{"id":257,"name":"BANYUWANGI"},{"id":258,"name":"BONDOWOSO"},{"id":289,"name":"KEDIRI"},{"id":353,"name":"MADIUN"},{"id":355,"name":"MAGETAN"},{"id":357,"name":"NGAWI"},{"id":359,"name":"PACITAN"},{"id":360,"name":"PONOROGO"},{"id":388,"name":"MOJOKERTO"},{"id":389,"name":"JOMBANG"},{"id":390,"name":"NGANJUK"},{"id":391,"name":"MALANG"},{"id":392,"name":"BLITAR"},{"id":393,"name":"BATU"},{"id":394,"name":"PROBOLINGGO"},{"id":395,"name":"LUMAJANG"},{"id":396,"name":"SITUBONDO"},{"id":531,"name":"PASURUAN"},{"id":566,"name":"BOJONEGORO"},{"id":577,"name":"SURABAYA"},{"id":578,"name":"GRESIK"},{"id":579,"name":"LAMONGAN"},{"id":580,"name":"BANGKALAN"},{"id":581,"name":"PAMEKASAN"},{"id":582,"name":"SAMPANG"},{"id":583,"name":"SIDOARJO"},{"id":584,"name":"SUMENEP"},{"id":585,"name":"TUBAN"},{"id":586,"name":"TULUNGAGUNG"},{"id":587,"name":"TRENGGALEK"}]}
+
+					// Ambil data kota dari response JSON
+					$data_kota = array();
+					if (isset($array_kota['data'])) {
+						foreach ($array_kota['data'] as $kota) {
+							$data_kota[] = array(
+								'city_id'   => $kota['id'],
+								'province_id' => $kota['province_id'],
+								'city_name' => $kota['name'],
+								'type'      => isset($kota['type']) ? $kota['type'] : '',
+								'postal_code' => isset($kota['postal_code']) ? $kota['postal_code'] : ''
+							);
+						}
+					}
 					
 						echo "<option selected value=''>-- Pilih Kab/Kota --</option>";
 					  foreach ($data_kota as $kota) {
@@ -190,7 +225,9 @@ $vUser=$_SESSION['LoginUser'];
 					//echo "key: ".$oRules->getSettingByField('fkeyongkir','');
 					$curl = curl_init();
 					curl_setopt_array($curl, array(
-					  CURLOPT_URL            => "https://pro.rajaongkir.com/api/subdistrict?city=" . $kota_id,
+					 // CURLOPT_URL            => "https://pro.rajaongkir.com/api/subdistrict?city=" . $kota_id,
+					  //https://rajaongkir.komerce.id/api/v1/destination/district/{city_id}
+					  CURLOPT_URL			=> "https://rajaongkir.komerce.id/api/v1/destination/district/$kota_id",
 					  CURLOPT_SSL_VERIFYHOST => 0,
 					  CURLOPT_SSL_VERIFYPEER => 0,
 					  CURLOPT_RETURNTRANSFER => true,
@@ -207,10 +244,24 @@ $vUser=$_SESSION['LoginUser'];
 					$response_kecamatan = curl_exec($curl);
 					$err           = curl_error($curl);
 					curl_close($curl);
+					//print_r($response_kecamatan);
 					
 				  $array_kecamatan = json_decode($response_kecamatan, true);
 				  $data_kecamatan  = $array_kecamatan['rajaongkir']['results'];
+				  //{"meta":{"message":"Success Get District By City ID","code":200,"status":"success"},"data":[{"id":3893,"name":"BLIMBING"},{"id":3894,"name":"KEDUNGKANDANG"},{"id":3895,"name":"KLOJEN"},{"id":3896,"name":"LOWOKWARU"},{"id":3897,"name":"SUKUN"},{"id":3926,"name":"KEPANJEN"},{"id":3927,"name":"AMPELGADING"},{"id":3928,"name":"BANTUR"},{"id":3929,"name":"BULULAWANG"},{"id":3930,"name":"DAMPIT"},{"id":3931,"name":"DAU"},{"id":3932,"name":"DONOMULYO"},{"id":3933,"name":"GEDANGAN"},{"id":3934,"name":"GONDANGLEGI"},{"id":3935,"name":"JABUNG"},{"id":3936,"name":"KALIPARE"},{"id":3937,"name":"KARANGPLOSO"},{"id":3938,"name":"KROMENGAN"},{"id":3939,"name":"NGAJUNG (NGAJUM)"},{"id":3940,"name":"PAGAK"},{"id":3941,"name":"PAKIS"},{"id":3942,"name":"PAKISAJI"},{"id":3943,"name":"PONCOKUSUMO"},{"id":3944,"name":"SINGOSARI"},{"id":3945,"name":"SUMBERPUCUNG"},{"id":3946,"name":"SUMBERMANJING WETAN"},{"id":3947,"name":"TAJINAN"},{"id":3948,"name":"TIRTOYUDO"},{"id":3949,"name":"TUREN"},{"id":3950,"name":"TUMPANG"},{"id":3951,"name":"WAGIR"},{"id":3952,"name":"WAJAK"},{"id":3953,"name":"WONOSARI"},{"id":3954,"name":"NGANTANG"},{"id":3955,"name":"PUJON"},{"id":3956,"name":"KASEMBON"},{"id":3957,"name":"LAWANG"},{"id":3958,"name":"PAGELARAN"}]}
 				
+					// Ambil data kecamatan dari response JSON
+					$data_kecamatan = array();
+					if (isset($array_kecamatan['data'])) {
+						foreach ($array_kecamatan['data'] as $kecamatan) {
+							$data_kecamatan[] = array(
+								'subdistrict_id' => $kecamatan['id'],
+								'city_id'        => $kecamatan['city_id'],
+								'subdistrict_name' => $kecamatan['name']
+							);
+						}
+					}
+
 				  echo "<option selected value=''>-- Pilih Kecamatan--</option>";
 				  foreach ($data_kecamatan as $kecamatan) {
 					$selected = ($kecamatan['subdistrict_id'] == $id_kecamatan ? 'selected' : '');
@@ -1982,7 +2033,8 @@ $vUser=$_SESSION['LoginUser'];
 		curl_setopt_array(
 		  $curl,
 		  array(
-			CURLOPT_URL            => "https://pro.rajaongkir.com/api/cost",
+			//CURLOPT_URL            => "https://pro.rajaongkir.com/api/cost",
+			CURLOPT_URL 		  => "https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost",
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING       => "",
 			CURLOPT_MAXREDIRS      => 10,
@@ -2002,6 +2054,7 @@ $vUser=$_SESSION['LoginUser'];
 
 		$response = curl_exec($curl);
 		$err = curl_error($curl);
+		//print_r($response);
 		
 		curl_close($curl);
 		
@@ -2012,10 +2065,20 @@ $vUser=$_SESSION['LoginUser'];
 		
 		
 		  $array_paket = json_decode($response, true);
-		  $data_paket  = $array_paket['rajaongkir']['results'][0]['costs'];
+		 // $data_paket  = $array_paket['rajaongkir']['results'][0]['costs'];
+		//{"meta":{"message":"Success Calculate Domestic Shipping cost","code":200,"status":"success"},"data":[{"name":"Wahana","code":"wahana","service":"Express","description":"Layanan Regular Pengiriman Ke Seluruh Wilayah Indonesia","cost":12000,"etd":"7 day"},{"name":"Wahana","code":"wahana","service":"Kargo","description":"Layanan Pengiriman Dengan Minimal Berat 10 Kg","cost":90000,"etd":"8 day"},{"name":"Wahana","code":"wahana","service":"Ekonomis","description":"Layanan Pengiriman Biaya Hemat Dengan Tujuan Sumatera","cost":12000,"etd":"7 day"}]}
+		  $data_paket  = $array_paket['data'];
+		  	
+		
+		$array_paket = json_decode($response, true);
+		// Ambil data paket dari response JSON
+		$data_paket = array();
+		if (isset($array_paket['data'])) {
+			$data_paket = $array_paket['data'];
+		}
 		
 		  echo "<option value='0' ongkir=\"0\" selected=''>-- Pilih Paket " . strtoupper($kurir) . "--</option>";
-			  foreach ($data_paket as $paket) {
+/*			  foreach ($data_paket as $paket) {
 				echo "<option 
 				value        = '" . $paket['service'] . "'
 				ongkir       = '" . $paket['cost'][0]['value'] . "'
@@ -2030,7 +2093,29 @@ $vUser=$_SESSION['LoginUser'];
 				id_propinsi  = '" . $array_paket['rajaongkir']['destination_details']['province_id'] . "'
 				>" . $paket['service'] . " | " . $paket['cost'][0]['etd'] . " Hari | Rp. " . number_format($paket['cost'][0]['value'], 0, ',', '.') . "</option>";
 			  };
-		  }
+		*/
+
+
+			$destination = isset($array_paket['destination_details']) ? $array_paket['destination_details'] : array();
+
+			echo "<option value='0' ongkir=\"0\" selected=''>-- Pilih Paket " . strtoupper($kurir) . "--</option>";
+			foreach ($data_paket as $paket) {
+				echo "<option 
+					value        = '" . $paket['service'] . "'
+					ongkir       = '" . $paket['cost'] . "'
+					lamakirim    = '" . $paket['etd'] . "'
+					jenispaket   = '" . $paket['service'] . "'
+					kecamatan    = '" . (isset($destination['subdistrict_name']) ? $destination['subdistrict_name'] : '') . "'
+					id_kecamatan = '" . (isset($destination['subdistrict_id']) ? $destination['subdistrict_id'] : '') . "'
+					kota         = '" . (isset($destination['city']) ? $destination['city'] : '') . "'
+					type         = '" . (isset($destination['type']) ? $destination['type'] : '') . "'
+					id_kota      = '" . (isset($destination['city_id']) ? $destination['city_id'] : '') . "'
+					propinsi     = '" . (isset($destination['province']) ? $destination['province'] : '') . "'
+					id_propinsi  = '" . (isset($destination['province_id']) ? $destination['province_id'] : '') . "'
+					>" . $paket['service'] . " | " . $paket['etd'] . " Hari | Rp. " . number_format($paket['cost'], 0, ',', '.') . "</option>";
+			}
+		}
+
 
 
 

@@ -18,7 +18,7 @@
    
    class actionpay {
 
-				function getListBank() {
+			function getListBank() {
 				global $oRules, $oDB; // Use $oDB instead of $db
 				$url = $oRules->getSettingByField("factpaylistbank");
 

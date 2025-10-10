@@ -3,7 +3,7 @@
    if ($_GET['op']=='spy')
       $vUser=$_GET['uMemberId'];
  $vTgl=date("Y-m-d");
- include_once("classes/pulsaclass.php");
+ include_once("../classes/pulsaclass.php");
  
     $vFeePulsa=$oRules->getSettingByField("fcountflush");
 	$vFeePublic=$oRules->getSettingByField("fhrgpaket");

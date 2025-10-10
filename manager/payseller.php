@@ -24,9 +24,9 @@ $vRef = $_GET['ref'];
 $vMonth = date("m");
 $vYear = date("Y");
 $vNoHP = $oMember->getMemFieldBis('fnohp',$vUser);
-$vNoHPSeller = 
-$vEmailSeller = 
-$vRekSeller =
+//$vNoHPSeller = 
+//$vEmailSeller = 
+//$vRekSeller =
 
 
 
