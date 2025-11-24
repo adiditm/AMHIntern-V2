@@ -163,6 +163,9 @@ $vUser=$_SESSION['LoginUser'];
 					$id_kota = "aaaaaaa106";
 					
 					$curl = curl_init();
+					// Disable SSL certificate verification for this request (bypass checks)
+					curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 					curl_setopt_array($curl, array(
 					//  CURLOPT_URL            => "https://pro.rajaongkir.com/api/city?province=" . $provinsi_id,
 					    CURLOPT_URL            => "https://rajaongkir.komerce.id/api/v1/destination/city/$provinsi_id",
@@ -1195,23 +1198,7 @@ $vUser=$_SESSION['LoginUser'];
 
 
 
-	   if ($vArrNotValid !='')
-
-	       $vArrNotValid = substr($vArrNotValid,0,strlen($vArrNotValid)-1);
-
-
-
-	   
-
-	   
-
-	   
-
-    
-
-       
-
-       if (trim($vArrNotValid)=='' && count($vArrPaket) <=1) {
+	   if (trim($vArrNotValid)=='' && count($vArrPaket) <=1) {
 
 	      
 
@@ -1405,23 +1392,7 @@ $vUser=$_SESSION['LoginUser'];
 
 
 
-	   if ($vArrNotValid !='')
-
-	       $vArrNotValid = substr($vArrNotValid,0,strlen($vArrNotValid)-1);
-
-
-
-	   
-
-	   
-
-	   
-
-    
-
-       
-
-       if (trim($vArrNotValid)=='' && count($vArrPaket) <=1) {
+	   if (trim($vArrNotValid)=='' && count($vArrPaket) <=1) {
 
 	      
 
@@ -2065,7 +2036,8 @@ $vUser=$_SESSION['LoginUser'];
 		
 		
 		  $array_paket = json_decode($response, true);
-		 // $data_paket  = $array_paket['rajaongkir']['results'][0]['costs'];
+		 // $data_paket  = $array_paket['rajaongkir']['results'];
+
 		//{"meta":{"message":"Success Calculate Domestic Shipping cost","code":200,"status":"success"},"data":[{"name":"Wahana","code":"wahana","service":"Express","description":"Layanan Regular Pengiriman Ke Seluruh Wilayah Indonesia","cost":12000,"etd":"7 day"},{"name":"Wahana","code":"wahana","service":"Kargo","description":"Layanan Pengiriman Dengan Minimal Berat 10 Kg","cost":90000,"etd":"8 day"},{"name":"Wahana","code":"wahana","service":"Ekonomis","description":"Layanan Pengiriman Biaya Hemat Dengan Tujuan Sumatera","cost":12000,"etd":"7 day"}]}
 		  $data_paket  = $array_paket['data'];
 		  	
@@ -2375,5 +2347,5 @@ $vUser=$_SESSION['LoginUser'];
   }
  
 
- ?> 
+ ?>
 
