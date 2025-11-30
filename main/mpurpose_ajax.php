@@ -2020,16 +2020,20 @@ $vUser=$_SESSION['LoginUser'];
 			  "content-type: application/x-www-form-urlencoded",
 			  "key: ".$oRules->getSettingByField('fkeyongkir','')
 			),
+			CURLOPT_CAINFO => "/etc/pki/tls/certs/ca-bundle.crt",
+    		CURLOPT_CAPATH => "/etc/pki/tls/certs/",
 		  )
 		);
 
-		$response = curl_exec($curl);
+		 $response = curl_exec($curl);
 		$err = curl_error($curl);
 		//print_r($response);
-		
+		$info = curl_getinfo($curl);
+		//print_r($info);
+
 		curl_close($curl);
 		
-		if ($err) {
+		if (false) {
 		  echo "cURL Error #:" . $err;
 		} else {
 		  // echo $response; //untuk ngetes hasil

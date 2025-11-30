@@ -1337,10 +1337,10 @@ function zeroOngkir(){
                                 <option value="jne">JNE</option>
 									<option value="pos">POS Indonesia</option>
 									<option value="tiki">TIKI</option>
-									<option value="jt">J&amp;T Express</option>
+									<!-- <option value="jt">J&amp;T Express</option> -->
 									<option value="sicepat">SiCepat Express</option>
 									<option value="ninja">Ninja Xpress</option>
-									<option value="lionparcel">Lion Parcel</option>
+									<!-- <option value="lionparcel">Lion Parcel</option> -->
 									<option value="ide">ID Express</option>
 									<option value="anteraja">AnterAja</option>
 									<option value="wahana">Wahana</option>
