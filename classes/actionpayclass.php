@@ -593,7 +593,7 @@ CREATE TABLE tb_actpcall_log (
 			
 			//Deposit Route
 			function depositRoute($accessToken, $signature, $data_inquiry) {
-				global $oRules;
+				global $oRules, $oDB;
 
 				$url = $oRules->getSettingByField("factpaydeproute");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
@@ -615,21 +615,67 @@ CREATE TABLE tb_actpcall_log (
 					],
 				];
 
-			$context  = stream_context_create($options);
-				$result = file_get_contents($url, false, $context);
-			
-				if ($result === FALSE) {
-					die('Error during deposit route');
+			$context = stream_context_create($options);
+			$requestOptions = json_encode($options);
+			$startTime = microtime(true);
+			$result = @file_get_contents($url, false, $context);
+			$endTime = microtime(true);
+			$responseTime = round(($endTime - $startTime) * 1000, 2);
+
+			if ($result === FALSE) {
+				$error = error_get_last();
+				$errorMessage = $error['message'];
+				
+				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+					'$url',
+					'depositRoute',
+					'GET',
+					'".mysql_real_escape_string($requestOptions)."',
+					'".mysql_real_escape_string($errorMessage)."',
+					NULL,
+					'$responseTime',
+					'".$_SERVER['REMOTE_ADDR']."'
+				)";
+				$oDB->query($vSQL);
+				die('Error during deposit route');
+			}
+
+			$response = json_decode($result, true);
+
+			//Get Response Code
+			$http_response_header = $GLOBALS['http_response_header'];
+			$responseCode = 200;
+			if (isset($http_response_header)) {
+				foreach ($http_response_header as $headerLine) {
+					if (strpos($headerLine, 'HTTP/') === 0) {
+						preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+						$responseCode = (int)$match[1];
+						break;
+					}
 				}
-			
-				$response = json_decode($result, true);
-				return $response;
+			}
+
+			$responseBody = json_encode($response);
+
+			$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+				'$url',
+				'depositRoute',
+				'GET',
+				'".mysql_real_escape_string($requestOptions)."',
+				'".mysql_real_escape_string($responseBody)."',
+				'$responseCode',
+				'$responseTime',
+				'".$_SERVER['REMOTE_ADDR']."'
+			)";
+			$oDB->query($vSQL);
+
+			return $response;
 			}
 
 
 			//Deposit
 			function doDeposit($accessToken, $signature, $data_inquiry) {
-				global $oRules;
+				global $oRules, $oDB;
 
 				$url = $oRules->getSettingByField("factpaydep");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
@@ -656,25 +702,50 @@ CREATE TABLE tb_actpcall_log (
 				$result = file_get_contents($url, false, $context);
 */
 
+				$header = [
+					"platform: api",
+					"accesstoken: Bearer $accessToken",
+					"signature: $signature",
+					"Content-Type: application/json"
+				];
+
 				$ch = curl_init();
 				$opt = [
 					CURLOPT_URL => $url,
 					CURLOPT_RETURNTRANSFER => true,
 					CURLOPT_POST => true,
 					CURLOPT_POSTFIELDS => $data_inquiry,
-					CURLOPT_HTTPHEADER => [
-						"platform: api",
-						"accesstoken: Bearer $accessToken",
-						"signature: $signature",
-						"Content-Type: application/json"
-					]
+					CURLOPT_HTTPHEADER => $header
 				];
 				curl_setopt_array($ch,$opt);
 
+				$requestOptions = json_encode($opt);
+				$startTime = microtime(true);
 				$result = curl_exec($ch);
+				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				$error = curl_error($ch);
+				$endTime = microtime(true);
+				$responseTime = round(($endTime - $startTime) * 1000, 2);
 
+				
 				if (curl_errno($ch)) {
-					die('Error during request: ' . curl_error($ch));
+					$errorMessage = $error ?: 'Unknown curl error';
+					$responseCode = $httpCode ? $httpCode : 500;
+					
+					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+						'".mysql_real_escape_string($url)."',
+						'doDeposit',
+						'POST',
+						'".mysql_real_escape_string($requestOptions)."',
+						'".mysql_real_escape_string($errorMessage)."',
+						'$responseCode',
+						'$responseTime',
+						'".$_SERVER['REMOTE_ADDR']."'
+					)";
+					$oDB->query($vSQL);
+					
+					curl_close($ch);
+					die('Error during request: ' . $errorMessage);
 				}
 
 				curl_close($ch);
@@ -683,6 +754,21 @@ CREATE TABLE tb_actpcall_log (
 				//echo "<BR>CURL   ";print_r($opt);
 
 				$response = json_decode($result, true);
+				$responseCode = $httpCode ? $httpCode : 200;
+				$responseBody = json_encode($response);
+
+				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+					'".mysql_real_escape_string($url)."',
+					'doDeposit',
+					'POST',
+					'".mysql_real_escape_string($requestOptions)."',
+					'".mysql_real_escape_string($responseBody)."',
+					'$responseCode',
+					'$responseTime',
+					'".$_SERVER['REMOTE_ADDR']."'
+				)";
+				$oDB->query($vSQL);
+
 				return $response;
 			}
    }
