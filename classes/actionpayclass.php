@@ -40,17 +40,22 @@ CREATE TABLE tb_actpcall_log (
 			function getListBank() {
 				global $oRules, $oDB; // Use $oDB instead of $db
 				$url = $oRules->getSettingByField("factpaylistbank");
+				echo $url ="https://api-sandbox.actionpay.id/v1/api/bank";
+				$headers = [
+					"platform: api",
+					"Content-Type: application/json"
+				];
 
-				$header = ["platform: api",
-				"Content-Type: application/json"
-				];
-				// Create context with headers and body
 				$options = [
-				'http' => [
-					'method' => 'GET',
-					'header' => $header
-				]
+					'http' => [
+						'method'  => 'GET',
+						'header'  => implode("\r\n", $headers),
+						'timeout' => 30
+					]
 				];
+			print_r($options);
+			echo "::::::";
+			print_r($headers);
 				// Create a stream context
 				$context = stream_context_create($options);
 
@@ -249,7 +254,7 @@ CREATE TABLE tb_actpcall_log (
 				global $oRules, $oDB;
 				$url = $oRules->getSettingByField("factpaysign");
 				//$url ="https://api-sandbox.actionpay.id/v1/signature";		
-				$options = [
+				/*$options = [
 					'http' => [
 						'header'  => [
 							"Content-Type: application/json",
@@ -271,6 +276,41 @@ CREATE TABLE tb_actpcall_log (
 				$result = file_get_contents($url, false, $context);
 				$endTime = microtime(true);
 				$responseTime = round($endTime - $startTime, 3);
+				*/
+
+				$headers = [
+					"Content-Type: application/json",
+					"Authorization: Basic " . base64_encode("$clientId:$clientSecret"),
+					"api-secret: $apiSecret",
+					"Content-Length: " . strlen($data_inquiry) // ✅ WAJIB untuk production
+				];
+
+				$options = [
+					'http' => [
+						'method'  => 'POST',
+						'header'  => implode("\r\n", $headers), // ✅ HARUS string
+						'content' => $data_inquiry,
+						'timeout' => 30
+					]
+				];
+
+				$context = stream_context_create($options);
+
+				/* ============================
+				LOGGING (TETAP AMAN)
+				============================ */
+				$requestHeader = json_encode($headers); // ✅ log dari array asli
+				$requestBody   = $data_inquiry;
+				$requestMethod = 'POST';
+
+				/* ============================
+				EKSEKUSI REQUEST + TIMING
+				============================ */
+				$startTime = microtime(true);
+				$result = file_get_contents($url, false, $context);
+				$endTime = microtime(true);
+				$responseTime = round(($endTime - $startTime) * 1000); // ms lebih akurat
+
 
 				if ($result === FALSE) {
 					$error = error_get_last();
@@ -709,42 +749,48 @@ CREATE TABLE tb_actpcall_log (
 					"Content-Type: application/json"
 				];
 
-				$ch = curl_init();
-				$opt = [
-					CURLOPT_URL => $url,
-					CURLOPT_RETURNTRANSFER => true,
-					CURLOPT_POST => true,
-					CURLOPT_POSTFIELDS => $data_inquiry,
-					CURLOPT_HTTPHEADER => $header
-				];
-				curl_setopt_array($ch,$opt);
+			$ch = curl_init();
+			$opt = [
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POST => true,
+				CURLOPT_POSTFIELDS => $data_inquiry,
+				CURLOPT_HTTPHEADER => $header
+			];
+			curl_setopt_array($ch,$opt);
 
-				$requestOptions = json_encode($opt);
-				$startTime = microtime(true);
-				$result = curl_exec($ch);
-				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-				$error = curl_error($ch);
-				$endTime = microtime(true);
-				$responseTime = round(($endTime - $startTime) * 1000, 2);
+			// Convert to string keys for logging
+			$optForLogging = [
+				'CURLOPT_URL' => $url,
+				'CURLOPT_RETURNTRANSFER' => true,
+				'CURLOPT_POST' => true,
+				'CURLOPT_POSTFIELDS' => $data_inquiry,
+				'CURLOPT_HTTPHEADER' => $header
+			];
+			$requestOptions = json_encode($optForLogging);
+			$startTime = microtime(true);
+			$result = curl_exec($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$error = curl_error($ch);
+			$endTime = microtime(true);
+			$responseTime = round(($endTime - $startTime) * 1000, 2);
 
+			
+			if (curl_errno($ch)) {
+				$errorMessage = $error ?: 'Unknown curl error';
+				$responseCode = $httpCode ? $httpCode : 500;
 				
-				if (curl_errno($ch)) {
-					$errorMessage = $error ?: 'Unknown curl error';
-					$responseCode = $httpCode ? $httpCode : 500;
-					
-					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
-						'".mysql_real_escape_string($url)."',
-						'doDeposit',
-						'POST',
-						'".mysql_real_escape_string($requestOptions)."',
-						'".mysql_real_escape_string($errorMessage)."',
-						'$responseCode',
-						'$responseTime',
-						'".$_SERVER['REMOTE_ADDR']."'
-					)";
-					$oDB->query($vSQL);
-					
-					curl_close($ch);
+				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+					'".mysql_real_escape_string($url)."',
+					'doDeposit',
+					'POST',
+					'".mysql_real_escape_string($requestOptions)."',
+					'".mysql_real_escape_string($errorMessage)."',
+					'$responseCode',
+					'$responseTime',
+					'".$_SERVER['REMOTE_ADDR']."'
+				)";
+				$oDB->query($vSQL);					curl_close($ch);
 					die('Error during request: ' . $errorMessage);
 				}
 
