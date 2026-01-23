@@ -51,6 +51,7 @@
 	   <tr>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" nowrap><strong>Tgl Berangkat</strong></td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px"><strong>Paket</strong></td>
+    <td style="border:1px solid #ccc; padding:2px 2px 2px 2px"><strong>Kota Keberangkatan</strong></td>
   </tr>              
 					<?
 					    $vSQL ="select * from m_tour where date(now()) <= ftgldepart  and now() <= fexpired  order by fgroup desc, ftgldepart asc";
@@ -71,7 +72,7 @@
   <tr>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" nowrap align="center"><?=$oPhpdate->YMD2DMY($db->f('ftgldepart'))?></td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="right" nowrap><?=$db->f('fjmlhari')?> hari</td>
-      <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="left" nowrap><?=$vGroupText?></td>
+      <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="left" nowrap><?=$db->f('fcitydepart')?></td>
   </tr>
   	<? } ?>
 </table>
@@ -97,6 +98,7 @@
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" nowrap><strong>Tgl Berangkat</strong></td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px"><strong>Paket</strong></td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px"><strong>Kategori</strong></td>
+    <td style="border:1px solid #ccc; padding:2px 2px 2px 2px"><strong>Kota Keberangkatan</strong></td>
        </tr>              
 					<?
 					    $vSQL ="select * from m_tour where date(now()) <= ftgldepart  and now() <= fexpired  order by fgroup desc, ftgldepart asc";
@@ -120,6 +122,7 @@
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" nowrap align="center"><?=$oPhpdate->YMD2DMY($db->f('ftgldepart'))?></td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="right" nowrap><?=$db->f('fjmlhari')?> hari</td>
     <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="left" nowrap><?=$vGroupText?></td>
+    <td style="border:1px solid #ccc; padding:2px 2px 2px 2px" align="left" nowrap><?=$db->f('fcitydepart')?></td>
   </tr>
   	<? } ?>
 </table>

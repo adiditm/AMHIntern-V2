@@ -69,6 +69,7 @@ $(document).ready(function(){
 
 
   $('#PME_data_fjmlhari').select2();
+  $('#PME_data_fcitydepart').select2();
    $('#PME_data_fexpired').attr('autocomplete','off');
      $('#PME_data_ftgldepart').attr('autocomplete','off');
 
@@ -326,6 +327,20 @@ $opts['fdd']['ftgldepart'] = array(
   'sort'     => true,
   'colattrs' => ''
 );
+
+$opts['fdd']['fcitydepart'] = array(
+  'name'     => 'Kota Berangkat',
+ // 'help'     => 'Contoh : Jakarta',
+  'select'   => 'D',
+  'maxlen'   => 254,
+  'sort'     => true,
+  'colattrs' => ''
+);
+
+$opts['fdd']['fcitydepart']['values']['table']       = 'm_wilayah';
+$opts['fdd']['fcitydepart']['values']['column']      = 'fnamawil';
+$opts['fdd']['fcitydepart']['values']['description'] = 'fnamawil';
+$opts['fdd']['fcitydepart']['values']['filters']     = "fkec='00' and fdeskel='0000' and fkabkota <> '00'";
 
 
 

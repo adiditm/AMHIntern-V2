@@ -1706,7 +1706,7 @@ $vUser=$_SESSION['LoginUser'];
 	     $vProd = $_GET['prod'];
 	
 		  				 $vOut=array();
-					 	 $vSQL="select b.fidtour, b.fdesc, b.fjmlhari as daypromo, b.fhargapub as pricepromo, b.fassure as asupromo, b.fhandle as handpromo,b.fcurr, b.fkurs, b.fhargapub * b.fkurs as ffprice from  m_tour b  where b.fpaket='$vPaket' and b.fprogram='$vProg' and b.ftgldepart='$vDepart' and b.fstatusrow='1 ' and  fidtour = '$vProd' ";
+					 	 $vSQL="select b.fidtour, b.fdesc, b.fjmlhari as daypromo, b.fhargapub as pricepromo, b.fassure as asupromo, b.fhandle as handpromo,b.fcurr, b.fkurs, b.fhargapub * b.fkurs as ffprice from  m_tour b  where b.fpaket='$vPaket' and b.fprogram='$vProg' and b.ftgldepart='$vDepart' and (b.fstatusrow='1' or b.fstatusrow='0') and  fidtour = '$vProd' ";
 						 $db->query($vSQL);
 						 $db->next_record();
 						 
@@ -1753,7 +1753,7 @@ $vUser=$_SESSION['LoginUser'];
 	      $vProd = $_GET['prod'];
 	
 		  				 $vOut=array();
-						 $vSQL="select a.* from m_tour a where  a.ftgldepart='$vDepart' and a.fstatusrow='1' and fidtour='$vProd' ";
+						 $vSQL="select a.* from m_tour a where  a.ftgldepart='$vDepart' and (a.fstatusrow='1' or a.fstatusrow='0') and fidtour='$vProd' ";
 						 $db->query($vSQL);
 						 $db->next_record();
 						 
