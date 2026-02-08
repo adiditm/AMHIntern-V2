@@ -29,6 +29,7 @@
    
    <?
    $vPack='1';
+   $vAnd="";
    
    $vCnt=$_POST['lmCnt'];
    $vKota=$_POST['lmCity'];
@@ -49,9 +50,6 @@
    if (trim($vKota!=""))
       $vAnd.=" and farea=$vKota ";  
       
-   if (trim($vCnt!=""))
-      $vAnd.=" and fcountry='$vCnt' ";  
-
    if (trim($vNama!=""))
       $vAnd.=" and (fdesc like '%$vNama%') ";  
       
@@ -65,10 +63,10 @@
 
 
    if (trim($vCnt!="")) {
-      if (trim($vCnt=="SMT"))  
+	  if (trim($vCnt=="SMT"))  
 	     $vAnd.=" and (fcountry='SG' or fcountry='MY' or fcountry='TH') ";
 	  else
-	     $vAnd.="and fcountry='$vCnt'";	 
+	     $vAnd.=" and fcountry='$vCnt'";	 
    }	  
    
    if ($vHari !='')
@@ -76,7 +74,7 @@
 
 
    
-    $vSQL="select * from m_tour where fstatusrow=1 and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='t'  $vAnd order by fcountry";
+    $vSQL="select * from m_tour where (fstatusrow='1' or fstatusrow='0' or fstatusrow is null) and fgroup='t' and (ftgldepart >= date(now()) or ftgldepart is null or ftgldepart='0000-00-00') $vAnd order by fcountry";
    $db->query($vSQL);
    
    $curpage=$_POST['hPageNum'];
@@ -294,29 +292,17 @@ function changeDay() {
 
 
 <?
-   $vSQL="select * from m_tour where fstatusrow=1 and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='t'  $vAnd order by fcountry";
+   $vSQL="select * from m_tour where (fstatusrow='1' or fstatusrow='0' or fstatusrow is null) and fgroup='t' and (ftgldepart >= date(now()) or ftgldepart is null or ftgldepart='0000-00-00') $vAnd order by fcountry";
   $vSQL.=" limit  $offset, $rowpage ";
   
   
 //  if ($_SESSION['LoginUser']=='adelina') echo $vSQL;
   $db->query($vSQL);
- $vNumRows=$db->num_rows();
-  while ($db->next_record()) {
-     $vStar=$db->f('fstar');
-	 $vHarga=$db->f('fharga');
-	 $vImage=$db->f('fimage');
-	 $vID=$db->f('fidtour');
-	 if (trim($vImage)=="" || trim($vImage)=="0")
-	    $vImage="noimage-flat.jpg";
-	 
+  $vNumRows=$db->num_rows();
 ?>
 <div class="panel-body">
 <div class="row"> 
     <?
-  $vSQL="select * from m_tour where fstatusrow=1  and ftgldepart >= date(now()) and date(fexpired) >= date(now()) and fgroup='t'  $vAnd order by fcountry";
-  $vSQL.=" limit  $offset, $rowpage ";
-  $db->query($vSQL);
-  $vNumRows=$db->num_rows();
   	$vCount=0;$vCol=2;
   while ($db->next_record()) {
      $vArea=$db->f('farea');
@@ -330,11 +316,7 @@ function changeDay() {
 	 
 	 if (trim($vImage)=="" || trim($vImage)=="0")
 	    $vImage="noimage-flat.jpg";
-		
-		if (fmod($vCount,$vCol)==0) {   
-	?>
-	
-	<? } ?>
+?>
 	  <div class="col-lg-6">
 	    <br>
         <a href="<?="$vDetLink&uID=$vID";?>" style="text-decoration:none;color:#000"><strong><?=$vDesc?>&nbsp;::&nbsp;<span><?=$vKotaData?><br>Berangkat <?=$vDepart?></span></strong></a><br /><br />
@@ -356,14 +338,7 @@ function changeDay() {
 	  
 	   
 	<?
-	 
-	  
-	   if (fmod($vCount,$vCol)==($vCol)-1) { 
-	?>
-  
-  <? }	  
 	  $vCount+=1; 
-	  } //mod
   } //while
 	
 

@@ -3378,6 +3378,7 @@ function spreadPromo(pParam){
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
 								<option value="Cash"  >Cash</option>
                                 <option value="Pembiayaan"  >Pembiayaan</option>
+                                <option value="Saldo Bonus"  >Saldo Bonus</option>
                             </select>
                            </div>
                           </div>
