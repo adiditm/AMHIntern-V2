@@ -99,6 +99,24 @@ if ($vOP == "rejectst") {
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vOngkir = $dbin->f('fongkir');
+
+	$vSQL = "select fidmember, fnostockist, fmethod from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
+	$dbin->query($vSQL);
+	$dbin->next_record();
+	$vBuyerTrx = $dbin->f('fidmember');
+	$vPayerTrx = $dbin->f('fnostockist');
+	$vMethodTrx = $dbin->f('fmethod');
+	if (trim($vPayerTrx) == '')
+		$vPayerTrx = $vBuyerTrx;
+
+	if ($vMethodTrx == 'wpr') {
+		$vLastBalBiz = $oMember->getMemFieldBis('fsaldovcr', $vPayerTrx);
+		if ($vLastBalBiz < $vTotal) {
+			$db->query("ROLLBACK;");
+			echo 'not_e_bonusbalance';
+			exit;
+		}
+	}
 	
 	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`,`fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp`) ";
 	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now(), `fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp` from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
@@ -135,9 +153,18 @@ if ($vOP == "rejectst") {
 		$db->query($vSQL);
 		
 		// Mutasi Si member
-		$vUserTrx = $vIdMem;
+		$vUserTrx = $vPayerTrx;
 		$vBuyer = $vIdMem;
 		$vNextJual = $vIdTrx;
+
+		if ($vMethodTrx == 'wpr') {
+			$vLastBal = $oMember->getMemFieldBis('fsaldovcr', $vUserTrx);
+			$vNewBal = $vLastBal - $vTotal;
+			$vsql = "insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fref) ";
+			$vsql .= "values ('$vUserTrx', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Potong Saldo Pebisnis - Approval]' , 0,$vTotal ,$vNewBal ,'reorder' , '1','$vUserTrx' , now(),0,'$vNextJual') ";
+			$db->query($vsql);
+			$oMember->updateBalConnWProdBiz($vUserTrx, $vNewBal, $db);
+		}
 		
 		$vIDMember = $oJual->getMemberByJual($vIdTrx);
 		$vJumlah = $oJual->getBuyedTot($vIdTrx);
@@ -340,9 +367,22 @@ if ($vOP == "rejectst") {
 } else if ($vOP == "unblock") {
 
 	$vIdMem = $_GET['od'];
+	$db->query("START TRANSACTION;");
 	$vSQL = "select * from m_anggota where fidmember='$vIdMem'";
-	$db->query($vSQL);
-	$db->next_record();
+	if (!$db->query($vSQL) || !$db->next_record()) {
+		$db->query("ROLLBACK;");
+		echo 'error:member_not_found';
+		exit;
+	}
+	$vAktifRow = $db->f('faktif');
+	if ($vAktifRow == '1') {
+		$db->query("ROLLBACK;");
+		echo 'error:member_already_active';
+		exit;
+	}
+	$vJenpay = trim($db->f('fjenpay'));
+	$vRegistrar = trim($db->f('fidregistrar'));
+	$vTotalAktifasi = (float)$db->f('ftotalbayar');
 	$ftgldepart = $db->f('ftgldepart');
 	$fstorawal = $db->f('fstorawal');
 	$fangsur1 = $db->f('fangsur1');
@@ -353,18 +393,75 @@ if ($vOP == "rejectst") {
 	$fairporttax = $db->f('fairporttax');
 	$fassure = $db->f('fassure');
 	$arabfassure = $db->f('arabfassure');
+
+	if ($vJenpay == 'Saldo Bonus') {
+		if ($vRegistrar == '') {
+			$db->query("ROLLBACK;");
+			echo 'error:invalid_registrar';
+			exit;
+		}
+		if ($vTotalAktifasi <= 0) {
+			$db->query("ROLLBACK;");
+			echo 'error:invalid_total_bayar';
+			exit;
+		}
+
+		$vSQL = "select fsaldovcr from m_pebisnis where fidmember='$vRegistrar' ";
+		if (!$db->query($vSQL) || !$db->next_record()) {
+			$db->query("ROLLBACK;");
+			echo 'error:registrar_not_found';
+			exit;
+		}
+
+		$vLastBalBonus = (float)$db->f('fsaldovcr');
+		if ($vLastBalBonus < $vTotalAktifasi) {
+			$db->query("ROLLBACK;");
+			echo 'error:insufficient_bonus_balance';
+			exit;
+		}
+
+		$vNewBalBonus = $vLastBalBonus - $vTotalAktifasi;
+		$vMutRef = "AKT-SB-$vIdMem";
+		$vMutDesc = "Pembayaran aktivasi jamaah $vIdMem via Saldo Bonus";
+		$vMutDesc = str_replace("'", "''", $vMutDesc);
+		$vSQL = "insert tb_mutasi(fidmember,fidfunder,ftanggal,fdesc,fcredit,fdebit,fbalance,fkind,fref) ";
+		$vSQL .= "values('$vRegistrar','$vRegistrar',now(),'$vMutDesc',0,$vTotalAktifasi,$vNewBalBonus,'aktifasi_saldobonus','$vMutRef');";
+		if (!$db->query($vSQL)) {
+			$db->query("ROLLBACK;");
+			echo 'error:db_transaction_failed';
+			exit;
+		}
+
+		$vSQL = "update m_pebisnis set fsaldovcr=fsaldovcr-$vTotalAktifasi where fidmember='$vRegistrar' ";
+		if (!$db->query($vSQL)) {
+			$db->query("ROLLBACK;");
+			echo 'error:db_transaction_failed';
+			exit;
+		}
+	}
 	
 	$vSQL = "select * from m_tour where ftgldepart='$ftgldepart' ";
-	$db->query($vSQL);
-	$db->next_record();
+	if (!$db->query($vSQL) || !$db->next_record()) {
+		$db->query("ROLLBACK;");
+		echo 'error:db_transaction_failed';
+		exit;
+	}
 	$vSisa = $db->f('fsisaseat');
 	
 	$vSQL = "update m_tour set fsisaseat=fsisaseat-1 where ftgldepart='$ftgldepart'";
-	$db->query($vSQL);
+	if (!$db->query($vSQL)) {
+		$db->query("ROLLBACK;");
+		echo 'error:db_transaction_failed';
+		exit;
+	}
 	
 	$vSQL = "INSERT INTO tb_logchange(fkdanggota, fold, fnew, ftipe, fket, fstatusrow, ftglentry) ";
 	$vSQL .= "values('$vIdMem', $vSisa, $vSisa-1, 'deduct-seat', 'Pengurangan Seat (Pendaftaran)', '1', now());";
-	$db->query($vSQL);
+	if (!$db->query($vSQL)) {
+		$db->query("ROLLBACK;");
+		echo 'error:db_transaction_failed';
+		exit;
+	}
 	
 	$vNom = 0;
 	
@@ -423,8 +520,12 @@ if ($vOP == "rejectst") {
 	
 	$vSQL = "update m_anggota set faktif='1', ftglaktif=now() where fidmember='$vIdMem' ;";
 	if($db->query($vSQL)) {
+		$db->query("COMMIT;");
 		echo 'success';
-	} else echo 'failed';
+	} else {
+		$db->query("ROLLBACK;");
+		echo 'failed';
+	}
 	
 } else if ($vOP == "unblocktab") {
 
@@ -650,37 +751,3 @@ if ($vOP == "rejectst") {
 		
 		$vSQL = "select fidmember, fidmember, ftglentry, fketerangan, fsubtotal,0,fsubtotal,fidproduk,fprocessed, '" . $_SESSION['LoginUser'] . "',now(),fidpenjualan,0,'',0,0 from tb_payment_temp where fidpenjualan='$vIdTrx';";
 		$db->query($vSQL);
-		$db->next_record();
-		$vFor = $db->f('fidproduk');
-		
-		$vSQLUpdate = "update m_anggota set $vFor = (select fsubtotal from tb_payment_temp where fidpenjualan='$vIdTrx' ) where fidmember = (select fidmember from tb_payment_temp where fidpenjualan='$vIdTrx' ) ";
-		$db->query($vSQLUpdate);
-		
-		$vSQLUpdate = "update m_anggota set ftotalbayar=fstorawal + fangsur1+ fangsur2 + fangsur3 + fangsur4 + flunas where fidmember = (select fidmember from tb_payment_temp where fidpenjualan='$vIdTrx' ) ";
-		$db->query($vSQLUpdate);
-		
-		$db->query($vSQLUpdate);
-		
-		$vSQL = "delete from tb_payment_temp where fidpenjualan='$vIdTrx'";
-		$db->query($vSQL);
-		
-		if ($db->query("COMMIT;")) {
-			echo 'successappv';
-		}
-	}
-	
-} else if ($vOP == 'markpay') {
-	// Pembayaran Bonus
-	$vSQL = "update tb_komisi set fmark='1' where fidsys='$vIdSys' ";
-	$db->query($vSQL);
-	echo 'successmark';
-	
-} else if ($vOP == "delsell") {
-	$vIdMem = $_GET['od'];
-	$vSQL = "delete from m_seller where fidseller='$vIdMem' ;";
-	if($db->query($vSQL)) {
-		echo 'success';
-	} else echo 'failed';
-}
-
-?>

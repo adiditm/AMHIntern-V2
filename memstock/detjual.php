@@ -309,7 +309,7 @@
 
 <div id="printBtn" style="position:fixed; bottom:20px; right:20px;">
 <input type="button" value="Print" onclick="printPage()" class="btn btn-primary btn-sm">
-<input type="button" value="Close" onclick="window.close()" class="btn btn-danger btn-sm" style="margin-left:5px;">
+<input type="button" value="Close" onclick="<? if ($_GET['src']=='reorder') { ?>if (window.top) { window.top.location.href='../memstock/etaprod.php'; } else { document.location.href='../memstock/etaprod.php'; }<? } else { ?>window.close();<? } ?>" class="btn btn-danger btn-sm" style="margin-left:5px;">
 </div>
 
 <script>

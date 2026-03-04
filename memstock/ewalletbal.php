@@ -84,7 +84,7 @@ if ($vPriv=='sponsor')
 
 
 
-  $vSQL="select count(*) as fjumrec from tb_mutasi where fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction') and fidmember='$vUserChoosed' $vCrit";
+  $vSQL="select count(*) as fjumrec from tb_mutasi where fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus') and fidmember='$vUserChoosed' $vCrit";
 
  
 
@@ -413,7 +413,7 @@ table td {
 
 			   
 
-			    $vSQL="select * from tb_mutasi where   fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction') and fidmember='$vUserChoosed' ";
+			    $vSQL="select * from tb_mutasi where   fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus') and fidmember='$vUserChoosed' ";
 
 				$vSQL.=$vCrit;
 				
@@ -476,7 +476,7 @@ table td {
 				$vTanggal1st = $db->f("ftanggal");
 				if ($vIdSys=='') $vIdSys=0;
 							 			
-				 $vSQLOpBal="select sum(fcredit-fdebit) as fopbal from tb_mutasi where  fidmember='$vUserChoosed'  and fidsys < '$vIdSys1st' and fkind in ('ktp','spon','reg','withdraw','transin','transout','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction')";				
+				 $vSQLOpBal="select sum(fcredit-fdebit) as fopbal from tb_mutasi where  fidmember='$vUserChoosed'  and fidsys < '$vIdSys1st' and fkind in ('ktp','spon','reg','withdraw','transin','transout','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus')";				
 				
 			//	if ($vMarkDev !='') echo $vSQLOpBal."<br>";
 				

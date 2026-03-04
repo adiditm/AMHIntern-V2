@@ -3034,9 +3034,10 @@ function removeSpecChar(e) {
                                     <div class="input-group">
                                       <span class="input-group-addon"> <i class="fa fa-money"></i></span>
                             <select class="form-control m-bot15" id="fjenpay" name="fjenpay">
-                                <option  value="" selected="selected" >--Pilih / Choose--</option>
+                                <option  value="" <? if(trim($vJenpayL)=='') echo "selected";?> >--Pilih / Choose--</option>
 								<option value="Cash" <? if($vJenpayL == 'Cash')  echo "selected";?>  >Cash</option>
                                 <option value="Pembiayaan" <? if($vJenpayL == 'Pembiayaan')  echo "selected";?>  >Pembiayaan</option>
+                                <option value="Saldo Bonus" <? if($vJenpayL == 'Saldo Bonus')  echo "selected";?>  >Saldo Bonus</option>
                             </select>
                            </div>
                           </div>

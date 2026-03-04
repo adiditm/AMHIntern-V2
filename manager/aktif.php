@@ -616,14 +616,26 @@ function doUnblock(pParam,pIDTr) {
 	  var vURL='../manager/processing_ajax.php?current=<?=$vCurrent?>&op=unblock&od='+pParam;
 
 	  $.get(vURL,function(data){
+		  var vResp=$.trim(data);
 
-		  if (data=='success') {
+		  if (vResp=='success') {
 
 			alert('Member '+pParam+' already activated!')  ;
 			document.location.href='../manager/aktif.php?op=&current=mdm_admin&menu=mdm_admin_verify';
 
 			$('#tr'+pIDTr).css("background-color", "yellow"); 
 
+		  } else {
+			var vErr=vResp;
+			if (vResp=='error:member_already_active') vErr='Member sudah aktif.';
+			else if (vResp=='error:insufficient_bonus_balance') vErr='Aktivasi ditolak: saldo bonus pebisnis tidak cukup.';
+			else if (vResp=='error:invalid_registrar') vErr='Aktivasi ditolak: ID pebisnis (fidregistrar) tidak valid.';
+			else if (vResp=='error:invalid_total_bayar') vErr='Aktivasi ditolak: total biaya aktivasi tidak valid.';
+			else if (vResp=='error:registrar_not_found') vErr='Aktivasi ditolak: data pebisnis (fidregistrar) tidak ditemukan.';
+			else if (vResp=='error:member_not_found') vErr='Aktivasi ditolak: data member tidak ditemukan.';
+			else if (vResp=='error:db_transaction_failed') vErr='Aktivasi gagal: proses database tidak berhasil.';
+			else if (vResp=='failed' || vResp=='') vErr='Aktivasi gagal.';
+			alert(vErr);
 		  }
 
 	  }); 
@@ -1330,7 +1342,8 @@ only screen and (max-width: 760px),
         <td width="150" align="center">Tgl. Berangkat</td>
 
 
-        <td width="150">Total Pembayaan</td>
+	        <td width="150" align="center">Jenis Pembiayaan</td>
+	        <td width="150">Total Pembayaran</td>
 
         <td width="150" class="ide"><div align="center">Referensi</div></td>
         <td width="150" class="ide">Pendaftar</td>
@@ -1621,18 +1634,17 @@ only screen and (max-width: 760px),
         <td  nowrap style="height: 39px;<? if ($db->f('fpriv')=='1') echo 'background-color:#ccc';?>" align="center"><?=$oPhpdate->YMD2DMY($db->f('ftgldepart'))?> <br>Sisa seat: <?=$vSeat?></td>
 
 
-        <td  style="height: 39px;<? if ($db->f('fpriv')=='1') echo 'background-color:#ccc';?>"><div align="right">
-          
-          <?
-          
-		  	//number_format($db->f('ftotalbayar'),0,",",".");
-		  	$vSQL = "select sum(fcredit) as total from tb_payhist where fidmember='".$db->f('fidmember')."'";
-			$dbin->query($vSQL);
-			$dbin->next_record();
-			echo number_format($dbin->f('total'),0,",",".");
-		  ?>
-          
-        </div></td>
+	        <td  style="height: 39px;<? if ($db->f('fpriv')=='1') echo 'background-color:#ccc';?>"><div align="left">
+	          <?=trim($db->f('fjenpay'))==''?'-':$db->f('fjenpay')?>
+	        </div></td>
+
+	        <td  style="height: 39px;<? if ($db->f('fpriv')=='1') echo 'background-color:#ccc';?>"><div align="right">
+	          
+	          <?
+			  	echo number_format($db->f('ftotalbayar'),0,",",".");
+			  ?>
+	          
+	        </div></td>
 
         <td nowrap align="center" class="" style="height: 39px;<? if ($db->f('fpriv')=='1') echo 'background-color:#ccc';?>"><div align="left">
 
@@ -1667,7 +1679,7 @@ only screen and (max-width: 760px),
 
 
 
-        <td colspan="6" align="right" style="font-weight:bold">
+	        <td colspan="7" align="right" style="font-weight:bold">
           
           
           

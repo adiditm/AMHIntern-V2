@@ -44,7 +44,7 @@ if ($vCount=='') $vCount=1;
    if ($vRef =='')
       $vRef = $vUser;
    
-   $vKotaAsal = $oMember->getMemFieldSell('fkec',$vSeller);
+   $vKotaAsal = $oMember->getMemFieldSell('fkota',$vSeller);
    $vHrgEco = $oRules->getSettingByField('fhrgeco');
    $vHrgBus = $oRules->getSettingByField('fhrgbus');
    $vHrgFirst = $oRules->getSettingByField('fhrgfirst');
@@ -71,7 +71,7 @@ if ($vCount=='') $vCount=1;
    $vTreshUp = $oRules->getSettingByField('ftreshup');
    $vTreshMaster = $oRules->getSettingByField('ftreshmaster');
    $vByyAdmin = $oRules->getSettingByField('fbyyadmin');
-   $vSalProd = $oMember->getMemFieldAdm('fsaldovcr',$vUser);
+   $vSalProd = $oMember->getMemFieldBis('fsaldovcr',$vUser);
    $vOngkir = $_POST['tfOngkir'];
   // $vSalProd = 8000000;
   //$vSalProd = 5000000;
@@ -91,19 +91,23 @@ if ($vCount=='') $vCount=1;
     $oSystem->smtpmailer('japri_s@yahoo.com',$vMailFrom,'Onotoko',"Entri RO Onotoko by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true),'','',false);
 	$db->query('START TRANSACTION;');
     $vTotItem=0;
-	if ($lmMethod=='ctr' || $lmMethod=='tva')
+	if ($lmMethod=='ctr' || $lmMethod=='tva' || $lmMethod=='wpr')
 	   $vMainTable='tb_trxstok_member_temp';
-	else if ($lmMethod=='wpr')  
-	   $vMainTable='tb_trxstok_member';
 	   
 	$vTotal=$_POST['hTotal'];
+	if ($lmMethod=='wpr') {
+		$vSalBizNow = $oMember->getMemFieldBis('fsaldovcr',$vUser);
+		if ($vSalBizNow < $vTotal) {
+			$db->query('ROLLBACK;');
+			$oSystem->jsAlert("Saldo bonus pebisnis tidak cukup untuk melakukan order!");
+			exit;
+		}
+	}
 	   
     while (list($key,$val) = each($_SESSION['save'])) {
         //print_r($val);
          if ($vSeller == '')  $vSeller = $_POST['hSeller'];
-		if ($lmMethod == 'wpr')
-			$vProcessed = '2';
-		else if($lmMethod == 'ctr' || $lmMethod == 'tva')
+		if($lmMethod == 'ctr' || $lmMethod == 'tva' || $lmMethod == 'wpr')
 			$vProcessed = '0';
 			
     	 $vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed, fongkir, fberat, fcountry, fprop, fkota, fkec, fexpe, fpack, frecnohp, frecname)";
@@ -111,250 +115,16 @@ if ($vCount=='') $vCount=1;
   	 	
   	 	$db->query($vSQL);
   	 	$vTotItem+=$val['txtJml'];
-		
-
- 
-    if ($lmMethod=='wpr') {
-	//Stock Position Seller
-			$vLastBal = $oMember->getStockPosUnig($vSeller,$val['lmKode']);
-			$vNewBal=$vLastBal - $val['txtJml'];
-			$vSQL="insert into tb_mutasi_stok(fidmember, fidproduk, fsize,fcolor, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate, fref) ";	  	 	
-			$vSQL .="values('$vSeller','".$val['lmKode']."','".$val['lmSize']."','".$val['lmColor']."','$vBuyer',now(), 'RO Sales [$vBuyer]',0 ,".$val['txtJml'].",$vNewBal,'JRO','1' , '$vUser',now(), '$vNextJual');";//belum selesai
-			$db->query($vSQL);
-			
-			$vSQL="update tb_stok_position set fbalance=fbalance-".$val['txtJml']." where fidmember='$vSeller' and fidproduk='".$val['lmKode']."'";
-			$db->query($vSQL);
-
-
-			//$oNetwork->sendFeeTitikCompress($vBuyer,20,$vTotal,$vNextJual);			
-	} else if ($lmMethod=='tva') {
-		
-	}
- 	    
-  	    
-    }
-  	  
-
-
-
-		
-		
-
-		if ($lmMethod=='wpr') {
-			
-			//Mutasi Si member
-
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vUser);
-			$vNewBal=$vLastBal - $vTotal;
-
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fref) "; 
-			$vsql.="values ('$vUser', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Dengan Saldo] ' , 0,$vTotal ,$vNewBal ,'reorder' , '1','$vUser' , now(),0,'$vNextJual') "; 
-			$db->query($vsql); 
-			$oMember->updateBalConnWProd($vUser,$vNewBal,$db);
-
-
-//Prepare values\
-    $vProsenFeeSpon = $oRules->getSettingByField('fprosensponb');
-	$vBelanja = $vTotal;
-    $vSponFee = $vBelanja * $vProsenFeeSpon /100;
-	// $vSponFee = $oRules->getSettingByField('fprosenspon') * 1800000 / 100;
-	$vPresFee = $vBelanja * $oRules->getSettingByField('fpresfeeb') / 100;
-	$vSponsor = $oNetwork->getSponsor($vUser);	
-    $vResSponsor=$vSponsor;
-//	$vResPres = $oMember->getMemField('fidrespres',$vUser);
-	$vFeeAdmin=$oRules->getSettingByField('fbyyadmin');
-	$vProsenCash=$oRules->getSettingByField('fprosencash');
-	$vProsenWProd=$oRules->getSettingByField('fprosenwprod');
-	$vMaxWProd=$oRules->getSettingByField('fmaxwprod');
-	$vVAT=$oRules->getSettingByField('fvat');
-	//$vProsenWKit=$oRules->getSettingByField('fprosenwkit');
-	//$vProsenWAcc=$oRules->getSettingByField('fprosenwacc');
-	$vProsenTaxNPWP=$oRules->getSettingByField('ftaxnpwp');
-	$vProsenTaxNonNPWP=$oRules->getSettingByField('ftaxnonpwp');
-	
-	/*$vNPWPSpon = $oMember->getMemField('fnpwp',$vResSponsor);
-	if (trim($vNPWPSpon) != '')
-	   $vProsenTax = $vProsenTaxNPWP;
-	else    
-	   $vProsenTax = $vProsenTaxNonNPWP;*/
-	$vProsenTax=0;   
-	//$vMaxMaRO = $oRules->getSettingByField('fmaxrowal');
-	
-	
-   // $vTotBelanja=$oMember->getMemField('ftotbelanja',$pID);
-    //$vPaket=$oMember->getMemField('fpaket',$pID);
-    //$vBonusRO=35000;
-    
-    
-    //$vSponFee=$oRules->getSettingByField('fsponfee');
-   $vPTKPMonth=$oRules->getSettingByField('fptkp');
-   $vPTKPYear=$oRules->getSettingByField('fptkpy');
-   $vProsenNormaPPH=$oRules->getSettingByField('fnormapph');
-   $vProsenAdm=$oRules->getSettingByField('ffeeadmin');
-	
-    
- 
-	$vSponFeeCash=$vSponFee * $vProsenCash / 100;
-	$vSponFeeWProd=$vSponFee * $vProsenWProd / 100;
-
-	$vPresFeeCash=$vPresFee * $vProsenCash / 100;
-	$vPresFeeWProd=$vPresFee * $vProsenWProd / 100;
-
-//=============Income Sponsor===================//
-			//$vProsenAdm=0;
-		    $vYearMonth=substr(date("Y-m-d"),0,7);
-			$vYear=substr(date("Y-m-d"),0,4);
-		    $vIncomeMonth = $oKomisi->getBonusMonth($vResSponsor,$vYearMonth);
-			$vIncomeYear = $oKomisi->getBonusYear($vResSponsor,$vYear);
-
-		    $vIncomeMonthPres = $oKomisi->getBonusMonth($vResPres,$vYearMonth);
-			$vIncomeYearPres = $oKomisi->getBonusYear($vResPres,$vYear);
-
-			$vSponFeeAdm=$vSponFeeCash * ($vProsenAdm / 100);
-			$PresFeeAdm=$vPresFeeCash * ($vProsenAdm / 100);
-
-			if ($vIncomeMonth >= $vPTKPMonth || $vIncomeYear >= $vPTKPYear) {
-		  	    $vTaxPPH = $vSponFeeCash  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vSponFeeCashNett = $vSponFeeCash - $vTaxPPH - $vSponFeeAdm;
-				
-				
-				$vFeeID .= " nett with PPH $vProsenNormaPPH%";
-			} else {
-			    $vTaxPPH = 0;
-				$vSponFeeCashNett = $vSponFeeCash - $vTaxPPH - $vSponFeeAdm;
-				$vFeeID .= " nett ";
-			}
-			
-			
-			if ($vIncomeMonthPres >= $vPTKPMonth || $vIncomeYearPres >= $vPTKPYear) {
-		  	    $vTaxPPH = $vPresFeeCash  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vPresFeeCashNett = $vPresFeeCash - $vTaxPPH - $vPresFeeAdm;
-				
-				
-				$vFeeID .= " nett with PPH $vProsenNormaPPH%";
-			} else {
-			    $vTaxPPH = 0;
-				$vPresFeeCashNett = $vPresFeeCash - $vTaxPPH - $vPresFeeAdm;
-				$vFeeID .= " nett ";
-			}			
-//=============Income Sponso & Presr===================//
-	
-//Sponsor
-			//$vSponsor = $oNetwork->getSponsor($vUser);	
-		    $vsql="insert into tb_kom_spon(fidsponsor,fidregistrar,ffee,ftanggal,ffeestatus) ";
-			$vsql.="values ('$vSponsor','$vUser',$vSponFee,now(),'BSRO')"; //Masukkan komisi sponsor
-			$db->query($vsql);   
-
-//presenter
-			
-		    $vsql="insert into tb_kom_spon(fidsponsor,fidregistrar,ffee,ftanggal,ffeestatus) ";
-			$vsql.="values ('$vResPres','$vUser',$vPresFee,now(),'BPRO')"; //Masukkan komisi Presenter
-			$db->query($vsql);   
-			
-			
-//Mutasi Saldo
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vSponsor);
-			//$vLastBalWprod=$oMember->getMemField('fsaldowprod',$vSponsor);
-			
-			if ($vLastBalWprod >= $vMaxWProd) {
-					 $vTaxPPH =($vSponFeeCash + $vSponFeeWProd)  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-					 $vSponFeeCashNett =($vSponFeeCash + $vSponFeeWProd)  - $vTaxPPH - $vSponFeeAdm;				 
-					
-			}
-			
-			$vNewBal=$vLastBal + $vSponFeeCashNett;
-			$vUserL=$_SESSION['LoginUser'];
-			if (trim($vUserL) == '')
-			   $vUserL='newreg';
-			
-			$vVATNom = $vBelanja * $vVAT / 100;
-			$vsql="insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fvat) "; 
-			$vsql.="values ('$vSponsor', '$vUser', now(),'Bonus sponsor RO [$vUser] $vFeeID' , $vSponFeeCashNett,0 ,$vNewBal ,'sponb' , '1','$vUserL' , now(),$vTaxPPH,0) "; 
-			$db->query($vsql); 
-			$oMember->updateBalConn($vSponsor,$vNewBal,$db);
-			
-//Presenter
-
-
-			$vLastBalWprod=$oMember->getMemFieldAdm('fsaldovcr',$vSponsor);
-			
-			if ($vLastBalWprod >= $vMaxWProd) {
-		  	    $vTaxPPH = ($vPresFeeCash + $vPresFeeWProd)  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vPresFeeCashNett = ($vPresFeeCash + $vPresFeeWProd) - $vTaxPPH - $vPresFeeAdm;
-					
-			}
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vResPres);
-
-
-
-			$vNewBal=$vLastBal + $vPresFeeCashNett;
-			$vUserL=$_SESSION['LoginUser'];
-			if (trim($vUserL) == '')
-			   $vUserL='newreg';
-
-			$vsql="insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fvat) "; 
-			$vsql.="values ('$vResPres', '$vUser', now(),'Bonus presenter RO [$vUser] $vFeeID' , $vPresFeeCashNett,0 ,$vNewBal ,'presb' , '1','$vUserL' , now(),$vTaxPPH,0) "; 
-			$db->query($vsql); 
-			$oMember->updateBalConn($vResPres,$vNewBal,$db);
-			
-			
-		
-			//Wallet Prod
-			$vLastBal=$oMember->getMemFieldAdm('fsaldowprod',$vSponsor);
-
-			if ($vLastBal >= $vMaxWProd) {
-				  $vSponFeeWProd = 0;
-				  $vDescX = "Bonus sponsor RO [$vUser] - cutoff";
-			} else    $vDescX = "Bonus sponsor RO [$vUser]";
-
-			
-			$vNewBal=$vLastBal + $vSponFeeWProd;
-
-		 //Wallet Product
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax) "; 
-			$vsql.="values ('$vSponsor', '$vUser', now(),'$vDescX' , $vSponFeeWProd,0 ,$vNewBal ,'sponb' , '1','$vUserL' , now(),0) "; 
-			
-			if ($vSponFeeWProd >0)
-					$db->query($vsql); 
-			
-			$oMember->updateBalConnWProd($vSponsor,$vNewBal,$db);
-
-
-
-			//Wallet Prod
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vResPres);
-
-			if ($vLastBal >= $vMaxWProd) {
-				  $vPresFeeWProd = 0;
-				  $vDescX = "Bonus presenter RO [$vUser] - cutoff";
-			} else    $vDescX = "Bonus presenter RO [$vUser]";
-			
-			$vNewBal=$vLastBal + $vPresFeeWProd;
-
-		 //Wallet Product
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax) "; 
-			$vsql.="values ('$vResPres', '$vUser', now(),'$vDescX ' , $vPresFeeWProd,0 ,$vNewBal ,'presb' , '1','$vUserL' , now(),0) "; 
-			if ($vPresFeeWProd >0)
-				$db->query($vsql); 
-			
-			$oMember->updateBalConnWProd($vResPres,$vNewBal,$db);
-
-//===========End Mutasi Saldo ============= //			
-
-
-
-
 		}
+  	  
+		
     
 
     
     $db->query('COMMIT;');
 	$oSystem->sendSMS($tfPhoneSpon,"ONOTOKO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
      if ($lmMethod=='wpr')
-	    $oSystem->jsAlert("Order Sukses dengan ID $vNextJual!");
+	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
 	 else if ($lmMethod=='ctr')	
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
 	 else if ($lmMethod=='tva') {
@@ -427,17 +197,11 @@ if ($vCount=='') $vCount=1;
 		}
 		
 	//$oSystem->jsLocation('../manager/indexnonadmin.php');	
-?>
-<script language="javascript">
-
-function printTrx(pParam,pTgl,pIDMem) {
-	var vURL='../memstock/detjual.php?uNoJual='+pParam+'&uTanggal='+pTgl+'&uIDMember='+pIDMem;
-	window.open(vURL,'wPrint','width=900 height=600');
-}
-
-printTrx('<?=$vNextJual?>','<?=date('Y-m-d')?>','<?=$vUser?>');
-</script>
-<?
+	?>
+	<script language="javascript">
+	window._receiptUrl = '../memstock/detjual.php?uNoJual=<?=$vNextJual?>&uTanggal=<?=date('Y-m-d')?>&uIDMember=<?=$vUser?>&src=reorder';
+	</script>
+	<?
      //$oSystem->jsLocation("../memstock/reorder.php");
    }   
  
@@ -636,6 +400,11 @@ $(document).ready(function(){
 	//doAdd('<?=$vProd?>');
 	<? } ?>
 //	$('#tfBerat').val($('#hTotWeight').val());
+
+	if (window._receiptUrl) {
+		$('#receiptFrame').attr('src', window._receiptUrl);
+		$('#btnReceiptModal').trigger('click');
+	}
 	
 });
 
@@ -1334,17 +1103,10 @@ function zeroOngkir(){
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Expedisi*</span></label>
   <select class="form-control m-bot15 " id="fexpe" name="fexpe" onChange="getPaket(this);zeroOngkir()">
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                <option value="jne">JNE</option>
-									<option value="pos">POS Indonesia</option>
-									<option value="tiki">TIKI</option>
-									<!-- <option value="jt">J&amp;T Express</option> -->
-									<option value="sicepat">SiCepat Express</option>
-									<option value="ninja">Ninja Xpress</option>
-									<!-- <option value="lionparcel">Lion Parcel</option> -->
-									<option value="ide">ID Express</option>
-									<option value="anteraja">AnterAja</option>
-									<option value="wahana">Wahana</option>
-									<option value="sap">SAP Express</option>
+                                <option  value="jne">JNE</option>
+                                <option  value="jnt">JNT</option>
+                                <option  value="wahana">Wahana</option>
+                                <option  value="pos">POS Indonesia</option>
 								</select>
 								
                                </div>                               
@@ -1606,6 +1368,7 @@ function zeroOngkir(){
 	<!-- end page container -->
 	
 	<button type="button" class="btn btn-info btn-lg" style="display:none" id="btnModal" data-toggle="modal" data-target="#dialogModal" data-backdrop="static">Open Modal</button>
+	<button type="button" class="btn btn-info btn-lg" style="display:none" id="btnReceiptModal" data-toggle="modal" data-target="#receiptModal" data-backdrop="static">Open Receipt Modal</button>
 
 <div class="modal fade " id="dialogModal" role="dialog">
     <div class="modal-dialog">
@@ -1633,7 +1396,190 @@ function zeroOngkir(){
           <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
            <input type="hidden" id="hKind" name="hKind" value="" />
 
-          <button type="button" id="btClose" name="btClose" class="btn btn-default" data-dismiss="modal" onClick="document.location.href='../manager/indexnonadmin.php';">Close</button>
+          <button type="button" id="btClose" name="btClose" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<div class="modal fade" id="receiptModal" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onClick="document.location.href='../memstock/etaprod.php';">&times;</button>
+          <h4 class="modal-title">Receipt Transaksi</h4>
+          <div style="margin-top:8px;font-weight:bold;">Status : <span style="color:#d9534f;">[Pending]</span></div>
+        </div>
+        <div class="modal-body" style="padding: 10px;">
+          <iframe id="receiptFrame" src="" style="width:100%;height:70vh;border:0;"></iframe>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<? include_once("../framework/member_footside.blade.php") ; ?>
+ style="height: 30px;text-align:right"> 
+                                <input name="txtJml" id="txtJml" class="form-control"  type="text" dir="rtl" style="display:none;min-width:55px;text-align:right" size="10" onKeyUp="calcSub(this)" onBlur="calcSub(this)" >                                
+                                
+                                </th>
+                                <th style="height: 30px; width: 10%;text-align:right" align="right" id="thJmlItem" class="hide"> 
+                                
+                                
+
+                                </th>
+                                <th style="width: 104px; height: 30px;text-align:right" id="thHarga" align="right"></th>
+                                <th align="right" id="thSubTot" style="height: 30px; width: 94px;text-align:right"></th>
+                                <th align="center" id="thSubTot" style="height: 30px"><input id="btSaveRow" type="button" onClick="return doSaveRow()" class="btn btn-success btn-sm" value="Save Item" style="display:none"/></th>
+                                <th style="display:none; height: 30px;"></th><input type="hidden" name="hSubTot" id="hSubTot" value="" /></th>
+                            </tr>
+                            <tr>
+                                <td style="width: 33px">&nbsp;<input type="hidden"  id="hHarga" name="hHarga" value="">
+                                <td style="width: 33px">&nbsp;<input type="hidden"  id="hWeight" name="hWeight" value="">
+                   
+                                <input type="hidden"  id="hItemSat" name="hItemSat" value="">
+                                <input type="hidden"  id="hQoh" name="hQoh" value="">
+                                <input type="hidden" name="hJmlItem" id="hJmlItem" value="" /> 
+                                </td>
+                                <td align="left" style="width: 208px" colspan="2"><input disabled="disabled" id="btAdd" type="button" onClick="doAdd()" class="btn btn-info btn-sm hide" value="Add Item +"/>&nbsp;<input type="button" onClick="doCancel()" class="btn btn-default btn-sm" value="Cancel" id="btCancel" style="display:none"/></td>
+                                <td align="left" id="tdLoad" class="hide">&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style="width: 10%" class="hide">&nbsp;</td>
+                                <td style="width: 104px">&nbsp;</td>
+                                <td style="width: 94px">&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>        
+        </div> <!--body-->
+   </div>    <!--panel --> 
+        
+        
+                            <div class="col-md-6 form-group ">
+
+										<label style="font-weight:bold">Total Purchased : <span id="totalpurc"></span> <span id="spcurr">IDR</span><span id="samaconvert"></span><span id="convert"></span><span id="currconvert"></span></label> 
+
+       <div class="row">
+       <div class="col-lg-4">
+       
+         <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
+         <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
+           <option value="">--Pilih--</option>
+           <option value="ctr">Cash / Transfer</option>
+           <option value="wpr">Saldo Bonus</option>
+		   <? if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
+           <option value="tva">Transfer Virtual Account</option>
+		   <? } ?>
+           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
+         </select>
+       </div>
+       
+      <div class="col-lg-6">
+       <img id="loadRek"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
+         <label style="color:blue" for="lmMethod">Rekening</label>
+         <select name="lmBank" id="lmBank" class="form-control" required  >
+           <option value="">--Pilih--</option>
+           <option value="CASH">Cash</option>
+           <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
+           <option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option>
+           <option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>
+           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
+         </select>
+       </div>       
+       </div>									
+                                    <div class="form-inline" id="divCurr" style="display:none"> <label style="font-weight:bold">Currency : </label>	 <select name="lmCurr" id="lmCurr" class="form-control" style="width:85px;" onChange="setCurr(this.value,$('#hTotal').val());">
+                     <?
+                         $vSQL="select distinct  frateto from tb_exrate order by frateto";
+						 $db->query($vSQL);
+						 while ($db->next_record()) {
+							 $vCurr=$db->f('frateto');
+					 ?>
+                         <option value="<?=$vCurr?>" <? if ($vCurr==$vCurrTo) echo 'selected'; ?>><?=$vCurr?></option>
+                     
+                     <? } ?>
+                     </select> </div><br><br>
+
+                            			<input type="hidden" name="hTotal" id="hTotal" value="" />
+
+										<input type="hidden" name="hPost" id="hPost" value="1" />
+                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button> <div id="divLoad" style="display:inline"></div>
+                            </div>
+                       
+ </form>     
+ <br>
+ <br>
+  <br>
+ <br>                          
+  <br>
+ <br>                          
+ <br>                          
+  <br>
+ <br> 
+
+<!-- Placed js at the end of the document so the pages load faster -->
+
+<script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="../js/jquery-migrate-1.2.1.min.js"></script>
+
+<script src="../js/modernizr.min.js"></script>
+<script src="../js/jquery.nicescroll.js"></script>
+<script src="../js/jquery.price_format.js"></script>
+
+
+
+
+<script type="text/javascript" src="../js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="../js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../js/bootstrap-daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="../js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script type="text/javascript" src="../js/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+<!--common scripts for all pages-->
+<script src="../js/pickers-init.js"></script>
+<script src="../js/scripts.js"></script>
+
+
+		
+		<!-- begin scroll to top btn -->
+		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+		<!-- end scroll to top btn -->
+	</div>
+	<!-- end page container -->
+	
+	<button type="button" class="btn btn-info btn-lg" style="display:none" id="btnModal" data-toggle="modal" data-target="#dialogModal" data-backdrop="static">Open Modal</button>
+
+<div class="modal fade " id="dialogModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="modalhead">Selesaikan Pembayaran Virtual Account</h4>
+        </div>
+        <div class="modal-body " style="padding: 2em 4em 3em 4em">
+        <div class="row">
+             <div class="col-lg-12" id="divContent">
+                
+             </div>
+           
+          </div>
+          
+
+
+
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="hIdSys" name="hIdSys" value="" />
+          <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
+           <input type="hidden" id="hKind" name="hKind" value="" />
+
+          <button type="button" id="btClose" name="btClose" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';">Close</button>
         </div>
       </div>
       
@@ -1641,3 +1587,4 @@ function zeroOngkir(){
   </div>
   
 <? include_once("../framework/member_footside.blade.php") ; ?>
+_once("../framework/member_footside.blade.php") ; ?>
