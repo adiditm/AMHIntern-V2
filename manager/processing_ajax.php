@@ -751,3 +751,37 @@ if ($vOP == "rejectst") {
 		
 		$vSQL = "select fidmember, fidmember, ftglentry, fketerangan, fsubtotal,0,fsubtotal,fidproduk,fprocessed, '" . $_SESSION['LoginUser'] . "',now(),fidpenjualan,0,'',0,0 from tb_payment_temp where fidpenjualan='$vIdTrx';";
 		$db->query($vSQL);
+		$db->next_record();
+		$vFor = $db->f('fidproduk');
+		
+		$vSQLUpdate = "update m_anggota set $vFor = (select fsubtotal from tb_payment_temp where fidpenjualan='$vIdTrx' ) where fidmember = (select fidmember from tb_payment_temp where fidpenjualan='$vIdTrx' ) ";
+		$db->query($vSQLUpdate);
+		
+		$vSQLUpdate = "update m_anggota set ftotalbayar=fstorawal + fangsur1+ fangsur2 + fangsur3 + fangsur4 + flunas where fidmember = (select fidmember from tb_payment_temp where fidpenjualan='$vIdTrx' ) ";
+		$db->query($vSQLUpdate);
+		
+		$db->query($vSQLUpdate);
+		
+		$vSQL = "delete from tb_payment_temp where fidpenjualan='$vIdTrx'";
+		$db->query($vSQL);
+		
+		if ($db->query("COMMIT;")) {
+			echo 'successappv';
+		}
+	}
+	
+} else if ($vOP == 'markpay') {
+	// Pembayaran Bonus
+	$vSQL = "update tb_komisi set fmark='1' where fidsys='$vIdSys' ";
+	$db->query($vSQL);
+	echo 'successmark';
+	
+} else if ($vOP == "delsell") {
+	$vIdMem = $_GET['od'];
+	$vSQL = "delete from m_seller where fidseller='$vIdMem' ;";
+	if($db->query($vSQL)) {
+		echo 'success';
+	} else echo 'failed';
+}
+
+?>

@@ -129,6 +129,7 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
    var vURL='../manager/processing_ajax.php?op=approvesell&idsys='+pIdSys+'&idtrx='+pIdTrx+'&noresi='+vResi+'&kind='+pKind;
    var vNotEnough = /notenough/g;
    var vNotEnoughBal=/not_e_deposit/g
+   var vNotEnoughBonus=/not_e_bonusbalance/g
    if (confirm('Are you sure to approve Penjualan '+pIdTrx+'?')) {
 	   $.get(vURL,function(data) {
 	      if(data.trim()=='successappv') {
@@ -145,6 +146,9 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
 		  }  else if (vNotEnoughBal.test(data.trim())) {
 			 
 			 alert('Approval failed, saldo reseller tidak cukup!');   
+			// $('#dialogModal').hide();
+		  }  else if (vNotEnoughBonus.test(data.trim())) {
+			 alert('Approval failed, saldo bonus / saldo pebisnis member tidak cukup!');
 			// $('#dialogModal').hide();
 		  }
 	   });
@@ -304,12 +308,14 @@ function doReject(pIdSys,pIdTrx) {
        $vPaid = $dbin->f('fpaid');
        $vSend = $dbin->f('fsend');  
 
-       if ($vStat=='0' && $vPaid=='0')
+       if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
           $vStatus='Pending';
         else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
           $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
+        else if ($vStat=='0' && $vMethod == 'wpr')
+          $vStatus='Pending';
         else if ($vStat=='1')   
             $vStatus='Approved';
         else if ($vStat=='4')  
@@ -383,7 +389,7 @@ function doReject(pIdSys,pIdTrx) {
 			</div></td>
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
-            <input <? if (!($vStat=='0' && $vPaid=='1' && $vSend =='1') && $vMethod != 'ctr') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;
+            <input <? if (!($vStat=='0' && $vPaid=='1' && $vSend =='1') && $vMethod != 'ctr' && !($vStat=='0' && $vMethod == 'wpr')) echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;
             <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } ?>  
         <input type="button" class="btn btn-xs btn-success" name="button" id="button" value="Detail Receipt" onClick="printTrx('<?=$vIdTrx?>','<?=$vTanggal?>','<?=$vIdMember?>')">
             </td>  
@@ -452,8 +458,8 @@ function doReject(pIdSys,pIdTrx) {
 
 <!-- Placed js at the end of the document so the pages load faster -->
 
-<script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="../js/jquery-migrate-1.2.1.min.js"></script>
+
+
 
 <script src="../js/modernizr.min.js"></script>
 <script src="../js/jquery.nicescroll.js"></script>
@@ -468,11 +474,4 @@ function doReject(pIdSys,pIdTrx) {
 <script type="text/javascript" src="../js/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="../js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
 <script type="text/javascript" src="../js/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-<!--common scripts for all pages-->
-<script src="../js/pickers-init.js"></script>
-<script src="../js/scripts.js"></script>
-
-</div>
-	<!-- end page container -->
-	
-<? include_once("../framework/admin_footside.blade.php") ; ?>
+<!--common scripts for all

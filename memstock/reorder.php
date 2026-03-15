@@ -1415,7 +1415,6 @@ function zeroOngkir(){
           <iframe id="receiptFrame" src="" style="width:100%;height:70vh;border:0;"></iframe>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';">Close</button>
         </div>
       </div>
     </div>

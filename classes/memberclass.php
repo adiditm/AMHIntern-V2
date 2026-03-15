@@ -5222,6 +5222,16 @@ function changeBalBis($pId,$pAmt,$pDK) {
 
 		}
 
+	function updateBalConnWProdBiz($pId,$pBal,$pConn) {
+
+		     global $oDB; 
+
+  			 $vsql="update m_pebisnis set fsaldovcr=$pBal where fidmember='$pId' ";	
+
+			 $pConn->query($vsql);		
+
+		}
+
 
 
 

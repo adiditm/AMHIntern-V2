@@ -255,11 +255,11 @@ function doReject(pIdSys,pIdTrx) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus  from tb_trxstok_member where   1  and fidmember='{$_SESSION['LoginUser']}' "; 
+			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fmethod  from tb_trxstok_member where   1  and fidmember='{$_SESSION['LoginUser']}' "; 
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus  from tb_trxstok_member_temp where  1   and fidmember='{$_SESSION['LoginUser']}'"; 
+			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fmethod  from tb_trxstok_member_temp where  1   and fidmember='{$_SESSION['LoginUser']}'"; 
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -283,6 +283,7 @@ function doReject(pIdSys,pIdTrx) {
 				 $vKet=$db->f('fketerangan');
 				// $vOngkir=$db->f('fongkir');
 				 $vStat=$db->f('fstatus');
+				 $vMethod=$db->f('fmethod');
 				 $vIdSys=$db->f('fidsys');
 				 $vIdTrx=$db->f('fidpenjualan');
 				  $vIdProd=$oJual->getKindProd($vIdTrx);
@@ -305,12 +306,14 @@ function doReject(pIdSys,pIdTrx) {
         $vPaid = $dbin->f('fpaid');
         $vSend = $dbin->f('fsend');
 
-        if ($vStat=='0' && $vPaid=='0')
+        if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
           $vStatus='Pending';
         else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
           $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
+        else if ($vStat=='0' && $vMethod == 'wpr')
+          $vStatus='Pending';
         else if ($vStat=='1')   
             $vStatus='Approved';
         else if ($vStat=='4')  

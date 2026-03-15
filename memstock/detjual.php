@@ -229,16 +229,31 @@
     <tr>
       <td colspan="5" align="rifght">Biaya Pengiriman (<?=$vExpe?>)</td>
       <td align="right"><?
-         echo number_format($vCost=$oJual->getJualField($_GET['uNoJual'],'fongkir'),0,",",".");
-	  ?>      </td>
+         // Ambil biaya ongkir yang valid (prioritaskan temp jika ada nilai > 0)
+         $vCost = 0;
+         $vNoJual = $_GET['uNoJual'];
+         $vSQL = "select fongkir from tb_trxstok_member_temp where fidpenjualan='".$vNoJual."' and IFNULL(fongkir,0)>0 limit 1";
+         $db->query($vSQL);
+         if ($db->next_record()) {
+             $vCost = $db->f('fongkir');
+         } else {
+             $vSQL = "select fongkir from tb_trxstok_member where fidpenjualan='".$vNoJual."' limit 1";
+             $db->query($vSQL);
+             if ($db->next_record()) {
+                 $vCost = $db->f('fongkir');
+             }
+         }
+         echo number_format($vCost,0,",",".");
+      ?>      </td>
     </tr>
-
+    <? if ($vMethod=='tva' && floatval($vAMHFee) > 0) { ?>
     <tr>
       <td colspan="5" align="rifght">Biaya Admin</td>
       <td align="right"><?
          echo number_format($vAMHFee,0,",",".");
 	  ?>      </td>
     </tr>
+    <? } ?>
 
     <tr>
       <td colspan="5"><strong>Total</strong></td>
