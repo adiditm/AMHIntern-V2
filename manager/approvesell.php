@@ -117,11 +117,12 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
 }//-->
 
 function doApprove1(pSys,pTrx,pKind) {
-   $('#spJual').html(pTrx);	
+   $('#spJual').text(pTrx);
    $('#hIdSys').val(pSys);
    $('#hIdTrx').val(pTrx);   
    $('#hKind').val(pKind);   
-   $('#btnModal').trigger('click');	
+   // show bootstrap modal directly
+   $('#dialogModal').modal('show');
 }
 
 function doApprove2(pIdSys,pIdTrx,pKind) {
@@ -131,27 +132,25 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
    var vNotEnoughBal=/not_e_deposit/g
    var vNotEnoughBonus=/not_e_bonusbalance/g
    if (confirm('Are you sure to approve Penjualan '+pIdTrx+'?')) {
-	   $.get(vURL,function(data) {
-	      if(data.trim()=='successappv') {
-	        alert('Approval succeed, stock updated!');
-	        $('#tdstat'+pIdTrx).html('Approved');
-  			document.getElementById('btnAppv'+pIdTrx).disabled=true;
-  			document.getElementById('btnReject'+pIdTrx).disabled=true;
-			//$('#dialogModal').hide();
-	      } else if (vNotEnough.test(data.trim())) {
-			  var vData=data.split('_');
-			  var vKode=vData[1];
-			 alert('Approval failed, stock '+vKode+' tidak cukup!');   
-			// $('#dialogModal').hide();
-		  }  else if (vNotEnoughBal.test(data.trim())) {
-			 
-			 alert('Approval failed, saldo reseller tidak cukup!');   
-			// $('#dialogModal').hide();
-		  }  else if (vNotEnoughBonus.test(data.trim())) {
-			 alert('Approval failed, saldo bonus / saldo pebisnis member tidak cukup!');
-			// $('#dialogModal').hide();
-		  }
-	   });
+       $.get(vURL,function(data) {
+          if(data.trim()=='successappv') {
+            alert('Approval succeed, stock updated!');
+            $('#tdstat'+pIdTrx).html('Approved');
+            document.getElementById('btnAppv'+pIdTrx).disabled=true;
+            document.getElementById('btnReject'+pIdTrx).disabled=true;
+            // hide modal after success
+            $('#dialogModal').modal('hide');
+          } else if (vNotEnough.test(data.trim())) {
+              var vData=data.split('_');
+              var vKode=vData[1];
+             alert('Approval failed, stock '+vKode+' tidak cukup!');   
+          }  else if (vNotEnoughBal.test(data.trim())) {
+             
+             alert('Approval failed, saldo reseller tidak cukup!');   
+          }  else if (vNotEnoughBonus.test(data.trim())) {
+             alert('Approval failed, saldo bonus / saldo pebisnis member tidak cukup!');
+          }
+       });
    }
 }
 
@@ -212,7 +211,7 @@ function doReject(pIdSys,pIdTrx) {
           <input type="hidden" id="hIdSys" name="hIdSys" value="" />
           <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
            <input type="hidden" id="hKind" name="hKind" value="" />
-          <button type="button" id="btSubmit" name="btSubmit" class="btn btn-success" data-dismiss="modal" onClick="doApprove2($('#hIdSys').val(),$('#hIdTrx').val(),$('#hKind').val())">Submit</button>
+          <button type="button" id="btSubmit" name="btSubmit" class="btn btn-success" onClick="doApprove2($('#hIdSys').val(),$('#hIdTrx').val(),$('#hKind').val())">Submit</button>
           <button type="button" id="btClose" name="btClose" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>

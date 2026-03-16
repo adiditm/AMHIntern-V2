@@ -69,6 +69,7 @@
 </head>
 
 <body class="loginfont">
+<div id="detjualContent">
 <p align="center" class="style1"><span class="style5">Detail Pembelian 
 </span></p>
 <p align="center" class="style1"><span class="style5">
@@ -316,13 +317,9 @@
 </iframe>
 
 </span>
-</body>
-
-<span style="font-family: Verdana, Arial, Helvetica, sans-serif">
-<iframe width=188 height=166 name="gToday:datetime:agenda.js:gfPop:plugins_timeSec.js" id="gToday:datetime:agenda.js:gfPop:plugins_time.js" src="ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; top:-500px; left:-500px;">
-</iframe>
-
+</div>
 <div id="printBtn" style="position:fixed; bottom:20px; right:20px;">
+<input type="button" id="btnSaveImage" value="Simpan" class="btn btn-success btn-sm" style="margin-right:5px;">
 <input type="button" value="Print" onclick="printPage()" class="btn btn-primary btn-sm">
 <input type="button" value="Close" onclick="<? if ($_GET['src']=='reorder') { ?>if (window.top) { window.top.location.href='../memstock/etaprod.php'; } else { document.location.href='../memstock/etaprod.php'; }<? } else { ?>window.close();<? } ?>" class="btn btn-danger btn-sm" style="margin-left:5px;">
 </div>
@@ -335,6 +332,77 @@ function printPage() {
 }
 </script>
 
-</span>
+<!-- html2canvas for saving detjual content as image -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// Save directly as JPG and overlay save timestamp on the image
+document.getElementById('btnSaveImage').addEventListener('click', function(){
+    var el = document.getElementById('detjualContent') || document.body;
+    var printBtn = document.getElementById('printBtn');
+    if (printBtn) printBtn.style.display = 'none';
+
+    html2canvas(el, {useCORS: true, scale: 2}).then(function(canvas) {
+        try {
+            var ctx = canvas.getContext('2d');
+            var now = new Date();
+            function pad(n){ return n < 10 ? '0' + n : n; }
+            var ts = pad(now.getDate()) + '-' + pad(now.getMonth() + 1) + '-' + now.getFullYear() + '  ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+
+            // compute scale ratio between canvas pixels and element CSS pixels
+            var rect = (el && el.getBoundingClientRect) ? el.getBoundingClientRect() : {width: canvas.width, height: canvas.height};
+            var ratio = canvas.width / (rect.width || canvas.width);
+
+            // sizing based on ratio so overlay is visible on high-DPI canvases
+            // further reduce by 50% per request (0.7 * 0.5 = 0.35)
+            var scaleFactor = 0.35;
+            var padding = Math.max(4, Math.round(10 * ratio * scaleFactor));
+            // set font to approx 10px in CSS terms (scaled by canvas ratio) then reduce
+            var fontSize = Math.max(6, Math.round(10 * ratio * scaleFactor));
+            ctx.save();
+            ctx.font = fontSize + 'px Arial';
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+
+            var textWidth = ctx.measureText(ts).width;
+            // place at top-left
+            var x = padding;
+            var y = padding;
+
+            var rectHeight = fontSize + Math.round(8 * ratio);
+            rectHeight = Math.max( Math.round(rectHeight * scaleFactor), fontSize + 4 );
+            var rectW = Math.round(textWidth + 12 * ratio);
+            var rectX = Math.max(4, x - Math.round(6 * ratio));
+            var rectY = Math.max(4, y - Math.round(4 * ratio));
+
+            // draw semi-transparent background rectangle then text (top-left)
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(rectX, rectY, rectW, rectHeight);
+            ctx.fillStyle = '#ffffff';
+            // vertically center text inside rectangle
+            var textY = rectY + Math.round((rectHeight - fontSize) / 2);
+            ctx.fillText(ts, x, textY);
+            ctx.restore();
+
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+            var filename = 'detjual-' + pad(now.getDate()) + pad(now.getMonth()+1) + now.getFullYear() + '-' + pad(now.getHours()) + pad(now.getMinutes()) + '.jpg';
+
+            var link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (e) {
+            alert('Gagal menyimpan gambar: ' + e.message);
+        } finally {
+            if (printBtn) printBtn.style.display = 'block';
+        }
+    }).catch(function(err){
+        if (printBtn) printBtn.style.display = 'block';
+        alert('Gagal membuat gambar: ' + err);
+    });
+});
+</script>
+
 </body>
 </html></html>
