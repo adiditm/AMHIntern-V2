@@ -93,12 +93,20 @@ if ($vOP == "rejectst") {
 	$vSQL = "select sum(fsubtotal) as ftotal from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
 	$dbin->query($vSQL);
 	$dbin->next_record();
-	$vTotal = $dbin->f('ftotal');
+	$vTotal = (float)$dbin->f('ftotal');
+	$vFeeAminah = 0;
 
-	$vSQL = "select fongkir from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+	// fongkir tidak dinormalkan: cukup ambil 1 baris untuk 1 fidpenjualan
+	$vSQL = "select fongkir from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
-	$vOngkir = $dbin->f('fongkir');
+	$vOngkir = (float)$dbin->f('fongkir');
+
+	$vTotalCharge = $vTotal + $vOngkir;
+	$vEndap = (float)$oRules->getSettingByField('fmindap');
+	$vBankFee = (float)$oRules->getSettingByField('fbyybank');
+	if ($vEndap < 0) $vEndap = 0;
+	if ($vBankFee < 0) $vBankFee = 0;
 
 	$vSQL = "select fidmember, fnostockist, fmethod from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
 	$dbin->query($vSQL);
@@ -106,12 +114,18 @@ if ($vOP == "rejectst") {
 	$vBuyerTrx = $dbin->f('fidmember');
 	$vPayerTrx = $dbin->f('fnostockist');
 	$vMethodTrx = $dbin->f('fmethod');
+	$vSellerTrx = '';
 	if (trim($vPayerTrx) == '')
 		$vPayerTrx = $vBuyerTrx;
+	$vSellerCredit = $vTotalCharge;
+	if ($vMethodTrx == 'tva') {
+		$vSellerCredit += $vBankFee;
+	}
 
 	if ($vMethodTrx == 'wpr') {
-		$vLastBalBiz = $oMember->getMemFieldBis('fsaldovcr', $vPayerTrx);
-		if ($vLastBalBiz < $vTotal) {
+		$vLastBalBiz = (float)$oMember->getMemFieldBis('fsaldovcr', $vPayerTrx);
+		$vAvailBiz = $vLastBalBiz - $vEndap;
+		if ($vAvailBiz < $vTotalCharge) {
 			$db->query("ROLLBACK;");
 			echo 'not_e_bonusbalance';
 			exit;
@@ -119,10 +133,10 @@ if ($vOP == "rejectst") {
 	}
 	
 	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`,`fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp`) ";
-	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now(), `fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp` from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , '2' , now(), `fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp` from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
 	
 	if($db->query($vSQL)) {
-		$vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		$vSQLSelect = "select a.*, IFNULL(b.fpotong,0) as fpotong from tb_trxstok_member_temp a left join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$vIdTrx' ";
 		$dbin->query($vSQLSelect);
 		
 		while ($dbin->next_record()) {
@@ -132,6 +146,9 @@ if ($vOP == "rejectst") {
 			$vSeller = $dbin->f('fidseller');
 			$vIDOutlet = $dbin->f('fnostockist');
 			$vMethod = $dbin->f('fmethod');
+			$vSubTotItem = (float)$dbin->f('fsubtotal');
+			$vPotongItem = (float)$dbin->f('fpotong');
+			$vFeeAminah += ($vSubTotItem * $vPotongItem / 100);
 			
 			$vLastBal = $oMember->getStockPosUnig($vSeller, $vIDProduk);
 			$vNewBal = $vLastBal - $vAmount;
@@ -144,6 +161,9 @@ if ($vOP == "rejectst") {
 			$db->query($vSQL);
 			
 			$oMember->setSaldoStockWH($vSeller, $vIDProduk, $vNewBal, $db);
+			if ($vSellerTrx == '') {
+				$vSellerTrx = $vSeller;
+			}
 		}
 		
 		$vSQL = "update tb_trxstok_member set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
@@ -156,25 +176,67 @@ if ($vOP == "rejectst") {
 		$vUserTrx = $vPayerTrx;
 		$vBuyer = $vIdMem;
 		$vNextJual = $vIdTrx;
+		$vDescSellerIn = "Dana masuk dari Repeat Order Sales $vNextJual";
+		$vDescSellerFee = "Fee AMH dari transaksi Repear Order Sales $vNextJual";
+		$vDescSellerBankFee = "Fee Bank TVA dari transaksi Repeat Order Sales $vNextJual";
+
+		if ($vSellerTrx != '') {
+			$vLastBalSeller = (float)$oMember->getMemFieldSell('fsaldovcr', $vSellerTrx);
+			if ($vLastBalSeller < 0) {
+				$vLastBalSeller = 0;
+			}
+			$vBalSellerIn = $vLastBalSeller + $vSellerCredit;
+			$oKomisi->insertMutasi($vSellerTrx, $vBuyer, date("Y-m-d H:i:s"), $vDescSellerIn, $vSellerCredit, 0, $vBalSellerIn, 'reorder', $vNextJual);
+
+			$vBalSellerFinal = $vBalSellerIn;
+			if ($vFeeAminah > 0) {
+				$vBalSellerFinal = $vBalSellerIn - $vFeeAminah;
+				$oKomisi->insertMutasi($vSellerTrx, $vBuyer, date("Y-m-d H:i:s"), $vDescSellerFee, 0, $vFeeAminah, $vBalSellerFinal, 'reorder', $vNextJual);
+			}
+
+			$vSellerBankFee = 0;
+			if ($vMethodTrx == 'tva' && $vBankFee > 0) {
+				$vSellerBankFee = $vBankFee;
+				if ($vSellerBankFee > 0) {
+					$vBalSellerFinal = $vBalSellerFinal - $vSellerBankFee;
+					$oKomisi->insertMutasi($vSellerTrx, $vBuyer, date("Y-m-d H:i:s"), $vDescSellerBankFee, 0, $vSellerBankFee, $vBalSellerFinal, 'reorder', $vNextJual);
+				}
+			}
+
+			$oMember->updateBalSeller($vSellerTrx, $vBalSellerFinal);
+		}
 
 		if ($vMethodTrx == 'wpr') {
-			$vLastBal = $oMember->getMemFieldBis('fsaldovcr', $vUserTrx);
-			$vNewBal = $vLastBal - $vTotal;
+			// Atomic deduction: saldo setelah potong tidak boleh kurang dari saldo mengendap
+			$vSQL = "update m_pebisnis set fsaldovcr=fsaldovcr-$vTotalCharge where fidmember='$vUserTrx' and fsaldovcr >= ($vTotalCharge + $vEndap)";
+			$db->query($vSQL);
+			if ($db->affected_rows() <= 0) {
+				$db->query("ROLLBACK;");
+				echo 'not_e_bonusbalance';
+				exit;
+			}
+
+			$vSQL = "select fsaldovcr from m_pebisnis where fidmember='$vUserTrx' limit 1";
+			$db->query($vSQL);
+			$db->next_record();
+			$vNewBal = (float)$db->f('fsaldovcr');
+
 			$vsql = "insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fref) ";
-			$vsql .= "values ('$vUserTrx', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Potong Saldo Pebisnis - Approval]' , 0,$vTotal ,$vNewBal ,'reorder' , '1','$vUserTrx' , now(),0,'$vNextJual') ";
+			$vsql .= "values ('$vUserTrx', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Potong Saldo Pebisnis - Approval]' , 0,$vTotalCharge ,$vNewBal ,'reorder' , '1','$vUserTrx' , now(),0,'$vNextJual') ";
 			$db->query($vsql);
-			$oMember->updateBalConnWProdBiz($vUserTrx, $vNewBal, $db);
 		}
 		
 		$vIDMember = $oJual->getMemberByJual($vIdTrx);
 		$vJumlah = $oJual->getBuyedTot($vIdTrx);
 		// $oNetwork->sendFeeTitikCompress('EDUARDO',20,1000000,'J7777777');
 		// $oNetwork->sendFeeTitikCompress($vIDMember,20,$vJumlah,$vIdTrx);
-		//Pencairan ke Seller
-		$vSellSession = md5('jalanku');
-		if ($vMethod == 'tva') {
-			include("payseller.php");
-		}
+		// Pencairan langsung ke seller dinonaktifkan.
+		// Semua metode pembayaran (ctr, wpr, tva) sekarang masuk ke saldo seller
+		// dan seller melakukan pencairan melalui menu withdraw.
+		// $vSellSession = md5('jalanku');
+		// if ($vMethodTrx == 'tva') {
+		// 	include("payseller.php");
+		// }
 		echo 'successappv';
 	}
 	$db->query("COMMIT;");
@@ -191,7 +253,7 @@ if ($vOP == "rejectst") {
 	$vTotal = $dbin->f('ftotal');
 	
 	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`) ";
-	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now() from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , '2' , now() from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
 	
 	if($db->query($vSQL)) {
 		$vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
@@ -259,7 +321,7 @@ if ($vOP == "rejectst") {
 	$vTotal = $dbin->f('ftotal');
 	
 	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`) ";
-	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now() from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , '2' , now() from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
 	
 	if($db->query($vSQL)) {
 		$vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";

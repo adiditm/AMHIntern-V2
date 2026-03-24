@@ -19,7 +19,7 @@
      $vRef = base64_encode('1401-0000-0001');
  }
    
-    $vSQL="select * from m_product where fidproduk='$vID'";
+   $vSQL="select * from m_product where fidproduk='$vID'";
    $db->query($vSQL);
   // $vBonusReg=$oRules->getSettingByCol('fbnsumrreg');
    while ($db->next_record()) {
@@ -29,6 +29,7 @@
 	  $vNamaProduk = $db->f("fnamaproduk");
 	  
 	  $vHarga=$db->f("fhargajual1");
+	  $vSellerID=$db->f("fseller");
 	  $vKetPaket=$db->f("fketpaket");
 	 // $vHargaNTA=$db->f("fhargapub")-$vBonusReg;;
 	  $vCurr = $db->f("fcurrsym");
@@ -46,6 +47,15 @@
 	  $vDetail=$oInterface->getDetailLang($vID,$_SESSION['lang']);
 	 
 	  $vGmap=$db->f("fgmap");
+ }
+
+ $vSellerName = '';
+ if ($vSellerID != '') {
+	$vSQL = "select fnama from m_seller where fidseller='$vSellerID'";
+	$db->query($vSQL);
+	if ($db->next_record()) {
+		$vSellerName = $db->f('fnama');
+	}
  }
 
 
@@ -118,9 +128,12 @@
      <? 
 	 
 	// if ($theImage!='noimage-flat.jpg') { ?>
-      <div class="img-with-text"> 
+     <div class="img-with-text"> 
      <img src="<?=$vImage?>" align="left" vspace="2" hspace="10" border="1"  width="200" />  
-     <p><?="Harga: Rp".number_format($vHarga,0,",",".");?></p>  
+     <p><?="Harga: Rp".number_format($vHarga,0,",",".");?></p>
+     <? if ($vSellerName != '') { ?>
+     <p><?="Seller : ".$vSellerName;?></p>
+     <? } ?>
      </div> 
      <?// } ?>
   <?=stripslashes($vDetail)?>

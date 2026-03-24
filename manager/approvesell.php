@@ -473,4 +473,6 @@ function doReject(pIdSys,pIdTrx) {
 <script type="text/javascript" src="../js/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="../js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
 <script type="text/javascript" src="../js/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-<!--common scripts for all
+<!--common scripts for all pages-->
+<? include_once("../framework/admin_footside.blade.php");?>
+

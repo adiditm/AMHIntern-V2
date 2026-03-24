@@ -187,19 +187,27 @@
     </tr>
     <?
 	  $vNoJual=$_GET['uNoJual'];
-	   $vsql="select a.*, b.am_fee from(select *, 2 as fstatus from tb_trxstok_member where fidpenjualan='$vNoJual' union all select *, 0 as fstatus from tb_trxstok_member_temp where fidpenjualan='$vNoJual') as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vNoJual'";
+	  $vsql="select a.*, b.am_fee from(select *, 'main' as ftable from tb_trxstok_member where fidpenjualan='$vNoJual' union all select *, 'temp' as ftable from tb_trxstok_member_temp where fidpenjualan='$vNoJual') as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vNoJual' order by field(a.ftable,'main','temp')";
 
 	  $db->query($vsql);
 	  $vNoUrut=0;
 	  $vTot=0;
 	  $vTotPoint=0;
+	  $vStatusTable='';
+	  $vProcessed='';
+	  $vPaid='0';
+	  $vSend='0';
+	  $vAMHFee=0;
 	  while ($db->next_record()) {
 	      $vNoUrut+=1;
         $vIdProdList=$db->f("fidproduk");
-        $vStatus=$db->f("fstatus");
-        $vPaid=$db->f("fpaid");
-        $vSend=$db->f("fsend");
-        $vAMHFee = $db->f("am_fee");
+        if ($vStatusTable=='') {
+          $vStatusTable=$db->f("ftable");
+          $vProcessed=$db->f("fprocessed");
+          $vPaid=$db->f("fpaid");
+          $vSend=$db->f("fsend");
+          $vAMHFee = $db->f("am_fee");
+        }
         $vExpe = strtoupper($db->f("fexpe")).' Paket '.$db->f("fpack");
 	?>
 	<tr>
@@ -261,25 +269,42 @@
       <td><div align="right"><strong>
         <?
 		  
-		  $vTot+=$vSusTot;
+		  		  
 		  echo number_format($vTot+$vCost+$vAMHFee,0,",",".");
 		?>
         
       </strong></div></td>
     </tr>
   </table>
-  <? if ($vStatus=='0' && $vPaid=='0')  {?> 
+    <?
+    // Tampilkan status transaksi (posisi bawah), termasuk untuk Pending (mis. Wallet Product / WPR)
+    $vStatusText='';
+    $vStatusColor='red';
+
+    if ($vProcessed=='2') {
+      $vStatusText='Approved';
+      $vStatusColor='green';
+    } else if ($vProcessed=='4') {
+      $vStatusText='Rejected';
+      $vStatusColor='red';
+    } else if ($vProcessed=='0') {
+      if ($vStatusTable=='temp' || $vStatusTable=='main') {
+        $vStatusText='Pending';
+        $vStatusColor='red';
+      }
+    } else if ($vPaid=='1' && $vSend=='1') {
+      $vStatusText='Diproses (Sudah Dikirim Oleh Seller)';
+      $vStatusColor='blue';
+    } else if ($vPaid=='1') {
+      $vStatusText='Diproses (Sudah Dibayar)';
+      $vStatusColor='blue';
+    }
+  ?>
   <br>
-  <b style="color:red">Status: Pending</b><br>
-  <? } else if($vStatus=='0' && $vPaid=='1' && $vSend=='1') {?>
-    <b style="color:blue">Status: Diproses (Sudah Dikirim Oleh Seller)</b><br>
-  <? } else if($vStatus=='0' && $vPaid=='1') {?>
-    <b style="color:blue">Status: Diproses (Sudah Dibayar)</b><br>
-  <? } else if($vStatus=='2') {?>
-    <b style="color:green">Status: Approved</b><br>
-  <? } else if($vStatus=='4') {?>
-    <b style="color:red">Status: Rejected</b><br>
+  <? if ($vStatusText != '') { ?>
+  <b style="color:<?=$vStatusColor?>">Status: <?=$vStatusText?></b><br>
   <? } ?>
+
   <? if (preg_match("/KIT/",$vIdProdList)) { ?>
   <br>
   

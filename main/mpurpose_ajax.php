@@ -2102,11 +2102,11 @@ $vUser=$_SESSION['LoginUser'];
 		$vBankVA = $_POST['bankva'];
 
 		$clientId = $oRules->getSettingByField('factpayclientid');
-		$clientSecret = $oRules->getSettingByField('factpayclientsec');
-		$apiSecret = $oRules->getSettingByField('factpayapisec');
-		$vNamaAlias = $oRules->getSettingByField('factpaycompname');
-		$vNorek = $oRules->getSettingByField('frekbank1');
-		$vBankCode = $oRules->getSettingByField('factpaybankva');
+	$clientSecret = $oRules->getSettingByField('factpayclientsec');
+	$apiSecret = $oRules->getSettingByField('factpayapisec');
+	$vNamaAlias = $oRules->getSettingByField('factpaycompname');
+	$vNorek = $oRules->getSettingByField('frekbank1');
+	$vBankCode = $oRules->getSettingByField('factpaybankva');
 
 		$vRemark = "Pembayaran VA $vRef";
 
@@ -2140,7 +2140,6 @@ $vUser=$_SESSION['LoginUser'];
 		//echo "Withdraw Inquiry Response: ";
 		//print_r($response);
 
-		
 		$vChannelID = $response['data'][$vBankVA]['chId'];
 		$vBankCodeVA = $response['data'][$vBankVA]['mId'];
 		//$accessToken = getAuthToken($clientId, $clientSecret);
@@ -2176,6 +2175,18 @@ $vUser=$_SESSION['LoginUser'];
 
 	
 	
+} else if ($vOp=='cancelvaorder') {
+	$vRefId = $_POST['ref'];
+	$vArrOut = array('status' => 'failed', 'message' => 'Transaksi gagal dibatalkan');
+
+	if ($vRefId != '') {
+		$db->query("DELETE FROM tb_trx_va WHERE va_refid = '$vRefId'");
+		$db->query("DELETE FROM tb_trxstok_member_temp WHERE fidpenjualan = '$vRefId'");
+		$vArrOut['status'] = 'success';
+		$vArrOut['message'] = 'Transaksi dibatalkan';
+	}
+
+	echo json_encode($vArrOut);
 } else if ($vOp=='saveva') {
 	$vVA = $_POST['va_no'];
 	$vAmount = $_POST['va_amount'];
@@ -2332,7 +2343,6 @@ $vUser=$_SESSION['LoginUser'];
 	//echo "Data Inquiry: ".$data_inquiry."<br>";
 	
 	$response = $oActionPay->depositRoute($accessToken, $signature);
-
 	$bankList = [
 		'mandiri'    => 'Virtual Account Bank Mandiri',
 		'bri'        => 'Virtual Account Bank BRI',

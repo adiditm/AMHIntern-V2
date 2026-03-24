@@ -5130,6 +5130,18 @@
 
 		}
 
+		 //Set Saldo Seller
+
+	function updateBalSeller($pId,$pBal) {
+
+		     global $oDB; 
+
+  			 $vsql="update m_seller set fsaldovcr=$pBal where fidseller='$pId' ";	
+
+			 $oDB->query($vsql);		
+
+		}
+
 
 
 	function changeBal($pId,$pAmt,$pDK) {

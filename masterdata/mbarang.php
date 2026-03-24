@@ -5,7 +5,15 @@
 <?
   // print_r($_POST);
    $vCodePost=$_POST['lmProd'];
-   $vNamaPost=$_POST['tfNamaProd'];	
+   $vNamaPost=$_POST['tfNamaProd'];
+
+   // Seller privilege: hanya tampilkan produk milik seller login
+   // NOTE: comparison on PHP-level should use original lowercase value: 'seller'
+   $vPrivSess = $_SESSION['Priv'];
+   $vSellerUser = strtoupper($_SESSION['LoginUser']);
+   $vIsSeller = ($vPrivSess == 'seller');
+
+
    if (in_array($_POST['PME_sys_operation'],array('Add','View','Copy','More','Delete','Change')))
       $vFilterShow='hide';
    else	  $vFilterShow='';
@@ -29,7 +37,11 @@
   <select name="lmProd"  class="form-control" >
      <option value="">--Pilih--</option>
 	 <?
-        $vSQL = "select * from m_product order by fidproduk";
+        $vSQL = "select * from m_product";
+		if ($vPrivSess == 'seller') {
+			$vSQL .= " where UPPER(fseller) = '$vSellerUser'";
+		}
+		$vSQL .= " order by fidproduk";
 		$db->query($vSQL);
 		while($db->next_record()) {
 			$vCode=$db->f('fidproduk');
@@ -90,7 +102,7 @@ $opts['inc'] = 15;
 // Options you wish to give the users
 // A - add,  C - change, P - copy, V - view, D - delete,
 // F - filter, I - initial sort suppressed
-$opts['options'] = 'ACPVDF';
+$opts['options'] = $vIsSeller ? 'CVF' : 'ACPVDF';
 
 // Number of lines to display on multiple selection filters
 $opts['multiple'] = '4';
@@ -108,7 +120,16 @@ $opts['display'] = array(
 	'tabs'  => true
 );
 
-$opts['filters'] = 'fidproduk like \'%'.$vCodePost.'%\' AND fnamaproduk like \'%'.$vNamaPost.'%\'';
+$vCodeFilter = addslashes($vCodePost);
+$vNamaFilter = addslashes($vNamaPost);
+//print_r($_SESSION);
+ $vFilters = "fidproduk like '%".$vCodeFilter."%' AND fnamaproduk like '%".$vNamaFilter."%'";
+		if ($vPrivSess == 'seller') {
+	$vFilters .= " AND UPPER(fseller) = '".$vSellerUser."'";
+}
+
+//echo $vFilters;
+$opts['filters'] = $vFilters;
 
 $opts['buttons']['L']['up'] = array('<<','<','add','view','change','delete',
                                     '>','>>','goto','goto_combo');
@@ -472,6 +493,21 @@ $opts['fdd']['faktif'] = array(
   'sort'     => true,
   'values2'  => array(1 => 'Active', 0=>'Inactive')
 );
+
+if ($vIsSeller) {
+	foreach (array_keys($opts['fdd']) as $vFieldName) {
+		if ($vFieldName == 'faktif') {
+			continue;
+		}
+
+		if (!isset($opts['fdd'][$vFieldName]['input'])) {
+			$opts['fdd'][$vFieldName]['input'] = 'R';
+		}
+		else if (strpos($opts['fdd'][$vFieldName]['input'], 'R') === false) {
+			$opts['fdd'][$vFieldName]['input'] .= 'R';
+		}
+	}
+}
 
 $image_sub_dir = "prod";
 $opts['triggers']['insert']['after']  = 'afterinsbrg.php';

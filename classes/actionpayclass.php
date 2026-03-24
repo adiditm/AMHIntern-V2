@@ -40,7 +40,7 @@ CREATE TABLE tb_actpcall_log (
 			function getListBank() {
 				global $oRules, $oDB; // Use $oDB instead of $db
 				$url = $oRules->getSettingByField("factpaylistbank");
-				echo $url ="https://api-sandbox.actionpay.id/v1/api/bank";
+
 				$headers = [
 					"platform: api",
 					"Content-Type: application/json"
@@ -635,17 +635,17 @@ CREATE TABLE tb_actpcall_log (
 			function depositRoute($accessToken, $signature, $data_inquiry) {
 				global $oRules, $oDB;
 
-				$url = $oRules->getSettingByField("factpaydeproute");
+				 $url = $oRules->getSettingByField("factpaydeproute");
 				//$url = "https://api-sandbox.actionpay.id/v1/api/withdraw";
+/*
+				$header = ["platform: api", 
+							"accesstoken: Bearer $accessToken", 
+							"signature: $signature", 
+							"type: va",
+							"Content-Type: application/json"
+						];
 
-				/*$header = ["platform: api",
-				"accesstoken: Bearer $accessToken",
-				"signature: $signature",
-				"type: va",
-				"Content-Type: application/json"
-				];
-
-				//echo "Token $accessToken signature $signature <br>";
+						//echo "Token $accessToken signature $signature <br>";
 
 				$options = [
 					'http' => [
@@ -655,101 +655,101 @@ CREATE TABLE tb_actpcall_log (
 					],
 				];
 
-				$context = stream_context_create($options);
-				$requestOptions = json_encode($options);
-				$startTime = microtime(true);
-				$result = @file_get_contents($url, false, $context);
-				*/
+			$context = stream_context_create($options);
+			$requestOptions = json_encode($options);
+			$startTime = microtime(true);
+			$result = @file_get_contents($url, false, $context);
+
+			*/
 
 
-				$headers = [
-					"platform: api",
-					"accesstoken: Bearer $accessToken",
-					"signature: $signature",
-					"type: va",
-					"Content-Type: application/json"
-				];
+			$headers = [
+				"platform: api",
+				"accesstoken: Bearer $accessToken",
+				"signature: $signature",
+				"type: va",
+				"Content-Type: application/json"
+			];
 
 
-				$options = [
-					'http' => [
-						'header'  => $headers,
-						'method'  => 'GET',
-						//'content' => $data_inquiry,
-					],
-				];
+			$options = [
+				'http' => [
+					'header'  => $headers,
+					'method'  => 'GET',
+					//'content' => $data_inquiry,
+				],
+			];
 
-				$requestOptions = json_encode($options);
-				$ch = curl_init();
+			$requestOptions = json_encode($options);
+			$ch = curl_init();
 
-				curl_setopt_array($ch, [
-					CURLOPT_URL            => $url,
-					CURLOPT_RETURNTRANSFER => true,
-					CURLOPT_HTTPHEADER     => $headers,
-					CURLOPT_CUSTOMREQUEST  => "GET",
-					CURLOPT_TIMEOUT        => 30,
-				]);
+			curl_setopt_array($ch, [
+				CURLOPT_URL            => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPHEADER     => $headers,
+				CURLOPT_CUSTOMREQUEST  => "GET",
+				CURLOPT_TIMEOUT        => 30,
+			]);
 
-				$startTime = microtime(true);
-				echo $result = curl_exec($ch);
-				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-				$curlErr  = curl_error($ch);
+			$startTime = microtime(true);
+			$result = curl_exec($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curlErr  = curl_error($ch);
 
-				curl_close($ch);
+			curl_close($ch);
 
 
+			$endTime = microtime(true);
+			$responseTime = round(($endTime - $startTime) * 1000, 2);
 
-				$endTime = microtime(true);
-				$responseTime = round(($endTime - $startTime) * 1000, 2);
-
-				if ($result === FALSE) {
-					$error = error_get_last();
-					$errorMessage = $error['message'];
-
-					$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
-						'$url',
-						'depositRoute',
-						'GET',
-						'".mysql_real_escape_string($requestOptions)."',
-						'".mysql_real_escape_string($errorMessage)."',
-						NULL,
-						'$responseTime',
-						'".$_SERVER['REMOTE_ADDR']."'
-						)";
-				$oDB->query($vSQL);
-				die('Error during deposit route');
-				}
-
-				$response = json_decode($result, true);
-
-				//Get Response Code
-				$http_response_header = $GLOBALS['http_response_header'];
-				$responseCode = 200;
-				if (isset($http_response_header)) {
-					foreach ($http_response_header as $headerLine) {
-						if (strpos($headerLine, 'HTTP/') === 0) {
-							preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
-							$responseCode = (int)$match[1];
-							break;
-						}
-					}
-				}
-
-				$responseBody = json_encode($response);
-
+			if ($result === FALSE) {
+				$error = error_get_last();
+				$errorMessage = $error['message'];
+				
 				$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
 					'$url',
 					'depositRoute',
 					'GET',
 					'".mysql_real_escape_string($requestOptions)."',
-					'".mysql_real_escape_string($responseBody)."',
-					'$responseCode',
+					'".mysql_real_escape_string($errorMessage)."',
+					NULL,
 					'$responseTime',
 					'".$_SERVER['REMOTE_ADDR']."'
-					)";
+				)";
 				$oDB->query($vSQL);
+				die('Error during deposit route');
+			}
 
-				return $response;
+			$response = json_decode($result, true);
+
+			//Get Response Code
+			$http_response_header = $GLOBALS['http_response_header'];
+			$responseCode = 200;
+			if (isset($http_response_header)) {
+				foreach ($http_response_header as $headerLine) {
+					if (strpos($headerLine, 'HTTP/') === 0) {
+						preg_match('{HTTP/\S*\s(\d+)}', $headerLine, $match);
+						$responseCode = (int)$match[1];
+						break;
+					}
+				}
+			}
+
+			$responseBody = json_encode($response);
+
+			$vSQL = "INSERT INTO tb_actpcall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+				'$url',
+				'depositRoute',
+				'GET',
+				'".mysql_real_escape_string($requestOptions)."',
+				'".mysql_real_escape_string($responseBody)."',
+				'$responseCode',
+				'$responseTime',
+				'".$_SERVER['REMOTE_ADDR']."'
+			)";
+			$oDB->query($vSQL);
+
+			return $response;
 			}
 
 

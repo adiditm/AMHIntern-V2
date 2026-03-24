@@ -8,7 +8,7 @@
      $vContent=$oInterface->getMenuContent('beranda3');
   if ($vPriv=='korwil')
      $vContent=$oInterface->getMenuContent('beranda2');
-
+//print_r($_SESSION);
 ?>
 	<style type="text/css">
 @media (min-width: 992px) {

@@ -60,6 +60,25 @@ if ($vCount=='') $vCount=1;
    
    $vBankFee = $oRules->getSettingByField('fbyybank');
    $vFeeActpay  = $oRules->getSettingByField('ffeeactpay');
+   $vActPayEnvSources = array(
+      'factpaytoken' => trim((string)$oRules->getSettingByField('factpaytoken')),
+      'factpaysign' => trim((string)$oRules->getSettingByField('factpaysign')),
+      'factpaywdinqu' => trim((string)$oRules->getSettingByField('factpaywdinqu')),
+      'factpaywdconfirm' => trim((string)$oRules->getSettingByField('factpaywdconfirm')),
+      'factpaylistbank' => trim((string)$oRules->getSettingByField('factpaylistbank')),
+      'factpaydeproute' => trim((string)$oRules->getSettingByField('factpaydeproute')),
+      'factpaydep' => trim((string)$oRules->getSettingByField('factpaydep'))
+   );
+   $vIsSandboxActpay = false;
+   foreach ($vActPayEnvSources as $vActPayEnvUrl) {
+      if ($vActPayEnvUrl != '' && strpos(strtolower($vActPayEnvUrl), 'api-sandbox.actionpay.id') !== false) {
+         $vIsSandboxActpay = true;
+         break;
+      }
+   }
+   $vGenerateVAEndpoint = "../main/mpurpose_ajax.php?op=generateva";
+   if ($vIsSandboxActpay || (isset($_GET['sandboxva']) && $_GET['sandboxva'] == '1'))
+      $vGenerateVAEndpoint = "../main/mpurpose_ajax_sandbox_va.php?op=generateva";
 
   
 
@@ -134,8 +153,23 @@ if ($vCount=='') $vCount=1;
 
 		<script language="javascript">
 		$(document).ready(function() {
+			function redirectToEtaProd() {
+				document.location.href = '../memstock/etaprod.php';
+			}
+
+			function cancelFailedVATransaction() {
+				window._receiptUrl = null;
+				$.post('../main/mpurpose_ajax.php?op=cancelvaorder', {
+					ref: '<?=$vNextJual?>'
+				});
+			}
+
 			 // Generate VA pembayaran sebelum submit form
-			 $.post('../main/mpurpose_ajax.php?op=generateva', {
+			 var vGenerateVAEndpoint = '<?=$vGenerateVAEndpoint?>';
+			 console.log('AMH VA endpoint:', vGenerateVAEndpoint);
+			 console.log('AMH ActionPay sandbox detected:', <?= $vIsSandboxActpay ? 'true' : 'false' ?>);
+			 console.log('AMH ActionPay config:', <?=json_encode($vActPayEnvSources)?>);
+			 $.post(vGenerateVAEndpoint, {
 				amount: '<?=($_POST["hTotal"] - $vFeeActpay)?>',					
 				ref: '<?=$vNextJual?>',
 				buyer: '<?=$_POST['tfRecName']?>',
@@ -171,10 +205,13 @@ if ($vCount=='') $vCount=1;
 						var vObj = $.parseJSON(data);
 						console.log(vObj.status);
 						if (vObj.status == 'success') {
+								window._receiptUrl = '../memstock/detjual.php?uNoJual=<?=$vNextJual?>&uTanggal=<?=date('Y-m-d')?>&uIDMember=<?=$vUser?>&src=reorder';
 								$('#divContent').html(vaInfo);
 								$('#btnModal').trigger('click');		
 						} else {
+							cancelFailedVATransaction();
 							alert(vObj.message);
+							redirectToEtaProd();
 							return false;
 						}
 						
@@ -183,11 +220,15 @@ if ($vCount=='') $vCount=1;
 				});
 				
 			  } else {
-				alert('Gagal membuat VA pembayaran: ' + result.message);
+				cancelFailedVATransaction();
+				alert('Gagal membuat VA pembayaran: ' + result.message + ', coba ulangi lagi dari awal!');
+				redirectToEtaProd();
 				return false;
 			  }
 			}).fail(function() {
+			  cancelFailedVATransaction();
 			  alert('Terjadi kesalahan saat membuat VA pembayaran');
+			  redirectToEtaProd();
 			  return false;
 			});
 		});
@@ -199,7 +240,11 @@ if ($vCount=='') $vCount=1;
 	//$oSystem->jsLocation('../manager/indexnonadmin.php');	
 	?>
 	<script language="javascript">
+	<? if ($lmMethod != 'tva') { ?>
 	window._receiptUrl = '../memstock/detjual.php?uNoJual=<?=$vNextJual?>&uTanggal=<?=date('Y-m-d')?>&uIDMember=<?=$vUser?>&src=reorder';
+	<? } else { ?>
+	window._receiptUrl = null;
+	<? } ?>
 	</script>
 	<?
      //$oSystem->jsLocation("../memstock/reorder.php");
@@ -1320,10 +1365,12 @@ function zeroOngkir(){
                      <? } ?>
                      </select> </div><br><br>
 
-                            			<input type="hidden" name="hTotal" id="hTotal" value="" />
+								<input type="hidden" name="hTotal" id="hTotal" value="" />
 
 										<input type="hidden" name="hPost" id="hPost" value="1" />
-                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button> <div id="divLoad" style="display:inline"></div>
+                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button>
+                                        <input type="button" value="Cancel" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';" style="margin-left:5px;">
+                                        <div id="divLoad" style="display:inline"></div>
                             </div>
                        
  </form>     
@@ -1409,7 +1456,6 @@ function zeroOngkir(){
         <div class="modal-header">
           <button type="button" class="close" onClick="document.location.href='../memstock/etaprod.php';">&times;</button>
           <h4 class="modal-title">Receipt Transaksi</h4>
-          <div style="margin-top:8px;font-weight:bold;">Status : <span style="color:#d9534f;">[Pending]</span></div>
         </div>
         <div class="modal-body" style="padding: 10px;">
           <iframe id="receiptFrame" src="" style="width:100%;height:70vh;border:0;"></iframe>
@@ -1421,169 +1467,3 @@ function zeroOngkir(){
   </div>
   
 <? include_once("../framework/member_footside.blade.php") ; ?>
- style="height: 30px;text-align:right"> 
-                                <input name="txtJml" id="txtJml" class="form-control"  type="text" dir="rtl" style="display:none;min-width:55px;text-align:right" size="10" onKeyUp="calcSub(this)" onBlur="calcSub(this)" >                                
-                                
-                                </th>
-                                <th style="height: 30px; width: 10%;text-align:right" align="right" id="thJmlItem" class="hide"> 
-                                
-                                
-
-                                </th>
-                                <th style="width: 104px; height: 30px;text-align:right" id="thHarga" align="right"></th>
-                                <th align="right" id="thSubTot" style="height: 30px; width: 94px;text-align:right"></th>
-                                <th align="center" id="thSubTot" style="height: 30px"><input id="btSaveRow" type="button" onClick="return doSaveRow()" class="btn btn-success btn-sm" value="Save Item" style="display:none"/></th>
-                                <th style="display:none; height: 30px;"></th><input type="hidden" name="hSubTot" id="hSubTot" value="" /></th>
-                            </tr>
-                            <tr>
-                                <td style="width: 33px">&nbsp;<input type="hidden"  id="hHarga" name="hHarga" value="">
-                                <td style="width: 33px">&nbsp;<input type="hidden"  id="hWeight" name="hWeight" value="">
-                   
-                                <input type="hidden"  id="hItemSat" name="hItemSat" value="">
-                                <input type="hidden"  id="hQoh" name="hQoh" value="">
-                                <input type="hidden" name="hJmlItem" id="hJmlItem" value="" /> 
-                                </td>
-                                <td align="left" style="width: 208px" colspan="2"><input disabled="disabled" id="btAdd" type="button" onClick="doAdd()" class="btn btn-info btn-sm hide" value="Add Item +"/>&nbsp;<input type="button" onClick="doCancel()" class="btn btn-default btn-sm" value="Cancel" id="btCancel" style="display:none"/></td>
-                                <td align="left" id="tdLoad" class="hide">&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td style="width: 10%" class="hide">&nbsp;</td>
-                                <td style="width: 104px">&nbsp;</td>
-                                <td style="width: 94px">&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>        
-        </div> <!--body-->
-   </div>    <!--panel --> 
-        
-        
-                            <div class="col-md-6 form-group ">
-
-										<label style="font-weight:bold">Total Purchased : <span id="totalpurc"></span> <span id="spcurr">IDR</span><span id="samaconvert"></span><span id="convert"></span><span id="currconvert"></span></label> 
-
-       <div class="row">
-       <div class="col-lg-4">
-       
-         <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
-         <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
-           <option value="">--Pilih--</option>
-           <option value="ctr">Cash / Transfer</option>
-           <option value="wpr">Saldo Bonus</option>
-		   <? if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
-           <option value="tva">Transfer Virtual Account</option>
-		   <? } ?>
-           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
-         </select>
-       </div>
-       
-      <div class="col-lg-6">
-       <img id="loadRek"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
-         <label style="color:blue" for="lmMethod">Rekening</label>
-         <select name="lmBank" id="lmBank" class="form-control" required  >
-           <option value="">--Pilih--</option>
-           <option value="CASH">Cash</option>
-           <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
-           <option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option>
-           <option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>
-           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
-         </select>
-       </div>       
-       </div>									
-                                    <div class="form-inline" id="divCurr" style="display:none"> <label style="font-weight:bold">Currency : </label>	 <select name="lmCurr" id="lmCurr" class="form-control" style="width:85px;" onChange="setCurr(this.value,$('#hTotal').val());">
-                     <?
-                         $vSQL="select distinct  frateto from tb_exrate order by frateto";
-						 $db->query($vSQL);
-						 while ($db->next_record()) {
-							 $vCurr=$db->f('frateto');
-					 ?>
-                         <option value="<?=$vCurr?>" <? if ($vCurr==$vCurrTo) echo 'selected'; ?>><?=$vCurr?></option>
-                     
-                     <? } ?>
-                     </select> </div><br><br>
-
-                            			<input type="hidden" name="hTotal" id="hTotal" value="" />
-
-										<input type="hidden" name="hPost" id="hPost" value="1" />
-                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button> <div id="divLoad" style="display:inline"></div>
-                            </div>
-                       
- </form>     
- <br>
- <br>
-  <br>
- <br>                          
-  <br>
- <br>                          
- <br>                          
-  <br>
- <br> 
-
-<!-- Placed js at the end of the document so the pages load faster -->
-
-<script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="../js/jquery-migrate-1.2.1.min.js"></script>
-
-<script src="../js/modernizr.min.js"></script>
-<script src="../js/jquery.nicescroll.js"></script>
-<script src="../js/jquery.price_format.js"></script>
-
-
-
-
-<script type="text/javascript" src="../js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="../js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../js/bootstrap-daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="../js/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript" src="../js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
-<script type="text/javascript" src="../js/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-<!--common scripts for all pages-->
-<script src="../js/pickers-init.js"></script>
-<script src="../js/scripts.js"></script>
-
-
-		
-		<!-- begin scroll to top btn -->
-		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
-		<!-- end scroll to top btn -->
-	</div>
-	<!-- end page container -->
-	
-	<button type="button" class="btn btn-info btn-lg" style="display:none" id="btnModal" data-toggle="modal" data-target="#dialogModal" data-backdrop="static">Open Modal</button>
-
-<div class="modal fade " id="dialogModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" id="modalhead">Selesaikan Pembayaran Virtual Account</h4>
-        </div>
-        <div class="modal-body " style="padding: 2em 4em 3em 4em">
-        <div class="row">
-             <div class="col-lg-12" id="divContent">
-                
-             </div>
-           
-          </div>
-          
-
-
-
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" id="hIdSys" name="hIdSys" value="" />
-          <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
-           <input type="hidden" id="hKind" name="hKind" value="" />
-
-          <button type="button" id="btClose" name="btClose" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  
-<? include_once("../framework/member_footside.blade.php") ; ?>
-_once("../framework/member_footside.blade.php") ; ?>
