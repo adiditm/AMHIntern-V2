@@ -171,6 +171,15 @@ $opts['fdd']['fbnsspon'] = array(
   'sort'     => true
 );
 
+$opts['fdd']['fbnssponhp'] = array(
+  'name'     => 'Bns Hasil Penjualan (%)',
+  'select'   => 'T',
+  'maxlen'   => 25,
+  'colattrs' => 'style="text-align:right;padding-right:30px"',
+  'number_format' => array(0, ',', '.'),
+  'sort'     => true
+);
+
 $opts['fdd']['fbnsregspon'] = array(
   'name'     => 'Bonus Korwil Reg. Pebisnis',
   'select'   => 'T',
@@ -265,9 +274,7 @@ $(document).ready(function(){
 	  $('#PME_data_fbnsregkorbysub').attr('dir','rtl');
 	  $('#PME_data_fbnsregspon').attr('dir','rtl');
 	   $('#PME_data_fbnsregsubspon').attr('dir','rtl');
-	  $('#PME_data_fbnsspon').attr('dir','rtl');
-	  $('input:text').each(function () {
-                    $(this).css("min-width","120px");
+  $('#PME_data_fbnssponhp').attr('dir','rtl');
                 });
 				
 				

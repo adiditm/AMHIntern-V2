@@ -4,6 +4,8 @@
         else
            include_once("../framework/member_headside.blade.php") ;  
 
+
+        
   $vRefURL=$_SERVER['HTTP_REFERER'];
 
   if ($vRefURL=="")
@@ -84,7 +86,7 @@ if ($vPriv=='sponsor')
 
 
 
-  $vSQL="select count(*) as fjumrec from tb_mutasi where fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus') and fidmember='$vUserChoosed' $vCrit";
+  $vSQL="select count(*) as fjumrec from tb_mutasi where fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus','reorder') and fidmember='$vUserChoosed' $vCrit";
 
  
 
@@ -277,7 +279,7 @@ table td {
 
 
 <div class="row ">
-            <div align="left" class="col-sm-4"><strong>Korwil / Pebisnis </strong></div>
+            <div align="left" class="col-sm-4"><strong><? if ($vPriv !='seller') {?>Korwil / Pebisnis <? } else {?>Seller<? } ?></strong></div>
             <div align="left" class="col-sm-6 col-md-6 col-xs-6">
    
 
@@ -286,16 +288,19 @@ table td {
                 <option selected="selected" value="">--Pilih--</option>
                 <? } ?>
 				<?
-                   $vUserX="";$vAndSP='';$vAndKor='';
+                   $vUserX="";$vAndSP='';$vAndKor='';$vAndsell='';
 				   if ($vPriv!='administrator') {
 				      $vUserX=$_SESSION['LoginUser'];
 				   	  $vAndSP .=" and fidmember='$vUserX'";
 					  $vAndKor .=" and fidkorwil='$vUserX'";
+					  $vAndSell .=" and fidseller='$vUserX'";
 				   }
 				   	  
 				   $vSQL="select fidmember, fnama from m_pebisnis where 1 $vAndSP ";
 				   $vSQL .= " union ";
 				    $vSQL .="select fidkorwil as fidmember, fnama from m_korwil where faktif='1' $vAndKor ";
+					$vSQL .= " union ";
+				    $vSQL .="select fidseller as fidmember, fnama from m_seller where faktif='1' $vAndSell ";
 				   $db->query($vSQL);
 				   while ($db->next_record()) {
 					   $vID = $db->f('fidmember');
@@ -413,7 +418,7 @@ table td {
 
 			   
 
-			    $vSQL="select * from tb_mutasi where   fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus') and fidmember='$vUserChoosed' ";
+			    $vSQL="select * from tb_mutasi where   fkind in ('ktp','spon','reg','withdraw','transin','transout','trans','transfer','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus','reorder') and fidmember='$vUserChoosed' ";
 
 				$vSQL.=$vCrit;
 				
@@ -476,7 +481,7 @@ table td {
 				$vTanggal1st = $db->f("ftanggal");
 				if ($vIdSys=='') $vIdSys=0;
 							 			
-				 $vSQLOpBal="select sum(fcredit-fdebit) as fopbal from tb_mutasi where  fidmember='$vUserChoosed'  and fidsys < '$vIdSys1st' and fkind in ('ktp','spon','reg','withdraw','transin','transout','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus')";				
+				 $vSQLOpBal="select sum(fcredit-fdebit) as fopbal from tb_mutasi where  fidmember='$vUserChoosed'  and fidsys < '$vIdSys1st' and fkind in ('ktp','spon','reg','withdraw','transin','transout','trxpulsa','pulsa','trans','transfer','rectransfer','koreksi','trxppob','correction','aktifasi_saldobonus','reorder')";				
 				
 			//	if ($vMarkDev !='') echo $vSQLOpBal."<br>";
 				

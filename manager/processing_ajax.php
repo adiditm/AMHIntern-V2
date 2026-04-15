@@ -177,7 +177,7 @@ if ($vOP == "rejectst") {
 		$vBuyer = $vIdMem;
 		$vNextJual = $vIdTrx;
 		$vDescSellerIn = "Dana masuk dari Repeat Order Sales $vNextJual";
-		$vDescSellerFee = "Fee AMH dari transaksi Repear Order Sales $vNextJual";
+		$vDescSellerFee = "Fee AMH dari transaksi Repeat Order Sales $vNextJual";
 		$vDescSellerBankFee = "Fee Bank TVA dari transaksi Repeat Order Sales $vNextJual";
 
 		if ($vSellerTrx != '') {

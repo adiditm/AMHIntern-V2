@@ -245,7 +245,7 @@ function doReject(pIdSys,pIdTrx) {
             <td width="10%" align="center" style="height: 24px"><strong>ID Member </strong></td>
             <td align="center" style="width: 23%; height: 24px;"><strong>Name</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>Seller</strong></td>
-            <td width="12%" align="center" style="height: 24px"><strong>&nbsp;Detail Product </strong></td>
+            <td width="12%" align="center" style="height: 24px" class="hide"><strong>&nbsp;Detail Product </strong></td>
             <td width="35%" align="center" style="height: 24px"><strong>Cara Bayar</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
@@ -350,7 +350,7 @@ function doReject(pIdSys,pIdTrx) {
 				echo $vNamaSeller = $dbin->f('fnama');
 			?>
             </td>
-            <td valign="top" nowrap><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
+            <td valign="top" nowrap class="hide"><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
             <td valign="top" style="vertical-align:top">
             <?php
             // Display payment method instead of note
