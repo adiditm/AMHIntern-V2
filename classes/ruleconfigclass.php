@@ -911,10 +911,11 @@
 			   return -1;   
 		}
 		
-       //Ambil Setting bonus Korwil
+	   //Ambil Setting bonus Korwil
 		function getBnsSetting($pJenis,$pProgram, $pLevel='',$pPaket='') {
             global $oDB; 
 			$vres="";
+			$vsql="";
 		    if ($pJenis=='KTP' && $pLevel=='KOR')
 				$vsql="SELECT fbnskorwil as fbns from tb_rules_bnskorwil where fidprogram='$pProgram' and fpackid='$pPaket' and factive='1' ";	
 		    else if ($pJenis=='KTP' && $pLevel=='SUBKOR')
@@ -929,13 +930,20 @@
 				$vsql="SELECT fbnsregspon as fbns from tb_rules_bnskorwil where fidprogram='$pProgram' and fpackid='$pPaket' and factive='1' ";	
 		    else if ($pJenis=='REG' && $pLevel=='SPONSUB')
 				$vsql="SELECT fbnsregsubspon as fbns from tb_rules_bnskorwil where fidprogram='$pProgram' and fpackid='$pPaket' and factive='1' ";	
+		    else if ($pJenis=='REG' && $pLevel=='HPSPON')
+				$vsql="SELECT fbnssponhp as fbns from tb_rules_bnskorwil where fidprogram='$pProgram' and fpackid='$pPaket' and factive='1' ";	
 		    else if ($pJenis=='SPON')
 				$vsql="SELECT fbnsspon as fbns from tb_rules_bnskorwil where fidprogram='$pProgram' and fpackid='$pPaket' and factive='1' ";	
 			
-			
-			$oDB->query($vsql);
-			while ($oDB->next_record()) {
-			    $vres = $oDB->f("fbns");
+			if ($vsql != "") {
+				$oDB->query($vsql);
+				if ($pJenis=='REG' && $pLevel=='HPSPON' && $oDB->num_rows() <= 0) {
+					$vsql="SELECT fbnssponhp as fbns from tb_rules_bnskorwil where factive='1' ";
+					$oDB->query($vsql);
+				}
+				while ($oDB->next_record()) {
+				    $vres = $oDB->f("fbns");
+				}
 			}
 			if ($vres != "")
 	  		   return $vres;

@@ -25,6 +25,72 @@ if ($vAwal=="")
 if ($vAkhir=="")
    $vAkhir=$oPhpdate->getNowYMD("-");
 
+$vUploadMsg = '';
+$vUploadMsgType = '';
+if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
+	$vUploadTrx = trim($_POST['hUploadTrx']);
+	$vUploadAwal = trim($_POST['hUploadAwal']);
+	$vUploadAkhir = trim($_POST['hUploadAkhir']);
+	if ($vUploadAwal != '')
+		$vAwal = $vUploadAwal;
+	if ($vUploadAkhir != '')
+		$vAkhir = $vUploadAkhir;
+
+	$vSQL = "select fidpenjualan, fidseller, fmethod, fprocessed from tb_trxstok_member_temp where fidpenjualan='$vUploadTrx' limit 1";
+	$dbin->query($vSQL);
+	$dbin->next_record();
+	$vUploadSeller = $dbin->f('fidseller');
+	$vUploadMethod = $dbin->f('fmethod');
+
+	if ($vUploadTrx == '' || $dbin->num_rows() <= 0) {
+		$vUploadMsg = 'Transaksi tidak ditemukan atau sudah diproses.';
+		$vUploadMsgType = 'danger';
+	} else if ($_SESSION['Priv'] != 'seller' || strtoupper($_SESSION['LoginUser']) != strtoupper($vUploadSeller)) {
+		$vUploadMsg = 'Anda tidak berhak mengupload bukti untuk transaksi ini.';
+		$vUploadMsgType = 'danger';
+	} else if ($vUploadMethod != 'wpr') {
+		$vUploadMsg = 'Upload bukti kirim hanya tersedia untuk transaksi metode saldo bonus.';
+		$vUploadMsgType = 'danger';
+	} else if (!isset($_FILES['uploadFile']) || $_FILES['uploadFile']['error'] != 0) {
+		$vUploadMsg = 'File bukti kirim belum dipilih atau gagal diupload.';
+		$vUploadMsgType = 'danger';
+	} else {
+		$vFileName = $_FILES['uploadFile']['name'];
+		$vExt = strtolower(pathinfo($vFileName, PATHINFO_EXTENSION));
+		$vAllowedExt = array('jpg', 'jpeg', 'png');
+		if (!in_array($vExt, $vAllowedExt)) {
+			$vUploadMsg = 'File bukti kirim harus berformat jpg, jpeg, atau png.';
+			$vUploadMsgType = 'danger';
+		} else {
+			$vUploadDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bukti';
+			if (!is_dir($vUploadDir))
+				@mkdir($vUploadDir, 0777, true);
+
+			if (!is_dir($vUploadDir)) {
+				$vUploadMsg = 'Folder upload bukti tidak dapat dibuat.';
+				$vUploadMsgType = 'danger';
+			} else {
+				foreach ($vAllowedExt as $vCleanupExt) {
+					$vOldFile = $vUploadDir . DIRECTORY_SEPARATOR . $vUploadTrx . '.' . $vCleanupExt;
+					if (file_exists($vOldFile))
+						@unlink($vOldFile);
+				}
+
+				$vDestFile = $vUploadDir . DIRECTORY_SEPARATOR . $vUploadTrx . '.' . $vExt;
+				if (move_uploaded_file($_FILES['uploadFile']['tmp_name'], $vDestFile)) {
+					$db->query("update tb_trxstok_member_temp set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+					$db->query("update tb_trxstok_member set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+					$vUploadMsg = 'Bukti kirim berhasil diupload.';
+					$vUploadMsgType = 'success';
+				} else {
+					$vUploadMsg = 'File bukti kirim gagal disimpan.';
+					$vUploadMsgType = 'danger';
+				}
+			}
+		}
+	}
+}
+
    
 $vPrevWeek=$oMydate->getPrevWeek($vTanggal);
 $vWeek=$oMydate->getWeek($vTanggal);
@@ -131,6 +197,7 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
    var vNotEnough = /notenough/g;
    var vNotEnoughBal=/not_e_deposit/g
    var vNotEnoughBonus=/not_e_bonusbalance/g
+   var vNotReadyWpr=/notreadywpr/g
    if (confirm('Are you sure to approve Penjualan '+pIdTrx+'?')) {
        $.get(vURL,function(data) {
           if(data.trim()=='successappv') {
@@ -149,9 +216,28 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
              alert('Approval failed, saldo reseller tidak cukup!');   
           }  else if (vNotEnoughBonus.test(data.trim())) {
              alert('Approval failed, saldo bonus / saldo pebisnis member tidak cukup!');
+          }  else if (vNotReadyWpr.test(data.trim())) {
+             alert('Belum bisa menyetujui transaksi ini karena seller belum mengirimkan pesanan');
           }
        });
    }
+}
+
+function openUploadWpr(pTrx) {
+   $('#spUploadJual').text(pTrx);
+   $('#hUploadTrx').val(pTrx);
+   $('#uploadFile').val('');
+   $('#dialogUploadWpr').modal('show');
+}
+
+function submitUploadWpr() {
+   if ($('#uploadFile').val().trim()=='') {
+      alert('Pilih file bukti kirim terlebih dahulu.');
+      return false;
+   }
+   $('#hUploadAwal').val($('#dc').val());
+   $('#hUploadAkhir').val($('#dc1').val());
+   $('#frmUploadWpr').submit();
 }
 
 
@@ -183,6 +269,9 @@ function doReject(pIdSys,pIdTrx) {
 <div class="right_col" role="main">
 		<div><label>
 		<h3> <? if($_SESSION['Priv']!='seller') {?>Approval <? } else { ?> List <? } ?>Penjualan</h3></label></div>
+<? if ($vUploadMsg != '') { ?>
+<div class="alert alert-<?=$vUploadMsgType?>"><?=$vUploadMsg?></div>
+<? } ?>
 <button type="button" class="btn btn-info btn-lg hide" id="btnModal" data-toggle="modal" data-target="#dialogModal">Open Modal</button>
 
 <div class="modal fade" id="dialogModal" role="dialog">
@@ -219,6 +308,35 @@ function doReject(pIdSys,pIdTrx) {
     </div>
   </div>
 
+<form action="" method="post" enctype="multipart/form-data" id="frmUploadWpr">
+<div class="modal fade" id="dialogUploadWpr" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Upload Bukti Kirim [<span id="spUploadJual"></span>]</h4>
+        </div>
+        <div class="modal-body " style="padding: 2em 4em 3em 4em">
+          <div class="row">
+             <div class="col-lg-12">
+                 <label>Pilih file bukti kirim (jpg, jpeg, png)</label>
+                 <input type="file" name="uploadFile" id="uploadFile" class="form-control" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+             </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="hUploadWpr" name="hUploadWpr" value="1" />
+          <input type="hidden" id="hUploadTrx" name="hUploadTrx" value="" />
+          <input type="hidden" id="hUploadAwal" name="hUploadAwal" value="<?=$vAwal?>" />
+          <input type="hidden" id="hUploadAkhir" name="hUploadAkhir" value="<?=$vAkhir?>" />
+          <button type="button" class="btn btn-success" onClick="submitUploadWpr()">Upload</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
 <form action="" method="post" name="demoform">
 
           <div style="display:inline" align="left">
@@ -250,15 +368,15 @@ function doReject(pIdSys,pIdTrx) {
             <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Status</strong></td>
-           <? if ($_SESSION['Priv'] !='seller') {?> <td width="14%" align="center" style="height: 24px"><strong>Action</strong> <? } ?></td>
+           <td width="14%" align="center" style="height: 24px"><strong>Action</strong></td>
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member where   1 "; 
+			 $vsql="select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member where   1 "; 
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member_temp where  1 "; 
+			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member_temp where  1 "; 
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -333,6 +451,14 @@ function doReject(pIdSys,pIdTrx) {
 				$vSQL = "select * from  m_seller where fidseller='$vSeller'";
 				$dbin->query($vSQL);
 				$dbin->next_record();
+				$vProofFile = '';
+				foreach (array('jpg','jpeg','png') as $vProofExt) {
+					$vProofAbs = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bukti' . DIRECTORY_SEPARATOR . $vIdTrx . '.' . $vProofExt;
+					if (file_exists($vProofAbs)) {
+						$vProofFile = 'bukti/'.$vIdTrx.'.'.$vProofExt;
+						break;
+					}
+				}
 				 
 				 
 				 if ($_SESSION['Priv'] != 'seller' || ($_SESSION['Priv'] == 'seller' && strtoupper($_SESSION['LoginUser'])==strtoupper($vSeller))) {
@@ -389,7 +515,14 @@ function doReject(pIdSys,pIdTrx) {
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
             <input <? if (!($vStat=='0' && $vPaid=='1' && $vSend =='1') && $vMethod != 'ctr' && !($vStat=='0' && $vMethod == 'wpr')) echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;
-            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } ?>  
+            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } else { ?>
+            <? if ($vStat=='0' && $vMethod=='wpr') { ?>
+            <input type="button" class="btn btn-xs btn-primary" value="<? if ($vProofFile!='') echo 'Re-upload Bukti'; else echo 'Upload Bukti';?>" onClick="openUploadWpr('<?=$vIdTrx?>')">
+            <? if ($vProofFile!='') { ?>
+            <a href="<?=$vProofFile?>" target="_blank" class="btn btn-xs btn-default">Lihat Bukti</a>
+            <? } ?>
+            <? } ?>
+            <? } ?>  
         <input type="button" class="btn btn-xs btn-success" name="button" id="button" value="Detail Receipt" onClick="printTrx('<?=$vIdTrx?>','<?=$vTanggal?>','<?=$vIdMember?>')">
             </td>  
           </tr>
@@ -405,7 +538,7 @@ function doReject(pIdSys,pIdTrx) {
               <?=number_format($vTotalJual,0,",",".")?>
             </strong></div></td>
             <td >&nbsp;</td>
-            <? if ($_SESSION['Priv'] !='seller') {?> <td >&nbsp;</td> <? } ?>
+            <td >&nbsp;</td>
           </tr>
         </table>    
         </div>  

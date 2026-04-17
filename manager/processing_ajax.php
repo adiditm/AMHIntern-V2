@@ -95,6 +95,9 @@ if ($vOP == "rejectst") {
 	$dbin->next_record();
 	$vTotal = (float)$dbin->f('ftotal');
 	$vFeeAminah = 0;
+	$vSellBonusPct = (float)$oRules->getBnsSetting('REG', 20, 'HPSPON', 'REG');
+	if ($vSellBonusPct < 0) $vSellBonusPct = 0;
+	$vSellBonusAmt = $vTotal * $vSellBonusPct / 100;
 
 	// fongkir tidak dinormalkan: cukup ambil 1 baris untuk 1 fidpenjualan
 	$vSQL = "select fongkir from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
@@ -108,18 +111,25 @@ if ($vOP == "rejectst") {
 	if ($vEndap < 0) $vEndap = 0;
 	if ($vBankFee < 0) $vBankFee = 0;
 
-	$vSQL = "select fidmember, fnostockist, fmethod from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
+	$vSQL = "select fidmember, fnostockist, fmethod, fsend from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vBuyerTrx = $dbin->f('fidmember');
 	$vPayerTrx = $dbin->f('fnostockist');
 	$vMethodTrx = $dbin->f('fmethod');
+	$vSendTrx = $dbin->f('fsend');
 	$vSellerTrx = '';
 	if (trim($vPayerTrx) == '')
 		$vPayerTrx = $vBuyerTrx;
 	$vSellerCredit = $vTotalCharge;
 	if ($vMethodTrx == 'tva') {
 		$vSellerCredit += $vBankFee;
+	}
+
+	if ($vMethodTrx == 'wpr' && $vSendTrx != '1') {
+		$db->query("ROLLBACK;");
+		echo 'notreadywpr';
+		exit;
 	}
 
 	if ($vMethodTrx == 'wpr') {
@@ -222,8 +232,18 @@ if ($vOP == "rejectst") {
 			$vNewBal = (float)$db->f('fsaldovcr');
 
 			$vsql = "insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fref) ";
-			$vsql .= "values ('$vUserTrx', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Potong Saldo Pebisnis - Approval]' , 0,$vTotalCharge ,$vNewBal ,'reorder' , '1','$vUserTrx' , now(),0,'$vNextJual') ";
+			$vsql .= "values ('$vUserTrx', '$vBuyer', now(),'Repeat Order Sales $vNextJual (termasuk admin dan ongkir) [Potong Saldo Pebisnis]' , 0,$vTotalCharge ,$vNewBal ,'reorder' , '1','$vUserTrx' , now(),0,'$vNextJual') ";
 			$db->query($vsql);
+		}
+
+		if ($vSellBonusAmt > 0 && trim($vUserTrx) != '') {
+			$vLastBalBonus = (float)$oMember->getMemFieldBis('fsaldovcr', $vUserTrx);
+			if ($vLastBalBonus < 0) {
+				$vLastBalBonus = 0;
+			}
+			$vNewBalBonus = $vLastBalBonus + $vSellBonusAmt;
+			$oKomisi->insertMutasiConn($vUserTrx, $vBuyer, date("Y-m-d H:i:s"), "Bonus hasil penjualan $vNextJual", $vSellBonusAmt, 0, $vNewBalBonus, 'reorder', $vNextJual, $db);
+			$oMember->updateBalConnWProdBiz($vUserTrx, $vNewBalBonus, $db);
 		}
 		
 		$vIDMember = $oJual->getMemberByJual($vIdTrx);
@@ -241,7 +261,7 @@ if ($vOP == "rejectst") {
 	}
 	$db->query("COMMIT;");
 	
-} else if ($vOP == "approvesell" && $vKind == 'kit') {
+} else if ($vOP == "approvesell" && $vKind == 'kit') { //Not used
 
 	$vResi = $_GET['noresi'];
 	$vKind = "Penjualan";
@@ -309,7 +329,7 @@ if ($vOP == "rejectst") {
 	}
 	$db->query("COMMIT;");
 	
-} else if ($vOP == "approvesell" && $vKind == 'acc') {
+} else if ($vOP == "approvesell" && $vKind == 'acc') {//Not used accessories
 
 	$vResi = $_GET['noresi'];
 	$vKind = "Penjualan";

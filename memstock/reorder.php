@@ -142,8 +142,15 @@ if ($vCount=='') $vCount=1;
     
     $db->query('COMMIT;');
 	$oSystem->sendSMS($tfPhoneSpon,"ONOTOKO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
-     if ($lmMethod=='wpr')
+     if ($lmMethod=='wpr') {
+		$vToNumberSeller = $oMember->getMemFieldSell('fnohp',$vSeller);
+		if ($vToNumberSeller != '' && $vToNumberSeller != '-') {
+			$vBodySeller = 'Yth. seller ' . $vSellerName . ", ada transaksi pembelian $vNextJual dari pebisnis $tfSponsor\n\n";
+			$vBodySeller .= 'Silakan login sebagai seller di web https://intern.amhtechno.com untuk melihat detail transaksi dan memproses transaksi tersebut sampai dengan upload bukti pengiriman.';
+			$oSystem->sendWAMessage($vToNumberSeller,$vBodySeller);
+		}
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
+	 }
 	 else if ($lmMethod=='ctr')	
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
 	 else if ($lmMethod=='tva') {
