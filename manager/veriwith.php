@@ -7,6 +7,15 @@ if ($_GET['op'] == '') {
 include_once("../classes/actionpayclass.php");
 define("MENU_ID", "mdm_jual_verifikasi");
 
+function amhGetWithdrawAccountJenis($oMember, $pId)
+{
+    if ($oMember->authSell($pId) == 1)
+        return 'seller';
+    if ($oMember->authKor($pId) == 1)
+        return 'korwil';
+    return 'sponsor';
+}
+
 $vRefUser = $_GET['uMemberId'];
 
 if (isset($vRefUser)) {
@@ -109,9 +118,9 @@ function MM_callJS(jsStr) { //v2.0
     return eval(jsStr)
 }
 
-function doProcess(pURL, pBankOK) {
+function doProcess(pURL, pBankOK, pJenisLabel) {
   if (pBankOK=='1') {
-    vSure = confirm('Apakah Anda yakin memproses withdrawal ini?');
+    vSure = confirm('Apakah Anda yakin memproses withdrawal ini?\n\nAksi ini akan mentransfer dana ke rekening ' + pJenisLabel + ' sesuai akun yang request withdraw.');
     if (vSure == true) {
         window.location = pURL + '&ref=withdraw';
     }
@@ -263,7 +272,8 @@ $(document).ready(function() {
                                 $vIDJual = $db->f("fidwithdraw");
                                 $vTgl = $db->f("ftglupdate");
                                 $vUserID = $db->f("fidmember");
-                                $vBankUser = $oMember->getMemFieldBis('fnamabank',$vUserID);
+                                $vJenisWD = amhGetWithdrawAccountJenis($oMember, $vUserID);
+                                $vBankUser = $oMember->getBankAdm($vUserID,$vJenisWD);
                                 $bank = $oActionPay->getListBank();
                                 $vBankOK = '0';
                                 if($bank['status']=='0001') {
@@ -282,6 +292,12 @@ $(document).ready(function() {
                                 }
                                 $vRekFrom = $db->f("frekfrom");
                                 $vRekTo = $db->f("frekto");
+                                if ($vJenisWD == 'seller')
+                                    $vJenisLabel = 'seller';
+                                else if ($vJenisWD == 'korwil')
+                                    $vJenisLabel = 'korwil';
+                                else
+                                    $vJenisLabel = 'pebisnis';
                                 $vTotHarga += $vSubtotal;
                                 if ($vProcessed == 2) {
                                     $vTotHargaV += $vSubtotal;
@@ -304,14 +320,14 @@ $(document).ready(function() {
                                         <?=$vUserID?>
                                     </div>
                                 </td>
-                                <td width="40" valign="middle"><?=$oMember->getMemberNameAdm($vUserID, 'sponsor')?></td>
+                                <td width="40" valign="middle"><?=$oMember->getMemberNameAdm($vUserID, $vJenisWD)?></td>
                                 <td align="right" width="15" nowrap="nowrap" valign="middle"><?=$vCurr?>
                                     <?=number_format($vSubtotal, 0, ",", ".")?></td>
                                 <td width="105" valign="middle"><?=$db->f('frekto')?> ,</td>
                                 <td width="30" nowrap="nowrap" valign="middle"><?=$vProctext?></td>
                                 <td width="79" nowrap="nowrap" valign="middle">
                                     <p class="MsoNormal style4">
-                                        <input class="btn btn-primary btn-xs" type="button" name="Button" onClick="doProcess('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uUserID=<?=$vUserID?>','<?=$vBankOK?>');" value="Process" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
+                                        <input class="btn btn-primary btn-xs" type="button" name="Button" onClick="doProcess('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uUserID=<?=$vUserID?>','<?=$vBankOK?>','<?=$vJenisLabel?>');" value="Process" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
                                         <input class="btn btn-default btn-xs" type="button" name="Button2" onclick="doCancel('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uCanc=<?=md5('bataldeh')?>&uUserID=<?=$vUserID?>');" value="Cancel" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
                                         <input class="btn btn-success btn-xs" name="btnDetail" type="button" id="btnDetail" onclick="doDetail('<?=$vIDJual?>');" value="Detail" />
                                     </p>

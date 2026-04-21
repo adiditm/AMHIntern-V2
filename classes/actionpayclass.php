@@ -53,9 +53,9 @@ CREATE TABLE tb_actpcall_log (
 						'timeout' => 30
 					]
 				];
-			print_r($options);
-			echo "::::::";
-			print_r($headers);
+			// print_r($options);
+			// echo "::::::";
+			// print_r($headers);
 				// Create a stream context
 				$context = stream_context_create($options);
 

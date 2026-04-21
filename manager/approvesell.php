@@ -2,10 +2,32 @@
 
 <?php
 
+function amhGetTrxReceiveField($dbConn)
+{
+	$vReceiveFields = array('freceived', 'freceive');
+	foreach ($vReceiveFields as $vFieldName) {
+		$vHasTemp = false;
+		$vHasMain = false;
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member_temp LIKE '$vFieldName'";
+		$dbConn->query($vSQLCheckField);
+		if ($dbConn->next_record())
+			$vHasTemp = true;
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member LIKE '$vFieldName'";
+		$dbConn->query($vSQLCheckField);
+		if ($dbConn->next_record())
+			$vHasMain = true;
+		if ($vHasTemp && $vHasMain)
+			return $vFieldName;
+	}
+	return '';
+}
+
 $vOutlet=$_SESSION['LoginOutlet'];
 $vAwal=$_POST['dc'];
 $vAkhir=$_POST['dc1'];
 $vSpy = md5('spy').md5($_GET['uMemberId']);
+$vReceiveField = amhGetTrxReceiveField($dbin);
+$vReceiveSelect = ($vReceiveField != '') ? $vReceiveField . " as freceived" : "'0' as freceived";
 
  if ($_GET['uMemberId'] != '')
     $vUserActive=$_GET['uMemberId'];
@@ -36,11 +58,12 @@ if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
 	if ($vUploadAkhir != '')
 		$vAkhir = $vUploadAkhir;
 
-	$vSQL = "select fidpenjualan, fidseller, fmethod, fprocessed from tb_trxstok_member_temp where fidpenjualan='$vUploadTrx' limit 1";
+	$vSQL = "select fidpenjualan, fidseller, fmethod, fprocessed, fpaid from tb_trxstok_member_temp where fidpenjualan='$vUploadTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vUploadSeller = $dbin->f('fidseller');
 	$vUploadMethod = $dbin->f('fmethod');
+	$vUploadPaid = $dbin->f('fpaid');
 
 	if ($vUploadTrx == '' || $dbin->num_rows() <= 0) {
 		$vUploadMsg = 'Transaksi tidak ditemukan atau sudah diproses.';
@@ -48,8 +71,11 @@ if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
 	} else if ($_SESSION['Priv'] != 'seller' || strtoupper($_SESSION['LoginUser']) != strtoupper($vUploadSeller)) {
 		$vUploadMsg = 'Anda tidak berhak mengupload bukti untuk transaksi ini.';
 		$vUploadMsgType = 'danger';
-	} else if ($vUploadMethod != 'wpr') {
-		$vUploadMsg = 'Upload bukti kirim hanya tersedia untuk transaksi metode saldo bonus.';
+	} else if ($vUploadMethod != 'wpr' && $vUploadMethod != 'ctr' && $vUploadMethod != 'tva') {
+		$vUploadMsg = 'Upload bukti kirim hanya tersedia untuk transaksi metode saldo bonus, cash/transfer, atau transfer virtual account.';
+		$vUploadMsgType = 'danger';
+	} else if ($vUploadMethod == 'ctr' && $vUploadPaid != '1') {
+		$vUploadMsg = 'Upload bukti kirim untuk transaksi cash/transfer baru tersedia setelah payment diapprove admin.';
 		$vUploadMsgType = 'danger';
 	} else if (!isset($_FILES['uploadFile']) || $_FILES['uploadFile']['error'] != 0) {
 		$vUploadMsg = 'File bukti kirim belum dipilih atau gagal diupload.';
@@ -78,8 +104,16 @@ if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
 
 				$vDestFile = $vUploadDir . DIRECTORY_SEPARATOR . $vUploadTrx . '.' . $vExt;
 				if (move_uploaded_file($_FILES['uploadFile']['tmp_name'], $vDestFile)) {
-					$db->query("update tb_trxstok_member_temp set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
-					$db->query("update tb_trxstok_member set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+					if ($vUploadMethod == 'wpr') {
+						$db->query("update tb_trxstok_member_temp set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+						$db->query("update tb_trxstok_member set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+					} else if ($vUploadMethod == 'ctr') {
+						$db->query("update tb_trxstok_member_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
+						$db->query("update tb_trxstok_member set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
+					} else if ($vUploadMethod == 'tva') {
+						$db->query("update tb_trxstok_member_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
+						$db->query("update tb_trxstok_member set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
+					}
 					$vUploadMsg = 'Bukti kirim berhasil diupload.';
 					$vUploadMsgType = 'success';
 				} else {
@@ -182,13 +216,70 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
 	window.location='admin.php?menu=buktitfrsell&uKd='+pKode+'&uKom='+pKomisi;
 }//-->
 
-function doApprove1(pSys,pTrx,pKind) {
+function doApprove1(pSys,pTrx,pKind,pMethod,pPaid,pSend,pReceived,pStat) {
+   if (pStat != '0') {
+      return false;
+   }
+   if (pMethod == 'ctr' && pPaid != '1') {
+      doApprovePayment(pSys,pTrx);
+      return false;
+   }
+   if (pMethod == 'ctr' && pSend != '1') {
+      alert('Tidak bisa disetujui, seller belum mengirim barang');
+      return false;
+   }
+   if (pMethod == 'tva') {
+      if (pPaid != '1') {
+         alert('Belum bisa disetujui, pembeli belum menyelesaikan pembayaran.');
+         return false;
+      }
+      if (pSend != '1') {
+         alert('Belum bisa disetujui, seller belum menyelesaikan pengiriman');
+         return false;
+      }
+      if (pReceived != '1') {
+         alert('Belum bisa disetujui, pembeli belum menyatakan menerima barang. Hubungi pebisnis secara berkala untuk setatus penerimaan.');
+         return false;
+      }
+   }
+   if (pMethod == 'wpr' && pSend != '1') {
+      alert('Belum bisa disetujui, seller belum menyelesaikan pengiriman');
+      return false;
+   }
+   if (pMethod == 'wpr' && pReceived != '1') {
+      alert('Belum bisa disetujui, pembeli belum menyatakan menerima barang. Hubungi pebisnis secara berkala untuk setatus penerimaan.');
+      return false;
+   }
    $('#spJual').text(pTrx);
    $('#hIdSys').val(pSys);
    $('#hIdTrx').val(pTrx);   
    $('#hKind').val(pKind);   
    // show bootstrap modal directly
    $('#dialogModal').modal('show');
+}
+
+function doApprovePayment(pSys,pTrx) {
+   var vURL='../manager/processing_ajax.php?op=approvepayment&idsys='+pSys+'&idtrx='+pTrx;
+   if (confirm('Apakah Anda yakin menyetujui pembayaran untuk transaksi '+pTrx+'? Pastikan Anda sebagai admin sudah check dana masuk di rekening!')) {
+      $.get(vURL,function(data) {
+         var r = $.trim(data);
+         if (r == 'successpaid') {
+            alert('Payment berhasil diapprove.');
+            $('#tdstat'+pTrx).html('Diproses (Sudah Dibayar)');
+            $('#btnAppv'+pTrx).val('Approve');
+            $('#btnAppv'+pTrx).attr('onclick',"doApprove1('"+pSys+"','"+pTrx+"','"+$('#hKind').val()+"','ctr','1','0','0','0')");
+            window.location.reload();
+         } else {
+            var msg = 'Approve payment gagal.';
+            if (r == 'notfound') msg = 'Transaksi tidak ditemukan di data sementara (tb_trxstok_member_temp).';
+            else if (r == 'invalidmethod') msg = 'Metode bayar bukan Cash/Transfer.';
+            else if (r == 'alreadyprocessed') msg = 'Transaksi ini sudah tidak dalam status tunggu approve payment.';
+            else if (r == 'updatefailed') msg = 'Update fpaid gagal (tidak ada baris yang cocok). Cek fidpenjualan dan fmethod di database.';
+            else if (r !== '') msg = 'Respon server: ' + r;
+            alert(msg);
+         }
+      });
+   }
 }
 
 function doApprove2(pIdSys,pIdTrx,pKind) {
@@ -198,6 +289,12 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
    var vNotEnoughBal=/not_e_deposit/g
    var vNotEnoughBonus=/not_e_bonusbalance/g
    var vNotReadyWpr=/notreadywpr/g
+   var vNotReadyWprReceived=/notreadywprreceived/g
+   var vNotReadyCtrPaid=/notreadyctrpaid/g
+   var vNotReadyCtrSend=/notreadyctrsend/g
+   var vNotReadyTVAPaid=/notreadytvapaid/g
+   var vNotReadyTVASend=/notreadytvasend/g
+   var vNotReadyTVAReceived=/notreadytvareceived/g
    if (confirm('Are you sure to approve Penjualan '+pIdTrx+'?')) {
        $.get(vURL,function(data) {
           if(data.trim()=='successappv') {
@@ -218,6 +315,18 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
              alert('Approval failed, saldo bonus / saldo pebisnis member tidak cukup!');
           }  else if (vNotReadyWpr.test(data.trim())) {
              alert('Belum bisa menyetujui transaksi ini karena seller belum mengirimkan pesanan');
+          }  else if (vNotReadyWprReceived.test(data.trim())) {
+             alert('Belum bisa disetujui, pembeli belum menyatakan menerima barang. Hubungi pebisnis secara berkala untuk setatus penerimaan.');
+          }  else if (vNotReadyCtrPaid.test(data.trim())) {
+             alert('Belum bisa disetujui, pembayaran belum diapprove admin.');
+          }  else if (vNotReadyCtrSend.test(data.trim())) {
+             alert('Tidak bisa disetujui, seller belum mengirim barang');
+          }  else if (vNotReadyTVAPaid.test(data.trim())) {
+             alert('Belum bisa disetujui, pembeli belum menyelesaikan pembayaran.');
+          }  else if (vNotReadyTVASend.test(data.trim())) {
+             alert('Belum bisa disetujui, seller belum menyelesaikan pengiriman');
+          }  else if (vNotReadyTVAReceived.test(data.trim())) {
+             alert('Belum bisa disetujui, pembeli belum menyatakan menerima barang. Hubungi pebisnis secara berkala untuk setatus penerimaan.');
           }
        });
    }
@@ -228,6 +337,12 @@ function openUploadWpr(pTrx) {
    $('#hUploadTrx').val(pTrx);
    $('#uploadFile').val('');
    $('#dialogUploadWpr').modal('show');
+}
+
+function openProofModal(pTrx, pFile) {
+   $('#spProofJual').text(pTrx);
+   $('#imgProofPreview').attr('src', pFile);
+   $('#dialogProofWpr').modal('show');
 }
 
 function submitUploadWpr() {
@@ -337,6 +452,23 @@ function doReject(pIdSys,pIdTrx) {
   </div>
 </form>
 
+<div class="modal fade" id="dialogProofWpr" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Preview Bukti Kirim [<span id="spProofJual"></span>]</h4>
+        </div>
+        <div class="modal-body text-center" style="padding: 2em;">
+          <img id="imgProofPreview" src="" alt="Bukti Kirim" style="max-width:100%;max-height:70vh;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <form action="" method="post" name="demoform">
 
           <div style="display:inline" align="left">
@@ -372,11 +504,11 @@ function doReject(pIdSys,pIdTrx) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member where   1 "; 
+			 $vsql="select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod  from tb_trxstok_member where   1 "; 
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, fmethod  from tb_trxstok_member_temp where  1 "; 
+			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod  from tb_trxstok_member_temp where  1 "; 
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -396,6 +528,7 @@ function doReject(pIdSys,pIdTrx) {
 				 $vIdSeller=$db->f('fidseller');
          $vPaid=$db->f('fpaid');
          $vSend=$db->f('fsend');
+         $vReceived=$db->f('freceived');
          $vMethod=$db->f('fmethod');
 				
 				 $vNama=$oMember->getMemberNameAdm($vIdMember,'sponsor');
@@ -416,17 +549,34 @@ function doReject(pIdSys,pIdTrx) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
         $vAMHFee = $dbin->f('am_fee');
 
        $vPaid = $dbin->f('fpaid');
-       $vSend = $dbin->f('fsend');  
+       $vSend = $dbin->f('fsend');
+       $vReceived = $dbin->f('freceived');
 
-       if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
+       if ($vStat=='0' && $vMethod=='tva' && $vPaid!='1')
+          $vStatus='Pending [buyer]';
+        else if ($vStat=='0' && $vMethod=='tva' && $vPaid=='1' && $vSend !='1')
+          $vStatus='Pending [seller]';
+        else if ($vStat=='0' && $vMethod=='tva' && $vPaid=='1' && $vSend =='1' && $vReceived !='1')
+          $vStatus='Pending [pebisnis]';
+        else if ($vStat=='0' && $vMethod=='wpr' && $vSend !='1')
+          $vStatus='Pending [seller]';
+        else if ($vStat=='0' && $vMethod=='wpr' && $vSend =='1' && $vReceived !='1')
+          $vStatus='Pending [pebisnis]';
+        else if ($vStat=='0' && $vMethod=='ctr' && $vPaid!='1')
+          $vStatus='Pending [payment]';
+        else if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
           $vStatus='Pending';
+        else if ($vStat=='0' && $vMethod=='tva' && $vPaid=='1' && $vSend =='1' && $vReceived =='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && $vMethod=='wpr' && $vSend =='1' && $vReceived =='1')
+          $vStatus='Diproses (Sudah Diterima)';
         else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
           $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
@@ -514,12 +664,12 @@ function doReject(pIdSys,pIdTrx) {
 			</div></td>
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
-            <input <? if (!($vStat=='0' && $vPaid=='1' && $vSend =='1') && $vMethod != 'ctr' && !($vStat=='0' && $vMethod == 'wpr')) echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="Approve">&nbsp;
+            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>','<?=$vMethod?>','<?=$vPaid?>','<?=$vSend?>','<?=$vReceived?>','<?=$vStat?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="<? if ($vMethod=='ctr' && $vStat=='0' && $vPaid!='1' && $vSend!='1' && $vReceived!='1') echo 'Approve Payment'; else echo 'Approve';?>">&nbsp;
             <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } else { ?>
-            <? if ($vStat=='0' && $vMethod=='wpr') { ?>
+            <? if ($vStat=='0' && (($vMethod=='wpr') || ($vMethod=='ctr' && $vPaid=='1') || ($vMethod=='tva' && $vPaid=='1'))) { ?>
             <input type="button" class="btn btn-xs btn-primary" value="<? if ($vProofFile!='') echo 'Re-upload Bukti'; else echo 'Upload Bukti';?>" onClick="openUploadWpr('<?=$vIdTrx?>')">
             <? if ($vProofFile!='') { ?>
-            <a href="<?=$vProofFile?>" target="_blank" class="btn btn-xs btn-default">Lihat Bukti</a>
+            <input type="button" class="btn btn-xs btn-default" value="Lihat Bukti" onClick="openProofModal('<?=$vIdTrx?>','<?=$vProofFile?>')">
             <? } ?>
             <? } ?>
             <? } ?>  

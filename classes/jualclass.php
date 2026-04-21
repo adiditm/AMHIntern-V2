@@ -2632,13 +2632,19 @@ function getHargaSat($pID) {
 
 		  	$vDesc="Withdraw  ($vKet)";
 
-		  $vLastBal=$oKomisi->getLastBalanceBis($vID);
+		  if ($oMember->authSell($vID)==1)
+		  	$vLastBal=$oMember->getMemFieldSell('fsaldovcr',$vID);
+		  else
+		  	$vLastBal=$oKomisi->getLastBalanceBis($vID);
 
 		  $vBal=$vLastBal-$vNom;
 
 		  $oKomisi->insertMutasiConn($vID,$vID,date("Y-m-d H:i:s"),$vDesc,0,$vNom,$vBal,'withdraw',$pIDJual, $pDB) ;
 
-		  $oMember->changeBalBisConn($vID,$vNom,'D',$pDB);
+		  if ($oMember->authSell($vID)==1)
+		  	$oMember->changeBalSellConn($vID,$vNom,'D',$pDB);
+		  else
+		  	$oMember->changeBalBisConn($vID,$vNom,'D',$pDB);
 
 		  return 1;
 

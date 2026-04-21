@@ -17,7 +17,14 @@ include_once("../classes/systemclass.php");
    $vTreshUp = $oRules->getSettingByField('ftreshup');
    $vTreshMaster = $oRules->getSettingByField('ftreshmaster');
    $vByyAdmin = $oRules->getSettingByField('fbyyadmin');
+   $vBankFee = (float)$oRules->getSettingByField('fbyybank');
    $vSalProd = $oMember->getMemField('fsaldowprod',$vUser);
+   $vBank1 = $oRules->getSettingByField('fbank');
+   $vBank2 = $oRules->getSettingByField('fbank2');
+   $vBank3 = $oRules->getSettingByField('fbank3');
+   $vRekBank1 = $oRules->getSettingByField('frekbank1');
+   $vRekBank2 = $oRules->getSettingByField('frekbank2');
+   $vRekBank3 = $oRules->getSettingByField('frekbank3');
   
   
        
@@ -28,6 +35,7 @@ include_once("../classes/systemclass.php");
    } else {
     $vNextJual=$oJual->getNextIDJual();
     $vBuyer=$_POST['tfSernoSpon'];
+    $vBankDest=isset($_POST['lmBank']) ? addslashes(trim($_POST['lmBank'])) : '';
     $vPaket=$oMember->getMemField("fpaket",$vBuyer);
     $vAlamat=$oMember->getMemField('falamat',$vBuyer);
    // @mail("a_didit_m@yahoo.com","Entri RO Spectra by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true));
@@ -44,8 +52,8 @@ include_once("../classes/systemclass.php");
     while (list($key,$val) = each($_SESSION['save'])) {
         //print_r($val);
         
-    	$vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed)";
-    	$vSQL.=" values('$vNextJual','$vUser','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$lmMethod','Repeat Order',now(),'2','1981-01-01 00:00:00')";
+    	$vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed, fnorek)";
+    	$vSQL.=" values('$vNextJual','$vUser','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$lmMethod','Repeat Order',now(),'2','1981-01-01 00:00:00','$vBankDest')";
   	 	
   	 	$db->query($vSQL);
   	 	$vTotItem+=$val['txtJml'];
@@ -302,6 +310,33 @@ include_once("../classes/systemclass.php");
 
     
     $db->query('COMMIT;');
+	if ($lmMethod=='ctr') {
+		$vNamaPebisnis = trim($oMember->getMemFieldBis('fnama',$vUser));
+		if ($vNamaPebisnis == '')
+			$vNamaPebisnis = $vUser;
+
+		$vTotalPay = (float)$vTotal + $vBankFee;
+		$vAdminNumbers = array();
+		$vAdminConf = trim($oRules->getSettingByField('fhpconf'));
+		$vAdminCs = trim($oRules->getSettingByField('fhpcs'));
+		if ($vAdminConf != '' && $vAdminConf != '-')
+			$vAdminNumbers[] = $vAdminConf;
+		if ($vAdminCs != '' && $vAdminCs != '-')
+			$vAdminNumbers[] = $vAdminCs;
+		$vAdminNumbers = array_values(array_unique($vAdminNumbers));
+
+		if (count($vAdminNumbers) > 0) {
+			$vBodyAdmin = 'Yth. Admin (admin2), ada transaksi belanja produk di AMH Techno melalui pebisnis [' . $vNamaPebisnis . '] dengan pembayaran transfer ke rekening [' . $vBankDest . "]\n\n";
+			$vBodyAdmin .= 'Nomor Order / Pembelian : ' . $vNextJual . "\n";
+			$vBodyAdmin .= 'Jumlah Pembayaran : ' . number_format($vTotalPay,0,',','.') . "\n\n";
+			$vBodyAdmin .= 'Tolong cek secara berkala apakah dana sudah masuk di rekening. Jika sudah masuk, lakukan approve payment di halaman Approval Penjualan untuk transaksi tersebut, agar seller bisa segera memproses penjualan' . "\n \n";
+			$vBodyAdmin .= 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' . number_format($vBankFee,0,',','.') . ".\n";
+
+			foreach ($vAdminNumbers as $vAdminNumber) {
+				$oSystem->sendWAMessage($vAdminNumber,$vBodyAdmin);
+			}
+		}
+	}
 	$oSystem->sendSMS($tfPhoneSpon,"SPECTRA2U\n\n$tfSponsor, terima kasih atas order Anda!");
      if ($lmMethod=='wpr')
 	    $oSystem->jsAlert("Repeat Order Sukses dengan ID $vNextJual!");
@@ -349,6 +384,26 @@ include_once("../classes/systemclass.php");
 	</style>
 <script src="../js/jquery.validate.min.js"></script>
 <script language="javascript">
+function changeRek(pThis) {
+	var vDefault = '<option value="">--Pilih--</option><option value="CASH">Cash</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
+	if (pThis.value=='ctr') {
+		document.getElementById('lmBank').disabled=false;
+		$('#lmBank').css('pointer-events','auto');
+		$('#lmBank').css('background-color','#fff');
+		$('#lmBank').html(vDefault);
+	} else if (pThis.value=='wpr') {
+		document.getElementById('lmBank').disabled=true;
+		$('#lmBank').css('pointer-events','none');
+		$('#lmBank').css('background-color','#ccc');
+		document.getElementById('lmBank').selectedIndex=0;
+	} else {
+		document.getElementById('lmBank').disabled=false;
+		$('#lmBank').css('pointer-events','auto');
+		$('#lmBank').css('background-color','#fff');
+		document.getElementById('lmBank').selectedIndex=0;
+		$('#lmBank').html(vDefault);
+	}
+}
 
 function validRO() {
 	//alert($('#hTot').val());
@@ -367,6 +422,11 @@ function validRO() {
 			// alert($('#hTotal').val());
 			if (parseFloat($('#hTotal').val()) > parseFloat(vSalProd) && $('#lmMethod').val().trim()=='wpr') {
 			    alert('Saldo Wallet Product Anda tidak mencukupi untuk pembelanjaan ini, silakan ganti metode pembayaran!');	
+				return false;
+			}
+			if ($('#lmMethod').val().trim()=='ctr' && $('#lmBank').val().trim()=='') {
+				alert('Pilih rekening tujuan pembayaran terlebih dahulu!');
+				$('#lmBank').focus();
 				return false;
 			}
 
@@ -398,6 +458,7 @@ $(document).ready(function(){
   $('#frmReg input, #frmReg textarea,  #frmReg select, #frmReg checkbox, #frmReg radio').not([type="submit"]).not($("#tfNPWP")).not($("#tEmail")).not($("#tfSwift")).not($("#tfEmailSpon")).addClass('required');  
   $('#lmCountry').val('ID');
   $('#lmCountry').trigger('change');
+  changeRek(document.getElementById('lmMethod'));
   
 
 		$("#frmReg").validate({
@@ -981,10 +1042,20 @@ function setCurr(pParam,pNom) {
        <div class="col-lg-4">
        
          <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
-         <select name="lmMethod" id="lmMethod" class="form-control">
+         <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
            <option value="">--Pilih--</option>
            <option value="ctr">Cash / Transfer</option>
            <option value="wpr">Wallet Product</option>
+         </select>
+       </div>
+       <div class="col-lg-6">
+         <label style="color:blue" for="lmBank">Rekening</label>
+         <select name="lmBank" id="lmBank" class="form-control">
+           <option value="">--Pilih--</option>
+           <option value="CASH">Cash</option>
+           <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
+           <option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option>
+           <option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>
          </select>
        </div>
        </div>									

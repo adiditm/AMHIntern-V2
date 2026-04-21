@@ -1,0 +1,18 @@
+<?
+include_once "../config.php";
+include_once "../classes/jualclass.php";
+include_once "../classes/networkclass.php";
+
+//echo str_pad(33333, 5, '0', STR_PAD_LEFT);
+//echo $oJual->getNextIDJual();
+
+//echo $_SERVER['HTTPS'];
+//getDownlineByPaket($pID,&$vout,$pStart,$pEnd,$pPaket)
+//echo "ssssssssss";
+//$oNetwork->getDownlineByPaket('UFC203110441',$Hasil,'2015-10-15','2015-10-15','B');
+//print_r($Hasil);
+
+$a=$oKomisi->getPoint('UEC518118195','2016-02-01','2016-03-29');
+print_r($a);
+
+?>

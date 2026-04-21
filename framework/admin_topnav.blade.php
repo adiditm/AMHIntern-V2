@@ -75,7 +75,7 @@
 					?>
                     <li><a href="javascript:;">Help</a></li>-->
                     <? if ($_SESSION['Priv'] != 'administrator') { ?>
-                    <li style="width:100%"><a style="white-space:nowrap" href="javascript:;">Saldo <br><font color="#00f">[ID: <?=$vIDSal ?>] : <?=number_format($vSaldo,0,",","."); if (($vSaldo - $vEndap) >0) { ?> (Aktif: <?=number_format($vSaldo - $vEndap,0,",",".")?>) <? } else {?> (Aktif: <?=number_format(0,0,",",".")?> <? } ?></font></a>
+                    <li style="width:100%"><a style="white-space:nowrap" href="javascript:;">Saldo <br><font color="#00f">[ID: <?=$vIDSal ?>] : <?=number_format($vSaldo,0,",","."); if (($vSaldo - $vEndap) >0) { ?> (Aktif: <?=number_format($vSaldo - $vEndap,0,",",".")?>) <? } else {?> (Aktif: <?=number_format(0,0,",",".")?>) <? } ?></font></a>
                    
                     </li> 
                     <? } ?>

@@ -8,6 +8,8 @@
      $vJenis = 'sponsor';
  else if ($vPriv=='korwil')
      $vJenis = 'korwil';
+ else if ($vPriv=='seller')
+     $vJenis = 'seller';
  else $vJenis='';	 
 
  
@@ -17,6 +19,7 @@
  $vAction=$_POST['hAction'];
  $vNama=$_POST['nama'];
  $vID=$_POST['ID'];
+ $vIdBis='';
  if ($vJenis=='korwil') {
 	$vSQL = "select fidbisnis from m_korwil where fidkorwil='{$_SESSION['LoginUser']}'";
 	$db->query($vSQL);

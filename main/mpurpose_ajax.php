@@ -2203,9 +2203,10 @@ $vUser=$_SESSION['LoginUser'];
 	$vChannelName = $_POST['va_channelname'];
 	$vAddress = $_POST['va_address'];
 	$vAddressName = $_POST['va_addressname'];
+	$vRecName = trim($_POST['va_recname']);
 	$vAddressNameSplit = explode('-', $vAddressName);
-	if (count($vAddressNameSplit) > 1 )
-		$vRecName = end($vAddressNameSplit);
+	if ($vRecName == '' && count($vAddressNameSplit) > 1 )
+		$vRecName = trim(end($vAddressNameSplit));
 	$vRefId = $_POST['va_refid'];
 	$vBankFee=$oRules->getSettingByField('fbyybank');
 
@@ -2219,6 +2220,8 @@ $vUser=$_SESSION['LoginUser'];
 	$db->query($vSQLGetTrx);
 	$db->next_record();
 	$vIdSeller = $db->f('fidseller');
+	if ($vRecName == '')
+		$vRecName = trim($db->f('frecname'));
 
 	if ($vCount == 0) {
 		// Insert into tb_trx_va
@@ -2231,12 +2234,14 @@ $vUser=$_SESSION['LoginUser'];
 		$vMember = $oJual->getJualField($vRefId,'fidmember');
 		$vMailTo = $oMember->getMemFieldBis('femail',$vMember);
 		$vMailToName = $oMember->getMemFieldBis('fnama',$vMember);
+		if ($vRecName == '')
+			$vRecName = trim($vMailToName);
 		$vMailFrom=$oRules->getSettingByField('fmailadmin');
 		$vToNumberBuyer = $_POST['va_recnohp'];
 		$vToNumberSeller = $oMember->getMemFieldSell('fnohp',$vIdSeller);
 		$vNamaSeller = $oMember->getMemFieldSell('fnama',$vIdSeller);
 
-		$vBody = 'Yth. pebisnis' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
+		$vBody = 'Yth. Pebisnis ' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
 		$vBody .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";
 		$vBody .= 'Nama Pembeli Anda : ' . $vRecName . "\n";
 		$vBody .= 'No HP Pembeli Anda : ' . $vToNumberBuyer . "\n";
@@ -2250,7 +2255,7 @@ $vUser=$_SESSION['LoginUser'];
 		$vBody .= 'Catatan: Total nominal transaksi sudah termasuk admin bank sebesar ' . number_format($vFee,0,',','.') . "\n";
 
 		
-		$vBodyBuyer = 'Yth. ' . $vRecName . ", terima kasih sudah berbelanja di AMH Techno melalui pebisnis $vMailToName \n\n";
+		$vBodyBuyer = 'Yth. ' . $vRecName . ", terima kasih sudah berbelanja di AMH Techno melalui Pebisnis $vMailToName \n\n";
 		$vBodyBuyer .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";
 		$vBodyBuyer .= 'Nomor Virtual Account : ' . $vVA . "\n";
 		$vBodyBuyer .= 'Jumlah Pembayaran : ' . number_format($vAmount,0,',','.') . "\n";

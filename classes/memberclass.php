@@ -1065,6 +1065,32 @@
 
 		}
 
+		function authSellActiveID($pID) {
+
+            global $oDB; 
+
+			$vres="";
+
+		    $vsql="SELECT fidseller from m_seller where fidseller='$pID' and faktif <> '0'";	
+
+			$oDB->query($vsql);
+
+			while ($oDB->next_record()) {
+
+			    $vres = $oDB->f("fidseller");
+
+			}
+
+			if ($vres != "")
+
+	  		   return 1;
+
+			else
+
+			   return 0;   
+
+		}
+
 		function authSponActiveID($pID) {
 
             global $oDB; 
@@ -1184,6 +1210,38 @@
 			while ($oDB->next_record()) {
 
 			    $vres = $oDB->f("fidmember");
+
+			}
+
+			if ($vres != "")
+
+	  		   return 1;
+
+			else
+
+			   return 0;   
+
+		}
+
+		function authSellPass($pID,$pPass) {		
+
+            global $oDB, $oSystem; 
+
+			$pID=addslashes($pID);
+
+			$pPass=addslashes($pPass);
+
+			$vres="";
+
+			$pPass=md5($pPass);
+
+		    $vsql="SELECT a.fidseller from m_seller a left join m_admin b on a.fidseller=b.fidmember where a.fidseller='$pID' and b.fpassword='$pPass' and a.faktif <> '0' ";	
+
+			$oDB->query($vsql);
+
+			while ($oDB->next_record()) {
+
+			    $vres = $oDB->f("fidseller");
 
 			}
 
@@ -1960,6 +2018,14 @@
 
 			 }
 
+			 if ($vres=="") {
+			   $vsql="select fnohp from m_seller where (fidseller='$pId') ";
+			   $oDB->query($vsql);		
+			   while ($oDB->next_record()) {
+			     $vres = $oDB->f("fnohp");
+			   }
+			 }
+
  		     if ($vres!="")
 
 			    return $vres;
@@ -2032,6 +2098,8 @@
   			 	$vsql="select fsaldovcr from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select b.fsaldovcr from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
+			 else if($pJenis=='seller')
+			    $vsql="select fsaldovcr from m_seller where fidseller='$pId' ";
 				
 				//echo  "$pJenis $vsql";
 			 $oDB->query($vsql);
@@ -2053,6 +2121,8 @@
   			 	$vsql="select fnama from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select a.fnama from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
+			 else if($pJenis=='seller')
+			    $vsql="select fnama from m_seller where fidseller='$pId' ";
 			 $oDB->query($vsql);
 	
 			 while ($oDB->next_record()) {
@@ -2072,6 +2142,8 @@
   			 	 $vsql="select fnamabank from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select b.fnamabank from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
+			 else if($pJenis=='seller')
+			    $vsql="select fbank as fnamabank from m_seller where fidseller='$pId' ";
 			 $oDB->query($vsql);		
 			 while ($oDB->next_record()) {
 			   $vres = $oDB->f("fnamabank");
@@ -2118,6 +2190,8 @@
   			 	$vsql="select fatasnama from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select b.fatasnama from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
+			 else if($pJenis=='seller')
+			    $vsql="select fatasnama from m_seller where fidseller='$pId' ";
 			 $oDB->query($vsql);		
 			 while ($oDB->next_record()) {
 			   $vres = $oDB->f("fatasnama");
@@ -2166,6 +2240,8 @@
   			 	$vsql="select fnorekening from m_pebisnis where fidmember='$pId' ";	
 			 else if($pJenis=='korwil')	
 			    $vsql="select b.fnorekening from m_korwil a left join m_pebisnis b on b.fidmember=a.fidbisnis  where a.fidkorwil='$pId' ";	
+			 else if($pJenis=='seller')
+			    $vsql="select fnorekening from m_seller where fidseller='$pId' ";
 			 $oDB->query($vsql);		
 			 while ($oDB->next_record()) {
 			   $vres = $oDB->f("fnorekening");
@@ -5193,6 +5269,22 @@ function changeBalBis($pId,$pAmt,$pDK) {
 				 $vsql="update m_pebisnis set fsaldovcr=fsaldovcr+$pAmt where fidmember='$pId' ";	 
 
 			  
+
+			$pDB->query($vsql);		
+
+	   }		
+
+		function changeBalSellConn($pId,$pAmt,$pDK,$pDB) {
+
+			global $oDB; 
+
+			if ($pDK=='D')
+
+			   $vsql="update m_seller set fsaldovcr=fsaldovcr-$pAmt where fidseller='$pId' ";	 
+
+			  else if ($pDK=='K')
+
+				 $vsql="update m_seller set fsaldovcr=fsaldovcr+$pAmt where fidseller='$pId' ";	 
 
 			$pDB->query($vsql);		
 

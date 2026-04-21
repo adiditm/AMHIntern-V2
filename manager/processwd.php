@@ -13,6 +13,15 @@ include_once CLASS_DIR . "komisiclass.php";
 include_once "../classes/memberclass.php";
 include_once CLASS_DIR . "actionpayclass.php";
 
+function amhGetWithdrawAccountJenis($oMember, $pId)
+{
+    if ($oMember->authSell($pId) == 1)
+        return 'seller';
+    if ($oMember->authKor($pId) == 1)
+        return 'korwil';
+    return 'sponsor';
+}
+
 $vIDJual = $_GET['uIDJual'];
 $vAdmin = $_SESSION['LoginUser'];
 $vRever = $_GET['uSess'];
@@ -36,11 +45,14 @@ if ($vReverCancel == $vCancel) { // Cancel
 
 if ($vRever == $vCheck && $_SESSION['LoginUser'] != "" && $vReverCancel == "") {
 
-   
+    $vJenisWD = amhGetWithdrawAccountJenis($oMember, $vMember);
 
-    $vEmail = $oMember->getMemFieldBis('femail',$vMember);
+    if ($vJenisWD == 'seller')
+        $vEmail = $oMember->getMemFieldSell('femail',$vMember);
+    else
+        $vEmail = $oMember->getMemFieldBis('femail',$vMember);
     if ($vEmail == -1) $vEmail = $oRules->getMailFrom();
-    $vNama = $oMember->getMemFieldBis('fnama',$vMember);
+    $vNama = $oMember->getMemberNameAdm($vMember,$vJenisWD);
 
     $vFrom = $oRules->getMailFrom();
     $vIsiAct = "Withdrawal $vRef Anda sudah diproses";
@@ -55,11 +67,11 @@ if ($vRever == $vCheck && $_SESSION['LoginUser'] != "" && $vReverCancel == "") {
     $clientId = $oRules->getSettingByField('factpayclientid');
     $clientSecret = $oRules->getSettingByField('factpayclientsec');
     $apiSecret = $oRules->getSettingByField('factpayapisec');
-    $vNorek = $oMember->getMemFieldBis('fnorekening',$vMember);
+    $vNorek = $oMember->getRekeningAdm($vMember,$vJenisWD);
     $vJumlah = $oJual->getNomByWD($vIDJual);
-    $vNamaAlias = $oMember->getMemFieldBis('fatasnama',$vMember);
-    $vBankCode = $oMember->getMemFieldBis('fnamabank',$vMember);
-    $vRemark = $oJual->getJualField($vIDJual, "fket");
+    $vNamaAlias = $oMember->getAtasNamaAdm($vMember,$vJenisWD);
+    $vBankCode = $oMember->getBankAdm($vMember,$vJenisWD);
+    $vRemark = $oJual->getDescByWD($vIDJual);
     $vRefX = $vIDJual;
 
     $data_inquiry = "{
@@ -118,7 +130,7 @@ if ($vRever == $vCheck && $_SESSION['LoginUser'] != "" && $vReverCancel == "") {
 
 
                 $vEndap = $oRules->getSettingByField('fmindap');
-                $vSaldoBis = $oKomisi->getLastBalanceBis($vMember);
+                $vSaldoBis = $oMember->getSaldoAdm($vMember,$vJenisWD);
                 $vNomWDO=$oJual->getNomByWD($vIDJual);
                 $vNomWD=number_format($oJual->getNomByWD($vIDJual),0,",",".");
                 if ($vSaldoBis >= ($vFeeBank + $vEndap)){
@@ -130,7 +142,10 @@ if ($vRever == $vCheck && $_SESSION['LoginUser'] != "" && $vReverCancel == "") {
                         $vLastBal=$vSaldoBis - $vNomWDO;
                         $vBal=$vLastBal-$vFeeBank ;
                         $oKomisi->insertMutasiConn($vMember,$vMember,date("Y-m-d H:i:s"),$vDesc,0,$vFeeBank ,$vBal,'withdraw',$vIDJual,$db) ;
-                        $oMember->changeBalBisConn($vMember,$vFeeBank ,'D',$db);
+                        if ($vJenisWD == 'seller')
+                            $oMember->changeBalSellConn($vMember,$vFeeBank ,'D',$db);
+                        else
+                            $oMember->changeBalBisConn($vMember,$vFeeBank ,'D',$db);
                         
             
                         

@@ -19,6 +19,8 @@
      $vJenis = 'sponsor';
  else if ($vPriv=='korwil')
      $vJenis = 'korwil';
+ else if ($vPriv=='seller')
+     $vJenis = 'seller';
  else $vJenis='';	
 // $vInvest=$oMember->checkInvest($vUser);
 
@@ -71,6 +73,18 @@ $vSaldoX=0;$vSaldo=0;$vPendingTrans=0;$vPendingWD=0;
 	$oSystem->jsLocation("../memstock/transfer.php?op=&current=mdm_pebisnis&menu=spon_trans_tsaldo");
 	exit;
  }	 
+ } else if($vJenis=='seller') {
+	  if ($oMember->authSellActiveID($vtoID) == 0) {
+		$oSystem->jsAlert("Seller ID Tujuan Transfer tidak ada atau tidak aktif!"); 
+		$oSystem->jsLocation("../memstock/transfer.php?op=&current=mdm_pebisnis&menu=spon_trans_tsaldo");
+		exit;
+	 }
+ 
+	 if ($oMember->authSellPass($vID,$vPass) == 0) {
+		$oSystem->jsAlert("Password salah!"); 
+		$oSystem->jsLocation("../memstock/transfer.php?op=&current=mdm_pebisnis&menu=spon_trans_tsaldo");
+		exit;
+	 }	 
  }
 
  
@@ -417,7 +431,7 @@ type="reset" name="reset" value="Bersihkan" class="btn btn-default">
 
 <script language="javascript">
    <? if($vPriv=='administrator') { ?>
-   		alert('Transfer Saldo hanya boleh dilakukan oleh Korwil/Subkorwil atau Pebisnis!');
+   		alert('Transfer Saldo hanya boleh dilakukan oleh Korwil/Subkorwil, Pebisnis, atau Seller!');
 		document.location.href='../manager/indexadmin.php';
    
    <? } ?>

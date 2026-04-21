@@ -141,7 +141,7 @@ if ($vCount=='') $vCount=1;
 
     
     $db->query('COMMIT;');
-	$oSystem->sendSMS($tfPhoneSpon,"ONOTOKO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
+	$oSystem->sendSMS($tfPhoneSpon,"AMHTECHNO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
      if ($lmMethod=='wpr') {
 		$vToNumberSeller = $oMember->getMemFieldSell('fnohp',$vSeller);
 		if ($vToNumberSeller != '' && $vToNumberSeller != '-') {
@@ -151,8 +151,67 @@ if ($vCount=='') $vCount=1;
 		}
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
 	 }
-	 else if ($lmMethod=='ctr')	
+	 else if ($lmMethod=='ctr') {
+		$vBankDestCtr = isset($lmBank) ? trim((string)$lmBank) : '';
+		$vTotalPayCtr = (float)$vTotal;
+		$vTotalRpFmt = number_format($vTotalPayCtr, 0, ',', '.');
+
+		$vNamaPebisnisWa = trim((string)$tfSponsor);
+		if ($vNamaPebisnisWa == '')
+			$vNamaPebisnisWa = trim((string)$vUser);
+
+		$vBodyPebisnisWa = "AMHTECHNO\n\nYth. " . $vNamaPebisnisWa . ", pembelian " . $vNextJual . " (Cash/Transfer) telah dicatat.\n\n";
+		if ($vBankDestCtr != '') {
+			$vBodyPebisnisWa .= 'Silakan info ke pembeli Anda untuk mentransfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan berikut: ' . $vBankDestCtr . '. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
+		} else {
+			$vBodyPebisnisWa .= 'Silakan info ke pembeli Anda untuk mentransfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan yang dipilih. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
+		}
+		$vBodyPebisnisWa .= "\n\nTerima kasih.";
+
+		$vNamaPenerimaWa = trim((string)$tfRecName);
+		if ($vNamaPenerimaWa == '')
+			$vNamaPenerimaWa = 'Bapak/Ibu';
+		$vBodyPenerimaWa = "AMHTECHNO\n\nYth. " . $vNamaPenerimaWa . ", pembelian " . $vNextJual . " (Cash/Transfer) telah dicatat.\n\n";
+		if ($vBankDestCtr != '') {
+			$vBodyPenerimaWa .= 'Silakan transfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan berikut: ' . $vBankDestCtr . '. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
+		} else {
+			$vBodyPenerimaWa .= 'Silakan transfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan yang telah ditetapkan. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
+		}
+		$vBodyPenerimaWa .= "\n\nTerima kasih.";
+
+		$vPhonePebisnisWa = trim((string)$tfPhoneSpon);
+		$vPhonePenerimaWa = trim((string)$tfRecPhone);
+
+		if ($vPhonePebisnisWa != '' && $vPhonePebisnisWa != '-')
+			$oSystem->sendWAMessage($vPhonePebisnisWa, $vBodyPebisnisWa);
+		if ($vPhonePenerimaWa != '' && $vPhonePenerimaWa != '-')
+			$oSystem->sendWAMessage($vPhonePenerimaWa, $vBodyPenerimaWa);
+
+		$vNamaPebisnisCtr = trim((string)$oMember->getMemFieldBis('fnama', $vUser));
+		if ($vNamaPebisnisCtr == '')
+			$vNamaPebisnisCtr = $vUser;
+		$vAdminNumbersCtr = array();
+		$vAdminConfCtr = trim((string)$oRules->getSettingByField('fhpconf'));
+		$vAdminCsCtr = trim((string)$oRules->getSettingByField('fhpcs'));
+		if ($vAdminConfCtr != '' && $vAdminConfCtr != '-')
+			$vAdminNumbersCtr[] = $vAdminConfCtr;
+		if ($vAdminCsCtr != '' && $vAdminCsCtr != '-')
+			$vAdminNumbersCtr[] = $vAdminCsCtr;
+		$vAdminNumbersCtr = array_values(array_unique($vAdminNumbersCtr));
+		if (count($vAdminNumbersCtr) > 0) {
+			$vBodyAdminCtr = 'Yth. Admin, ada transaksi AMHTECHNO metode Cash/Transfer dari pebisnis [' . $vNamaPebisnisCtr . ']';
+			if ($vBankDestCtr != '')
+				$vBodyAdminCtr .= "\nTujuan pembayaran: " . $vBankDestCtr;
+			$vBodyAdminCtr .= "\n\nNomor Order: " . $vNextJual . "\n";
+			$vBodyAdminCtr .= 'Nominal pembayaran (tanpa biaya admin bank): ' . number_format($vTotalPayCtr, 0, ',', '.') . "\n\n";
+			$vBodyAdminCtr .= 'Mohon cek mutasi rekening secara berkala. Setelah dana masuk, lakukan Approve Payment di menu Approval Penjualan agar seller dapat memproses order.';
+			foreach ($vAdminNumbersCtr as $vAdminNumCtr) {
+				if ($vAdminNumCtr != '' && $vAdminNumCtr != '-')
+					$oSystem->sendWAMessage($vAdminNumCtr, $vBodyAdminCtr);
+			}
+		}
 	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
+	 }
 	 else if ($lmMethod=='tva') {
 		$oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, klik OK dan lanjutkan dengan transfer dana ke Virtual Account! Mohon untuk tidak menutup browser Anda sebelum keluar nomor Virtual Account!");
 		?>
@@ -199,7 +258,7 @@ if ($vCount=='') $vCount=1;
 				var addressName = result.data.addressName;
 				var refId = result.data.refId;
 				$.post('../main/mpurpose_ajax.php?op=saveva',{
-					va_no:address, va_amount:vAmount, va_fee:vFee, va_bank:vBank, va_bankcode:vBankCode, va_trxdate:trxDate, va_credit:creditAmount, va_debit:debitAmount, va_bankcode:bankCode, va_channelid:channelId, va_channelname:channelName, va_address:address, va_addressname:addressName, va_refid:refId, va_recnohp:'<?=$_POST['tfRecPhone']?>' }, 
+					va_no:address, va_amount:vAmount, va_fee:vFee, va_bank:vBank, va_bankcode:vBankCode, va_trxdate:trxDate, va_credit:creditAmount, va_debit:debitAmount, va_bankcode:bankCode, va_channelid:channelId, va_channelname:channelName, va_address:address, va_addressname:addressName, va_refid:refId, va_recnohp:'<?=$_POST['tfRecPhone']?>', va_recname:<?=json_encode($_POST['tfRecName'])?> }, 
 					function(data){
 						var vaInfo = '<h2>Informasi Pembayaran</h2> <br><br>';
 						vaInfo += '<b>Nomor Virtual Account</b> : ' + address + '<br>';
@@ -305,6 +364,19 @@ function numberFormat(number, decimals = 0, decPoint = ',', thousandsSep = '.') 
     return decimalPart ? integerPart + decPoint + decimalPart : integerPart;
 }
 
+function amhReorderSetBankFeeByMethod(pMethodVal) {
+	var $fee = $('#tfBankFee');
+	var def = parseFloat($fee.attr('data-def-fee'));
+	if (isNaN(def))
+		def = 0;
+	if (pMethodVal === 'ctr' || pMethodVal === 'wpr')
+		$fee.val('0');
+	else if (pMethodVal === 'tva')
+		$fee.val(def);
+	if (typeof calcTot === 'function')
+		calcTot();
+}
+
 function changeRek(pThis){
     $('#loadRek').show();
 	var vDefault = '<option value="">--Pilih--</option><option value="CASH">Cash</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
@@ -352,6 +424,7 @@ function changeRek(pThis){
 		 $('#lmBank').html(vDefault);
 		   $('#loadRek').hide();
    }
+   amhReorderSetBankFeeByMethod(pThis.value);
 }
 function validRO() {
 	//alert($('#hTot').val());
@@ -592,7 +665,8 @@ $(document).ready(function(){
   
     
  function calcTot() {
-	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val()) + parseFloat($('#tfBankFee').val());
+	var vBf = ($('#lmMethod').val() === 'ctr' || $('#lmMethod').val() === 'wpr') ? 0 : (parseFloat($('#tfBankFee').val()) || 0);
+	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val()) + vBf;
 		  $('#hTotal').val(xTot);
 	//	 alert(xTot);
 		  $('#totalpurc').html(xTot);  
@@ -659,7 +733,8 @@ function doSaveRow() {
 
 
 
-		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+		 var vBfRow = ($('#lmMethod').val() === 'tva') ? (parseFloat($('#tfBankFee').val()) || 0) : 0;
+		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val()) + vBfRow;
 		 $('#hTotal').val(xTot);
 	//	 alert(xTot);
 		 $('#totalpurc').html(xTot);  
@@ -713,7 +788,8 @@ function doDel(pNo, pKode,pSize,pColor,pNama,pJml,pHarga,pSubTot) {
       $('#tbPurc').html(data);
       $('#tdLoad').empty();
 
-		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+		 var vBfDel = ($('#lmMethod').val() === 'tva') ? (parseFloat($('#tfBankFee').val()) || 0) : 0;
+		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val()) + vBfDel;
 		 $('#hTotal').val(xTot);
 		 $('#totalpurc').html(xTot);  
 		      $('#totalpurc').priceFormat({     
@@ -923,6 +999,8 @@ function getPaket(pParam) {
 
 function getOngkir(pParam) {
    $('#tfOngkir').val(($(pParam).find('option:selected').attr('ongkir')));
+   if (typeof calcTot === 'function')
+      calcTot();
   // $('#lmKode').find('option:selected').attr('sweight')
 }
 
@@ -938,6 +1016,8 @@ function zeroOngkir(){
 	$('#tfOngkir').val('0');
 	$('#fpack').val('0');	
 	$('#fpack').trigger('change');	
+	if (typeof calcTot === 'function')
+		calcTot();
 }
  </script>
 <!-- 	<link rel="stylesheet" href="../css/screen.css"> -->
@@ -1208,7 +1288,7 @@ function zeroOngkir(){
 												<span style="font-weight:bold">Biaya Admin Bank*</span></label>
 												<div class="input-group">
                                       <span class="input-group-addon"> <i class="fa fa-money"></i></span>
-													<input  type="text" class="form-control" id="tfBankFee" name="tfBankFee" placeholder="Contoh: 4500 (tanpa titik/koma)" onChange="calcTot()" value="<?=$vBankFee?>" readonly>
+													<input  type="text" class="form-control" id="tfBankFee" name="tfBankFee" data-def-fee="<?=htmlspecialchars((string)$vBankFee, ENT_QUOTES, 'UTF-8')?>" placeholder="Contoh: 4500 (tanpa titik/koma)" onChange="calcTot()" value="0" readonly>
 												</div>
 										  </div>                                    
 

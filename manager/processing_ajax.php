@@ -9,11 +9,33 @@ include_once "../classes/networkclass.php";
 include_once "../classes/ruleconfigclass.php";
 include_once "../classes/jualclass.php";
 
+function amhGetTrxReceiveField($dbConn)
+{
+	$vReceiveFields = array('freceived', 'freceive');
+	foreach ($vReceiveFields as $vFieldName) {
+		$vHasTemp = false;
+		$vHasMain = false;
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member_temp LIKE '$vFieldName'";
+		$dbConn->query($vSQLCheckField);
+		if ($dbConn->next_record())
+			$vHasTemp = true;
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member LIKE '$vFieldName'";
+		$dbConn->query($vSQLCheckField);
+		if ($dbConn->next_record())
+			$vHasMain = true;
+		if ($vHasTemp && $vHasMain)
+			return $vFieldName;
+	}
+	return '';
+}
+
 // echo "Resetting tables...!";
 $vOP = $_GET['op'];
 $vKind = $_GET['kind'];
 $vIdTrx = $_GET['idtrx'];
 $vIdSys = $_GET['idsys'];
+$vReceiveField = amhGetTrxReceiveField($dbin);
+$vReceiveSelect = ($vReceiveField != '') ? $vReceiveField . " as freceived" : "'0' as freceived";
 
 if ($vOP == "rejectst") {
 	$vSQL = "delete from tb_stockist_temp where fidsys='$vIdSys' ";
@@ -23,6 +45,38 @@ if ($vOP == "rejectst") {
 	$vSQL = "delete from tb_trxstok_temp where fidpenjualan='$vIdTrx' ";
 	if($db->query($vSQL))
 		echo 'successdel';
+} else if ($vOP == "approvepayment") {
+	$vIdTrxEsc = addslashes(trim((string)$vIdTrx));
+	$vSQL = "select fmethod, fprocessed, fpaid from tb_trxstok_member_temp where fidpenjualan='$vIdTrxEsc' limit 1";
+	$dbin->query($vSQL);
+	if ($dbin->num_rows() <= 0) {
+		echo 'notfound';
+	} else {
+		$dbin->next_record();
+		$vMethodNorm = strtolower(trim((string)$dbin->f('fmethod')));
+		$vProcessedRaw = $dbin->f('fprocessed');
+		$vFpaidRaw = $dbin->f('fpaid');
+		$vIsProcessPending = ($vProcessedRaw === null || $vProcessedRaw === '' || (string)$vProcessedRaw === '0');
+		if ($vMethodNorm !== 'ctr') {
+			echo 'invalidmethod';
+		} else if (!$vIsProcessPending) {
+			echo 'alreadyprocessed';
+		} else if ((string)$vFpaidRaw === '1') {
+			echo 'successpaid';
+		} else {
+			$db->query("START TRANSACTION;");
+			$db->query("update tb_trxstok_member_temp set fpaid='1' where fidpenjualan='$vIdTrxEsc' and LOWER(TRIM(fmethod))='ctr'");
+			$vAffTemp = $db->affected_rows();
+			$db->query("update tb_trxstok_member set fpaid='1' where fidpenjualan='$vIdTrxEsc' and LOWER(TRIM(fmethod))='ctr'");
+			if ($vAffTemp <= 0) {
+				$db->query("ROLLBACK;");
+				echo 'updatefailed';
+			} else {
+				$db->query("COMMIT;");
+				echo 'successpaid';
+			}
+		}
+	}
 } else if ($vOP == "approve") {
 	$vKind = "Approved";
 	$db->query("START TRANSACTION;");
@@ -111,24 +165,55 @@ if ($vOP == "rejectst") {
 	if ($vEndap < 0) $vEndap = 0;
 	if ($vBankFee < 0) $vBankFee = 0;
 
-	$vSQL = "select fidmember, fnostockist, fmethod, fsend from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
+	$vSQL = "select fidmember, fnostockist, fmethod, fsend, $vReceiveSelect from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vBuyerTrx = $dbin->f('fidmember');
 	$vPayerTrx = $dbin->f('fnostockist');
 	$vMethodTrx = $dbin->f('fmethod');
 	$vSendTrx = $dbin->f('fsend');
+	$vReceivedTrx = $dbin->f('freceived');
 	$vSellerTrx = '';
 	if (trim($vPayerTrx) == '')
 		$vPayerTrx = $vBuyerTrx;
 	$vSellerCredit = $vTotalCharge;
 	if ($vMethodTrx == 'tva') {
 		$vSellerCredit += $vBankFee;
+		if ($dbin->f('fpaid') != '1') {
+			$db->query("ROLLBACK;");
+			echo 'notreadytvapaid';
+			exit;
+		}
+		if ($vSendTrx != '1') {
+			$db->query("ROLLBACK;");
+			echo 'notreadytvasend';
+			exit;
+		}
+		if ($vReceivedTrx != '1') {
+			$db->query("ROLLBACK;");
+			echo 'notreadytvareceived';
+			exit;
+		}
 	}
 
 	if ($vMethodTrx == 'wpr' && $vSendTrx != '1') {
 		$db->query("ROLLBACK;");
 		echo 'notreadywpr';
+		exit;
+	}
+	if ($vMethodTrx == 'wpr' && $vReceivedTrx != '1') {
+		$db->query("ROLLBACK;");
+		echo 'notreadywprreceived';
+		exit;
+	}
+	if ($vMethodTrx == 'ctr' && $dbin->f('fpaid') != '1') {
+		$db->query("ROLLBACK;");
+		echo 'notreadyctrpaid';
+		exit;
+	}
+	if ($vMethodTrx == 'ctr' && $vSendTrx != '1') {
+		$db->query("ROLLBACK;");
+		echo 'notreadyctrsend';
 		exit;
 	}
 
@@ -142,8 +227,8 @@ if ($vOP == "rejectst") {
 		}
 	}
 	
-	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`,`fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp`) ";
-	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , '2' , now(), `fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp` from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+	$vSQL = "insert into tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`,`fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp`, `fnorek`) ";
+	$vSQL .= "select `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , '2' , now(), `fongkir`,`fberat`, `fcountry`, `fprop`, `fkota`, `fkec`, `fexpe`, `fpack`, `frecname`, `frecnohp`, `fnorek` from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
 	
 	if($db->query($vSQL)) {
 		$vSQLSelect = "select a.*, IFNULL(b.fpotong,0) as fpotong from tb_trxstok_member_temp a left join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$vIdTrx' ";
