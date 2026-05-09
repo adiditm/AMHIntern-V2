@@ -549,16 +549,21 @@ function doReject(pIdSys,pIdTrx) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+			 	 // Prioritize temporary transaction status when it exists
+			 	 $vSendTemp = '';
+			 	 $vSQLTemp = "select fsend from tb_trxstok_member_temp where fidpenjualan='$vIDJual' limit 1";
+			 	 $dbin->query($vSQLTemp);
+			 	 if ($dbin->next_record()) {
+			 	 	 $vSendTemp = $dbin->f('fsend');
+			 	 }
+			 	 $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
-				$vProduk = $dbin->f('fidproduk');
+        $vProduk = $dbin->f('fidproduk');
         $vAMHFee = $dbin->f('am_fee');
 
        $vPaid = $dbin->f('fpaid');
-       $vSend = $dbin->f('fsend');
-       $vReceived = $dbin->f('freceived');
-
+       $vSend = ($vSendTemp !== '') ? $vSendTemp : $dbin->f('fsend');
        if ($vStat=='0' && $vMethod=='tva' && $vPaid!='1')
           $vStatus='Pending [buyer]';
         else if ($vStat=='0' && $vMethod=='tva' && $vPaid=='1' && $vSend !='1')
@@ -607,6 +612,21 @@ function doReject(pIdSys,pIdTrx) {
 					if (file_exists($vProofAbs)) {
 						$vProofFile = 'bukti/'.$vIdTrx.'.'.$vProofExt;
 						break;
+					}
+					$vProofAbs2 = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'memstock' . DIRECTORY_SEPARATOR . 'resi_files' . DIRECTORY_SEPARATOR . $vIdTrx . '.' . $vProofExt;
+					if (file_exists($vProofAbs2)) {
+						$vProofFile = '../memstock/resi_files/'.$vIdTrx.'.'.$vProofExt;
+						break;
+					}
+				}
+				if ($vProofFile == '' && $vSend == '1') {
+					// Fallback: if fsend=1 but file not found yet, try alternate common upload folders
+					foreach (array('jpg','jpeg','png') as $vProofExt) {
+						$vAlt = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'memstock' . DIRECTORY_SEPARATOR . $vIdTrx . '.' . $vProofExt;
+						if (file_exists($vAlt)) {
+							$vProofFile = '../memstock/'.$vIdTrx.'.'.$vProofExt;
+							break;
+						}
 					}
 				}
 				 
@@ -665,11 +685,15 @@ function doReject(pIdSys,pIdTrx) {
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
             <input <? if ($vStat!='0') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>','<?=$vMethod?>','<?=$vPaid?>','<?=$vSend?>','<?=$vReceived?>','<?=$vStat?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="<? if ($vMethod=='ctr' && $vStat=='0' && $vPaid!='1' && $vSend!='1' && $vReceived!='1') echo 'Approve Payment'; else echo 'Approve';?>">&nbsp;
-            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject"> <? } else { ?>
+            <input <? if ($vStat!='0') echo 'disabled';?> onclick="doReject('<?=$vIdSys?>','<?=$vIdTrx?>')"  class="btn btn-danger btn-xs" name="btnReject" id="btnReject<?=$vIdTrx?>"  type="button" value="Reject">
+            <? if ($vProofFile!='' && $vSend=='1') { ?>
+            <input type="button" class="btn btn-xs btn-info" value="Lihat Bukti" onClick="openProofModal('<?=$vIdTrx?>','<?=$vProofFile?>')">
+            <? } ?>
+            <? } else { ?>
             <? if ($vStat=='0' && (($vMethod=='wpr') || ($vMethod=='ctr' && $vPaid=='1') || ($vMethod=='tva' && $vPaid=='1'))) { ?>
             <input type="button" class="btn btn-xs btn-primary" value="<? if ($vProofFile!='') echo 'Re-upload Bukti'; else echo 'Upload Bukti';?>" onClick="openUploadWpr('<?=$vIdTrx?>')">
             <? if ($vProofFile!='') { ?>
-            <input type="button" class="btn btn-xs btn-default" value="Lihat Bukti" onClick="openProofModal('<?=$vIdTrx?>','<?=$vProofFile?>')">
+            <input type="button" class="btn btn-xs btn-info" value="Lihat Bukti" onClick="openProofModal('<?=$vIdTrx?>','<?=$vProofFile?>')">
             <? } ?>
             <? } ?>
             <? } ?>  

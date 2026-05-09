@@ -165,7 +165,7 @@ if ($vOP == "rejectst") {
 	if ($vEndap < 0) $vEndap = 0;
 	if ($vBankFee < 0) $vBankFee = 0;
 
-	$vSQL = "select fidmember, fnostockist, fmethod, fsend, $vReceiveSelect from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
+	$vSQL = "select fidmember, fnostockist, fmethod, fsend, fpaid,$vReceiveSelect from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vBuyerTrx = $dbin->f('fidmember');
@@ -208,7 +208,7 @@ if ($vOP == "rejectst") {
 	}
 	if ($vMethodTrx == 'ctr' && $dbin->f('fpaid') != '1') {
 		$db->query("ROLLBACK;");
-		echo 'notreadyctrpaid';
+		//echo 'notreadyctrpaid' . " $vMethodTrx::". $dbin->f('fpaid');
 		exit;
 	}
 	if ($vMethodTrx == 'ctr' && $vSendTrx != '1') {
