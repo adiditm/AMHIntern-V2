@@ -8,11 +8,11 @@ function amhGetTrxReceiveField($dbConn)
 	foreach ($vReceiveFields as $vFieldName) {
 		$vHasTemp = false;
 		$vHasMain = false;
-		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member_temp LIKE '$vFieldName'";
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_penjualan_temp LIKE '$vFieldName'";
 		$dbConn->query($vSQLCheckField);
 		if ($dbConn->next_record())
 			$vHasTemp = true;
-		$vSQLCheckField = "SHOW COLUMNS FROM tb_trxstok_member LIKE '$vFieldName'";
+		$vSQLCheckField = "SHOW COLUMNS FROM tb_penjualan LIKE '$vFieldName'";
 		$dbConn->query($vSQLCheckField);
 		if ($dbConn->next_record())
 			$vHasMain = true;
@@ -58,7 +58,7 @@ if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
 	if ($vUploadAkhir != '')
 		$vAkhir = $vUploadAkhir;
 
-	$vSQL = "select fidpenjualan, fidseller, fmethod, fprocessed, fpaid from tb_trxstok_member_temp where fidpenjualan='$vUploadTrx' limit 1";
+	$vSQL = "select fidpenjualan, fidseller, fmethod, fprocessed, fpaid from tb_penjualan_temp where fidpenjualan='$vUploadTrx' limit 1";
 	$dbin->query($vSQL);
 	$dbin->next_record();
 	$vUploadSeller = $dbin->f('fidseller');
@@ -105,14 +105,14 @@ if (isset($_POST['hUploadWpr']) && $_POST['hUploadWpr'] == '1') {
 				$vDestFile = $vUploadDir . DIRECTORY_SEPARATOR . $vUploadTrx . '.' . $vExt;
 				if (move_uploaded_file($_FILES['uploadFile']['tmp_name'], $vDestFile)) {
 					if ($vUploadMethod == 'wpr') {
-						$db->query("update tb_trxstok_member_temp set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
-						$db->query("update tb_trxstok_member set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+						$db->query("update tb_penjualan_temp set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
+						$db->query("update tb_penjualan set fsend='1', fpaid='1' where fidpenjualan='$vUploadTrx' and fmethod='wpr'");
 					} else if ($vUploadMethod == 'ctr') {
-						$db->query("update tb_trxstok_member_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
-						$db->query("update tb_trxstok_member set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
+						$db->query("update tb_penjualan_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
+						$db->query("update tb_penjualan set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='ctr'");
 					} else if ($vUploadMethod == 'tva') {
-						$db->query("update tb_trxstok_member_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
-						$db->query("update tb_trxstok_member set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
+						$db->query("update tb_penjualan_temp set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
+						$db->query("update tb_penjualan set fsend='1' where fidpenjualan='$vUploadTrx' and fmethod='tva'");
 					}
 					$vUploadMsg = 'Bukti kirim berhasil diupload.';
 					$vUploadMsgType = 'success';
@@ -145,7 +145,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
 
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
+ $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
  $vsql.=$vCrit;
  $vsql.=" order by ftanggal ";
  $db->query($vsql);
@@ -271,7 +271,7 @@ function doApprovePayment(pSys,pTrx) {
             window.location.reload();
          } else {
             var msg = 'Approve payment gagal.';
-            if (r == 'notfound') msg = 'Transaksi tidak ditemukan di data sementara (tb_trxstok_member_temp).';
+            if (r == 'notfound') msg = 'Transaksi tidak ditemukan di data sementara (tb_penjualan_temp).';
             else if (r == 'invalidmethod') msg = 'Metode bayar bukan Cash/Transfer.';
             else if (r == 'alreadyprocessed') msg = 'Transaksi ini sudah tidak dalam status tunggu approve payment.';
             else if (r == 'updatefailed') msg = 'Update fpaid gagal (tidak ada baris yang cocok). Cek fidpenjualan dan fmethod di database.';
@@ -299,7 +299,7 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
        $.get(vURL,function(data) {
           if(data.trim()=='successappv') {
             alert('Approval succeed, stock updated!');
-            $('#tdstat'+pIdTrx).html('Approved');
+            $('#tdstat'+pIdTrx).html('Selesai');
             document.getElementById('btnAppv'+pIdTrx).disabled=true;
             document.getElementById('btnReject'+pIdTrx).disabled=true;
             // hide modal after success
@@ -504,11 +504,11 @@ function doReject(pIdSys,pIdTrx) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod  from tb_trxstok_member where   1 "; 
+			 $vsql="select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed  from tb_penjualan where   1 "; 
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod  from tb_trxstok_member_temp where  1 "; 
+			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed  from tb_penjualan_temp where  1 "; 
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -530,6 +530,7 @@ function doReject(pIdSys,pIdTrx) {
          $vSend=$db->f('fsend');
          $vReceived=$db->f('freceived');
          $vMethod=$db->f('fmethod');
+         $vFprocessed=trim((string)$db->f('fprocessed'));
 				
 				 $vNama=$oMember->getMemberNameAdm($vIdMember,'sponsor');
 				 
@@ -551,12 +552,12 @@ function doReject(pIdSys,pIdTrx) {
 				 $vIDJual = $db->f('fidpenjualan');
 			 	 // Prioritize temporary transaction status when it exists
 			 	 $vSendTemp = '';
-			 	 $vSQLTemp = "select fsend from tb_trxstok_member_temp where fidpenjualan='$vIDJual' limit 1";
+			 	 $vSQLTemp = "select fsend from tb_penjualan_temp where fidpenjualan='$vIDJual' limit 1";
 			 	 $dbin->query($vSQLTemp);
 			 	 if ($dbin->next_record()) {
 			 	 	 $vSendTemp = $dbin->f('fsend');
 			 	 }
-			 	 $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+			 	 $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
         $vProduk = $dbin->f('fidproduk');
@@ -582,16 +583,22 @@ function doReject(pIdSys,pIdTrx) {
           $vStatus='Diproses (Sudah Diterima)';
         else if ($vStat=='0' && $vMethod=='wpr' && $vSend =='1' && $vReceived =='1')
           $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && $vMethod=='ctr' && $vPaid=='1' && $vSend =='1' && $vReceived =='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && $vPaid=='1' && $vSend =='1' && $vReceived =='1')
+          $vStatus='Diproses (Sudah Diterima)';
         else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
-          $vStatus='Diproses (Sudah Dikirim)'; 
+          $vStatus='Diproses (Sudah Dikirim)';
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
         else if ($vStat=='0' && $vMethod == 'wpr')
           $vStatus='Pending';
+        else if ($vFprocessed=='2')
+          $vStatus='Selesai';
         else if ($vStat=='1')   
             $vStatus='Approved';
-        else if ($vStat=='4')  
-            $vStatus='Rejected';   
+        else if ($vStat=='4' || $vFprocessed=='4')  
+            $vStatus='Rejected';
 
 
        // echo "$vSQL <br>";

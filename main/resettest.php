@@ -20,9 +20,9 @@
 	  $db->query($vsql);
 	  $vsql="truncate table tb_withdraw;";
 	  $db->query($vsql);
-	  $vsql="truncate table tb_trxstok_member;";
+	  $vsql="truncate table tb_penjualan;";
 	  $db->query($vsql);
-	  $vsql="truncate table tb_trxstok_member_temp;";
+	  $vsql="truncate table tb_penjualan_temp;";
 	  $db->query($vsql);
 	  $vsql="truncate table tb_kom_spon;";
 	  $db->query($vsql);	  

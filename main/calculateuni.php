@@ -71,7 +71,7 @@ $vMsg="";
 	     echo $vMsg="<br><font color='#00f'>========================================Start Member:".$vUser." ($vPaket) ($vLevelX)===================================</font>";
 		 $vMsgAll .= $vMsg;
 		 //KIRI
-	     $vSQL="select sum(fsubtotal) as subtot, fidpenjualan,fidmember from tb_trxstok_member where fidmember  = '$vUser' and fprocessed='2'  group by fidpenjualan, fidmember ";
+	     $vSQL="select sum(fsubtotal) as subtot, fidpenjualan,fidmember from tb_penjualan where fidmember  = '$vUser' and fprocessed='2'  group by fidpenjualan, fidmember ";
 		 $db1->query($vSQL);
 		 while($db1->next_record()) {
 	 	 		$vIDJual = $db1->f('fidpenjualan');

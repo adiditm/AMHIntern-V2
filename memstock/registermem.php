@@ -112,7 +112,7 @@ function generateRandomString($length = 6) {
 	    while (list($key,$val) = each($_SESSION['save'])) {
 
 	        //print_r($val);Masuk trx stok temporary
-	    	$vSQL="insert into tb_trxstok_member_temp(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed,fshipcost)";
+	    	$vSQL="insert into tb_penjualan_temp(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed,fshipcost)";
 	    	$vSQL.=" values('$vNextJual','$vUser','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'FO',0,'','','mTrans','First Order + Ongkir',now(),'2',now(),$hShipCost)";
 	  	 	$db->query($vSQL);
 

@@ -2303,7 +2303,7 @@ function putMember($pID,$db='') {
 				 	   
 	   while ($i < ($pDeep + 1)) {
 		  $vIDReceiver=$this->getUplineLevel($pID,$j);
-		  $vSQL="select * from tb_trxstok_member where fidmember='$vIDReceiver' and fprocessed='2' ";
+		  $vSQL="select * from tb_penjualan where fidmember='$vIDReceiver' and fprocessed='2' ";
 		// echo "$i <br>";
 		  $oDB->query($vSQL);
 		  $oDB->next_record();

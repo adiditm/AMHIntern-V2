@@ -49,7 +49,7 @@ $vFilterText.="[Date: $vAwal - $vAkhir]";
 
 
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fidproduk not like 'KIT%' and fidmember='$vUserActive' and fjenis='PS'";
+ $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' and fjenis='PS'";
  $vsql.=$vCrit;
  $vsql.=" order by ftanggal ";
  

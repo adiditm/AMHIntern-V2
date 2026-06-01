@@ -66,7 +66,7 @@
 
 	
 
-    $vsql="SELECT fidpenjualan,fidmember,ftanggal,fjenis,fprocessed,SUM(fsubtotal) AS subtotal  FROM tb_trxstok_member WHERE fidproduk not like 'KIT%'  $vAnd ";
+    $vsql="SELECT fidpenjualan,fidmember,ftanggal,fjenis,fprocessed,SUM(fsubtotal) AS subtotal  FROM tb_penjualan WHERE fidproduk not like 'KIT%'  $vAnd ";
 
     $vsql.="	GROUP BY fidpenjualan,ftanggal,fidmember,fjenis,fprocessed ORDER BY fidpenjualan DESC";
 
@@ -466,7 +466,7 @@ font-family:"Times New Roman";
 
 			<?
 
-			   $vsql="SELECT fidpenjualan,fidmember,ftanggal,fjenis,fprocessed,SUM(fsubtotal) AS subtotal  FROM tb_trxstok_member WHERE fidproduk not like 'KIT%' $vAnd";
+			   $vsql="SELECT fidpenjualan,fidmember,ftanggal,fjenis,fprocessed,SUM(fsubtotal) AS subtotal  FROM tb_penjualan WHERE fidproduk not like 'KIT%' $vAnd";
 
 			   $vsql.="	GROUP BY fidpenjualan,ftanggal,fidmember,fjenis,fprocessed ORDER BY fidpenjualan DESC";
 

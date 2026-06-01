@@ -51,7 +51,7 @@ function utf8ize($d) {
 			   echo json_encode(utf8ize($vOut),JSON_PRETTY_PRINT);
    
 	} else if ($vType == 'goods')  {
-				 $vSQL = "select a.*,b.fpaket, b.fprogram, c.fnama from tb_trxstok_member a left join m_product b on a.fidproduk=b.fidproduk left join m_program c on b.fprogram=c.fidprogram  where  a.fprocessed='2'  and date(a.ftglprocessed) between '$vFrom' and '$vTo' ";
+				 $vSQL = "select a.*,b.fpaket, b.fprogram, c.fnama from tb_penjualan a left join m_product b on a.fidproduk=b.fidproduk left join m_program c on b.fprogram=c.fidprogram  where  a.fprocessed='2'  and date(a.ftglprocessed) between '$vFrom' and '$vTo' ";
 			   $a = $db->query($vSQL);
 			  
 			   $vArrTrx=array();

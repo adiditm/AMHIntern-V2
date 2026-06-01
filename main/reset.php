@@ -28,11 +28,11 @@
 	  $db->query($vsql);
 
 	  echo "Resetting TRX table..done<br>";
-	  $vsql="truncate table tb_trxstok_member;";
+	  $vsql="truncate table tb_penjualan;";
 	  $db->query($vsql);
 
 	  echo "Resetting TRX Temp table..done<br>";
-	  $vsql="truncate table tb_trxstok_member_temp;";
+	  $vsql="truncate table tb_penjualan_temp;";
 	   $db->query($vsql);
 	   
 	  

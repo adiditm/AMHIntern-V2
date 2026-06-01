@@ -145,7 +145,7 @@ if ($uploadSuccess && file_exists($targetFilePath)) {
     
     // Update database
     try {
-        $sql = "UPDATE tb_trxstok_member_temp SET fsend = 1 WHERE fidpenjualan = '$transactionId'";
+        $sql = "UPDATE tb_penjualan_temp SET fsend = 1 WHERE fidpenjualan = '$transactionId'";
         error_log("Executing SQL: $sql");
         $db->query($sql);
         
@@ -160,7 +160,7 @@ if ($uploadSuccess && file_exists($targetFilePath)) {
                 
                 if ($vAdminTrxEmail != '-1' && $vAdminTrxEmail != '') {
                     // Get transaction details
-                    $sqlDetails = "SELECT fidmember, fidseller FROM tb_trxstok_member_temp WHERE fidpenjualan = '$transactionId'";
+                    $sqlDetails = "SELECT fidmember, fidseller FROM tb_penjualan_temp WHERE fidpenjualan = '$transactionId'";
                     $db->query($sqlDetails);
                     $db->next_record();
                     $vIdMember = $db->f('fidmember');

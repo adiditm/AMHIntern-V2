@@ -138,7 +138,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
              $vNo=0;
 
 			 
-			 $vsql="select a.fidproduk, sum(a.fjumlah) as fsub from tb_trxstok_member a where date(a.ftanggal) between '$vAwal' and '$vAkhir' group by a.fidproduk order by sum(a.fjumlah) desc  "; 
+			 $vsql="select a.fidproduk, sum(a.fjumlah) as fsub from tb_penjualan a where date(a.ftanggal) between '$vAwal' and '$vAkhir' group by a.fidproduk order by sum(a.fjumlah) desc  "; 
 		     $db->query($vsql);
 			 $vTotJual=0;
 			 while ($db->next_record()) {
@@ -164,7 +164,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
 <br> 
 <ul>          
 <?
-   $vSQL="select * from m_product where fidproduk not in (select fidproduk from tb_trxstok_member where date(ftanggal) between '$vAwal' and '$vAkhir')";
+   $vSQL="select * from m_product where fidproduk not in (select fidproduk from tb_penjualan where date(ftanggal) between '$vAwal' and '$vAkhir')";
    $db->query($vSQL);
    while ($db->next_record()) {
 

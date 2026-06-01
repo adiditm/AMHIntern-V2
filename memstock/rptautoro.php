@@ -55,7 +55,7 @@ else    $vOrder.=" order by a.ftanggal desc ";
 
 
 
-			 $vsql="select  distinct date(a.ftanggal) as ftang,a.fidseller,a.fidmember,a.fidpenjualan,sum(a.fsubtotal) as ftot,fidproduk from tb_trxstok_member a,m_anggota b where a.fidmember=b.fidmember  and a.fjenis='RO' $vCrit group by date(a.ftanggal),a.fidseller,a.fidmember,a.fidpenjualan"; 
+			 $vsql="select  distinct date(a.ftanggal) as ftang,a.fidseller,a.fidmember,a.fidpenjualan,sum(a.fsubtotal) as ftot,fidproduk from tb_penjualan a,m_anggota b where a.fidmember=b.fidmember  and a.fjenis='RO' $vCrit group by date(a.ftanggal),a.fidseller,a.fidmember,a.fidpenjualan"; 
 
 						 
 			 
@@ -279,7 +279,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
 		
 
              $vNo=0;
-			 $vsql="select  distinct date(a.ftanggal) as ftang,a.fidseller,a.fidmember,a.fidpenjualan,sum(a.fsubtotal) as ftot, fidproduk from tb_trxstok_member a,m_anggota b where a.fidmember=b.fidmember  and fjenis='AutoRO' $vCrit group by date(a.ftanggal),a.fidseller,a.fidmember,a.fidpenjualan"; 
+			 $vsql="select  distinct date(a.ftanggal) as ftang,a.fidseller,a.fidmember,a.fidpenjualan,sum(a.fsubtotal) as ftot, fidproduk from tb_penjualan a,m_anggota b where a.fidmember=b.fidmember  and fjenis='AutoRO' $vCrit group by date(a.ftanggal),a.fidseller,a.fidmember,a.fidpenjualan"; 
 			// $vsql.=$vCrit;
 			 
 			  $vsql.= $vOrder ;

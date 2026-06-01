@@ -943,7 +943,7 @@ function setFilterBank(pParam) {
                             </thead>
                             <tbody>
                             <?
-                                $vSQL="select * from tb_trxstok_member_temp where fidmember='$vUserActive' and fjenis='FO'";
+                                $vSQL="select * from tb_penjualan_temp where fidmember='$vUserActive' and fjenis='FO'";
                                 $db->query($vSQL);
                                 while ($db->next_record()) {
                             ?>

@@ -101,7 +101,7 @@ include_once("../classes/ruleconfigclass.php");
 							Terima kasih atas kepercayaan Anda!  <br> \n
 							Salam Sukses";
 							
-							$vSQL = "update tb_trxstok_member_temp set  fserial ='$vVA' where fidpenjualan='$vNextJual' ";
+							$vSQL = "update tb_penjualan_temp set  fserial ='$vVA' where fidpenjualan='$vNextJual' ";
 							$db->query($vSQL);
 							// 
 							 $vResSMS = $oSystem->sendSMS($tfPhoneSpon,"$vName, trm kasih! Silakan trnsfr ke Virt. Account Permata $vVA Rp $vTotalPay (utk $tfPoin poin), bts wkt $vExpired ",$vIDGoSMS,$vPassGoSMS);

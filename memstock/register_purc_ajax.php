@@ -3,6 +3,8 @@ session_start();
 ini_set('display_errors', true);
 error_reporting(E_ERROR);
 include_once("../server/config.php");
+if (!isset($_SESSION['save']) || !is_array($_SESSION['save']))
+	$_SESSION['save'] = array();
 $vUser=$_SESSION['LoginUser'];
 $vRefer = $_SERVER['HTTP_REFERER'];
 //print_r($_POST);
@@ -230,7 +232,8 @@ $vRefer = $_SERVER['HTTP_REFERER'];
                                 
                                 <td>&nbsp;</td>
                                 <td style="width: 94px" align="right"><span style="display:<? if ($vTot==0) echo 'none';?>"><?=number_format($vTot,0,",",".")?></span><input type="hidden" name="hTot" id="hTot" value="<?=$vTot?>" />
-                                <input type="hidden" name="hTotWeight" id="hTotWeight" value="<?=$vTotWeight?>" /></td>
+                                <input type="hidden" name="hTotWeight" id="hTotWeight" value="<?=$vTotWeight?>" />
+                                <input type="hidden" name="hCartJson" id="hCartJson" value="<?=htmlspecialchars(json_encode(is_array($_SESSION['save']) ? $_SESSION['save'] : array()), ENT_QUOTES, 'UTF-8')?>" /></td>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                             </tr>

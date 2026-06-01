@@ -45,7 +45,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
 
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
+ $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
  $vsql.=$vCrit;
  $vsql.=" order by ftanggal ";
  $db->query($vsql);
@@ -143,7 +143,7 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
 	   $.get(vURL,function(data) {
 	      if(data.trim()=='successappv') {
 	        alert('Approval succeed, stock updated!');
-	        $('#tdstat'+pIdTrx).html('Approved');
+	        $('#tdstat'+pIdTrx).html('Selesai');
   			document.getElementById('btnAppv'+pIdTrx).disabled=true;
   			document.getElementById('btnReject'+pIdTrx).disabled=true;
 			//$('#dialogModal').hide();
@@ -305,11 +305,11 @@ function uploadFileX(transactionId) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus  from tb_trxstok_member where   1 and fidseller ='{$_SESSION['LoginUser']}' "; 
+			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan where   1 and fidseller ='{$_SESSION['LoginUser']}' ";
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus  from tb_trxstok_member_temp where  1  and fidseller ='{$_SESSION['LoginUser']}' "; 
+			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan_temp where  1  and fidseller ='{$_SESSION['LoginUser']}' ";
 			 $vsql.=$vCrit;
 			 
 			 $vsql.=" order by ftanggal ";
@@ -333,6 +333,7 @@ function uploadFileX(transactionId) {
 				 $vKet=$db->f('fketerangan');
 				// $vOngkir=$db->f('fongkir');
 				 $vStat=$db->f('fstatus');
+				 $vFprocessed=trim((string)$db->f('fprocessed'));
 				 $vIdSys=$db->f('fidsys');
 				 $vIdTrx=$db->f('fidpenjualan');
 				  $vIdProd=$oJual->getKindProd($vIdTrx);
@@ -346,7 +347,7 @@ function uploadFileX(transactionId) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_penjualan union  select fidpenjualan, fidproduk,fpaid, fsend from tb_penjualan_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
@@ -361,10 +362,12 @@ function uploadFileX(transactionId) {
           $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
+        else if ($vFprocessed=='2')
+          $vStatus='Selesai';
         else if ($vStat=='1')   
             $vStatus='Approved';
-        else if ($vStat=='4')  
-            $vStatus='Rejected';   
+        else if ($vStat=='4' || $vFprocessed=='4')  
+            $vStatus='Rejected';
 
        // echo "$vSQL <br>";
 				
@@ -455,7 +458,7 @@ function uploadFileX(transactionId) {
             
             <? } ?>
             
-            <? if ($vStat=='1') { // Add upload buttons for Approved status ?>
+            <? if ($vStat=='1' && $vFprocessed!='2') { // upload hanya sebelum transaksi selesai ?>
 
             <?php
             // Check if file already exists to show different UI for reuploads
@@ -537,11 +540,12 @@ function uploadFileX(transactionId) {
 
         <div><b>Keterangan :</b>
         <ul>
-        <li style="color:red;font-weight:bold">Untuk status Approved dan Diproses (Sudah Dibayar), silakan Anda sebagai seller mengupload bukti kirim!</li>  
+        <li style="color:red;font-weight:bold">Untuk status Diproses (Sudah Dibayar), silakan Anda sebagai seller mengupload bukti kirim!</li>  
         <li>Pending : Belum Dibayar</li>
         <li>Diproses (Sudah Dibayar) : Belum Dikirim</li>
         <li>Diproses (Sudah Dikirim) : Sudah Dikirim</li>
-        <li>Approved : Sudah Disetujui Admin </li>
+        <li>Selesai : Transaksi selesai diproses admin (fprocessed=2)</li>
+        <li>Approved : Sudah Disetujui Admin (legacy)</li>
         <li>Rejected : Ditolak</li>
         </ul>
         </div>

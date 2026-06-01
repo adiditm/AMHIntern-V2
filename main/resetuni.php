@@ -17,7 +17,7 @@
 	  }
      
 
-	  $vsql="delete from tb_trxstok_member where fjenis='AutoRO' ;"; 
+	  $vsql="delete from tb_penjualan where fjenis='AutoRO' ;"; 
 	  $db->query($vsql);
 
 

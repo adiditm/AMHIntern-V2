@@ -1049,7 +1049,7 @@
 
    global $oDB;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2";
 
 	$oDB->query($vsql);
 
@@ -1079,7 +1079,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and and fjenis='RO' and month(ftanggal)=$pMonth and year(ftanggal)=$pYear";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and and fjenis='RO' and month(ftanggal)=$pMonth and year(ftanggal)=$pYear";
 
 	$oDB->query($vsql);
 
@@ -1109,7 +1109,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotpoint) as ftotal from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear";
+   $vsql="select sum(fsubtotpoint) as ftotal from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear";
 
 	$oDB->query($vsql);
 
@@ -1143,7 +1143,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and fjenis='RO' and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and fjenis='RO' and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
 
 	$oDB->query($vsql);
 
@@ -1207,7 +1207,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotpoint) as ftotal from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
+   $vsql="select sum(fsubtotpoint) as ftotal from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
 
 	$oDB->query($vsql);
 
@@ -1245,7 +1245,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and day(ftanggal)=$pDay and fidmember='$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and day(ftanggal)=$pDay and fidmember='$pID'";
 
 	$oDB->query($vsql);
 
@@ -1277,9 +1277,9 @@
 
    $pMonth=(int) $pMonth;
 
-   // $vsql="select sum(fjumlah) as fjum from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID' and fidproduk='$pProd'";
+   // $vsql="select sum(fjumlah) as fjum from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID' and fidproduk='$pProd'";
 
-	$vsql="select sum(a.fjumlah) as fjum from tb_trxstok_member a,m_product b where a.fidproduk=b.fidproduk and a.fprocessed=2 and month(a.ftanggal)=$pMonth and year(a.ftanggal)=$pYear and a.fidmember='$pID' and b.fmodel <> 'pulsa'";
+	$vsql="select sum(a.fjumlah) as fjum from tb_penjualan a,m_product b where a.fidproduk=b.fidproduk and a.fprocessed=2 and month(a.ftanggal)=$pMonth and year(a.ftanggal)=$pYear and a.fidmember='$pID' and b.fmodel <> 'pulsa'";
 
 	$oDB->query($vsql);
 
@@ -1313,7 +1313,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and fidproduk not like 'KIT%' and fjenis='RO' and fidmember = '$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and fidproduk not like 'KIT%' and fjenis='RO' and fidmember = '$pID'";
 
 	$oDB->query($vsql);
 
@@ -1345,7 +1345,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and fidmember = '$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and fidmember = '$pID'";
 
 	$oDB->query($vsql);
 
@@ -1377,7 +1377,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 ";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 ";
 
 	$oDB->query($vsql);
 
@@ -1409,7 +1409,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fjumlah) as ftotal from tb_trxstok_member where fprocessed=2 and fidproduk not like 'KIT%' and fidmember = '$pID'";
+   $vsql="select sum(fjumlah) as ftotal from tb_penjualan where fprocessed=2 and fidproduk not like 'KIT%' and fidmember = '$pID'";
 
 	$oDB->query($vsql);
 
@@ -1441,7 +1441,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2  and fidmember = '$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2  and fidmember = '$pID'";
 
 	$oDB->query($vsql);
 
@@ -1473,7 +1473,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and fidmember = '$pID' and fidproduk not like 'KIT%' and fjenis='RO' and date(ftanggal) between '$vAwal' and '$vAkhir'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and fidmember = '$pID' and fidproduk not like 'KIT%' and fjenis='RO' and date(ftanggal) between '$vAwal' and '$vAkhir'";
 
 	$oDB->query($vsql);
 
@@ -1511,7 +1511,7 @@
 
    $pMonth=(int) $pMonth;
 
-  $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and fidmember = '$pID' and fjenis = 'FO' and date(ftanggal) between '$vAwal' and '$vAkhir'";
+  $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and fidmember = '$pID' and fjenis = 'FO' and date(ftanggal) between '$vAwal' and '$vAkhir'";
 
 	$oDB->query($vsql);
 
@@ -1599,7 +1599,7 @@
 
   // echo $vYear;
 
-   $vsql="select coalesce(sum(fsubtotal),0) as ftotal from tb_trxstok_member where fprocessed=2 and fidmember = '$pID' and fidproduk not like 'KIT%' and (fjenis='RO' or fjenis='AutoRO') and month(ftanggal) = $vMonth and year(ftanggal)=$vYear";
+   $vsql="select coalesce(sum(fsubtotal),0) as ftotal from tb_penjualan where fprocessed=2 and fidmember = '$pID' and fidproduk not like 'KIT%' and (fjenis='RO' or fjenis='AutoRO') and month(ftanggal) = $vMonth and year(ftanggal)=$vYear";
 
   //echo "<br>".$vsql."<br>";
 
@@ -1957,7 +1957,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="SELECT COUNT(*) AS froyalti FROM (SELECT fidmember, SUM(a.fsubtotal) AS fbuy from tb_trxstok_member a WHERE fprocessed=2 and MONTH(a.ftanggal)=$pMonth AND YEAR(a.ftanggal)=$pYear GROUP BY fidmember) AS b WHERE fbuy>=1000000";
+   $vsql="SELECT COUNT(*) AS froyalti FROM (SELECT fidmember, SUM(a.fsubtotal) AS fbuy from tb_penjualan a WHERE fprocessed=2 and MONTH(a.ftanggal)=$pMonth AND YEAR(a.ftanggal)=$pYear GROUP BY fidmember) AS b WHERE fbuy>=1000000";
 
 	$oDB->query($vsql);
 
@@ -1989,7 +1989,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotal) as ftotal from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
+   $vsql="select sum(fsubtotal) as ftotal from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
 
 	$oDB->query($vsql);
 
@@ -2019,7 +2019,7 @@
 
    $pMonth=(int) $pMonth;
 
-   $vsql="select sum(fsubtotpoint) as ftotal from tb_trxstok_member where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
+   $vsql="select sum(fsubtotpoint) as ftotal from tb_penjualan where fprocessed=2 and month(ftanggal)=$pMonth and year(ftanggal)=$pYear and fidmember='$pID'";
 
 	$oDB->query($vsql);
 
@@ -3695,7 +3695,7 @@
 
 		 $vSQLin=" select count(fidmember) as fcount from (select fidmember,sum(fsubtotpoint) ";
 
-		 $vSQLin.=" as fomzet from tb_trxstok_member where month(ftanggal)=$pMonth and year(ftanggal)=$pYear ";
+		 $vSQLin.=" as fomzet from tb_penjualan where month(ftanggal)=$pMonth and year(ftanggal)=$pYear ";
 
 		 $vSQLin.=" group by fidmember) as tabel where fomzet >= (select fminprog from tb_rules_config where fidrule=1)";
 
@@ -3721,7 +3721,7 @@
 
 		 $vSQLin=" select count(fidmember) as fcount from (select fidmember,sum(fsubtotpoint) ";
 
-		 $vSQLin.=" as fomzet from tb_trxstok_member where month(ftanggal)=$pMonth and year(ftanggal)=$pYear ";
+		 $vSQLin.=" as fomzet from tb_penjualan where month(ftanggal)=$pMonth and year(ftanggal)=$pYear ";
 
 		 $vSQLin.=" group by fidmember) as tabel where fomzet < (select fminprog from tb_rules_config where fidrule=1) ";
 

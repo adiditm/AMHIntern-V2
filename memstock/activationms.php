@@ -93,7 +93,7 @@
          $vRefj=$_POST['hRefj'];
  
  
- 		$vSQL="select * from tb_trxstok_member_temp where fidpenjualan='$vRefj'";
+ 		$vSQL="select * from tb_penjualan_temp where fidpenjualan='$vRefj'";
 		$db->query($vSQL);	
 		while($db->next_record()) {
 		    $vIDProduk = $db->f('fidproduk');
@@ -113,14 +113,14 @@
           $db->query($vSQL);
           
 
-   	   $vSQL="insert into tb_trxstok_member(`fidpenjualan`, `fidseller`, `fidmember`, `falamatkrm`, `fnostockist`, `fidproduk`, `fjumlah`, `ftanggal`, `fhargasat`, `fsubtotal`, `fsize`, `fcolor`, `ftgltrans`, `fjenis`, `fjmltrans`, `fserial`, `fpin`, `fmethod`, `fketerangan`, `ftglentry`, `fprocessed`, `ftglprocessed`, `fshipcost`) ";
-   	     $vSQL.="select `fidpenjualan`, `fidseller`, `fidmember`, `falamatkrm`, `fnostockist`, `fidproduk`, `fjumlah`, `ftanggal`, `fhargasat`, `fsubtotal`, `fsize`, `fcolor`, `ftgltrans`, `fjenis`, `fjmltrans`, `fserial`, `fpin`, `fmethod`, `fketerangan`, `ftglentry`, `fprocessed`, `ftglprocessed`, `fshipcost` from tb_trxstok_member_temp where fidpenjualan='$vRefj'";
+   	   $vSQL="insert into tb_penjualan(`fidpenjualan`, `fidseller`, `fidmember`, `falamatkrm`, `fnostockist`, `fidproduk`, `fjumlah`, `ftanggal`, `fhargasat`, `fsubtotal`, `fsize`, `fcolor`, `ftgltrans`, `fjenis`, `fjmltrans`, `fserial`, `fpin`, `fmethod`, `fketerangan`, `ftglentry`, `fprocessed`, `ftglprocessed`, `fshipcost`) ";
+   	     $vSQL.="select `fidpenjualan`, `fidseller`, `fidmember`, `falamatkrm`, `fnostockist`, `fidproduk`, `fjumlah`, `ftanggal`, `fhargasat`, `fsubtotal`, `fsize`, `fcolor`, `ftgltrans`, `fjenis`, `fjmltrans`, `fserial`, `fpin`, `fmethod`, `fketerangan`, `ftglentry`, `fprocessed`, `ftglprocessed`, `fshipcost` from tb_penjualan_temp where fidpenjualan='$vRefj'";
    	     $db->query($vSQL);
 
 
 
 //Kurangi Stock
-		$vSQL="select * from tb_trxstok_member_temp where fidpenjualan='$vRefj'";
+		$vSQL="select * from tb_penjualan_temp where fidpenjualan='$vRefj'";
 		$db->query($vSQL);	
 		while($db->next_record()) {
 		    $vIDProduk = $db->f('fidproduk');
@@ -144,7 +144,7 @@
 		}	
 
 
-   	     $vSQL="delete from tb_trxstok_member_temp where fidpenjualan='$vRefj'";
+   	     $vSQL="delete from tb_penjualan_temp where fidpenjualan='$vRefj'";
    	     $db->query($vSQL);
    	     $_SESSION['refj']='';
 
@@ -1173,7 +1173,7 @@ $("#printarea").addClass('zoomx');
                             </thead>
                             <tbody>
                             <?
-                               $vSQL="SELECT * FROM `tb_trxstok_member_temp`  where fidmember= '$vUserActive'";
+                               $vSQL="SELECT * FROM `tb_penjualan_temp`  where fidmember= '$vUserActive'";
                                $db1->query($vSQL);
                                $vTotal=0;
                                while($db1->next_record()) {

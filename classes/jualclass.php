@@ -92,13 +92,13 @@
 
 	      global $oDB,$oSystem;
 
-		  $vsql="insert into tb_trxstok_member_temp(fidpenjualan,fidseller,fidmember,falamatkrm,fnostockist,fidproduk,fjumlah,ftanggal,fhargasat,fsubtotal,fpointsat,fsubtotpoint,fketerangan,ftglentry) ";
+		  $vsql="insert into tb_penjualan_temp(fidpenjualan,fidseller,fidmember,falamatkrm,fnostockist,fidproduk,fjumlah,ftanggal,fhargasat,fsubtotal,fpointsat,fsubtotpoint,fketerangan,ftglentry) ";
 
 		  $vsql.="values('$fidpenjualan','$fidseller','$fidmember','$falamatkrm','$fnostockist','$fidproduk',$fjumlah,now(),$fhargasat,$fsubtotal,$fpointsat,$fsubtotpoint,'$fketerangan',now())";
 
 		  
 
-		  $vsql2="update tb_trxstok_member_temp set fjumlah=fjumlah+$fjumlah,fsubtotal=fhargasat * fjumlah,fsubtotpoint=fpointsat*fjumlah where fidpenjualan='$fidpenjualan' and fidproduk='$fidproduk' and fidmember='$fidmember'  and fidseller='$fidseller'";
+		  $vsql2="update tb_penjualan_temp set fjumlah=fjumlah+$fjumlah,fsubtotal=fhargasat * fjumlah,fsubtotpoint=fpointsat*fjumlah where fidpenjualan='$fidpenjualan' and fidproduk='$fidproduk' and fidmember='$fidmember'  and fidseller='$fidseller'";
 
 		  
 
@@ -178,7 +178,7 @@
 
 	      global $oDB,$oSystem;
 
-		  $vsql="select * from tb_trxstok_member_temp where fidpenjualan='$fidpenjualan' and fidproduk='$fidproduk' and fidmember='$fidmember'";  
+		  $vsql="select * from tb_penjualan_temp where fidpenjualan='$fidpenjualan' and fidproduk='$fidproduk' and fidmember='$fidmember'";  
 
 	  	  $oDB->query($vsql);
 
@@ -234,7 +234,7 @@
 
 	   	  global $oDB,$oSystem;
 
-		  $vsql="delete from tb_trxstok_member_temp where fidpenjualan='$fidpenjualan' and  fidmember='$fidmember' and fidproduk='$fidproduk' ";
+		  $vsql="delete from tb_penjualan_temp where fidpenjualan='$fidpenjualan' and  fidmember='$fidmember' and fidproduk='$fidproduk' ";
 
 		  $oDB->query($vsql);
 
@@ -274,7 +274,7 @@
 
 	     global $oDB;
 
-	     $vsql="truncate table tb_trxstok_member_temp";
+	     $vsql="truncate table tb_penjualan_temp";
 
 		 $oDB->query($vsql);
 
@@ -444,7 +444,7 @@
 
 	     global $oDB,$dbin,$db,$oSystem,$oNetwork,$oProduct,$oKomisi;
 
-	     $vsql="select sum(fsubtotpoint) as ftotpint from tb_trxstok_member_temp where fidpenjualan='$pNoJual'";
+	     $vsql="select sum(fsubtotpoint) as ftotpint from tb_penjualan_temp where fidpenjualan='$pNoJual'";
 
 		 $oDB->query($vsql);
 
@@ -454,7 +454,7 @@
 
 		 
 
-	     $vsql="select * from tb_trxstok_member_temp where fidpenjualan='$pNoJual'";
+	     $vsql="select * from tb_penjualan_temp where fidpenjualan='$pNoJual'";
 
 		 $oDB->query($vsql);
 
@@ -490,7 +490,7 @@
 
 		   $vKet=$oDB->f("fketerangan");
 
-		   $vsqlin="insert into tb_trxstok_member(fidpenjualan,fidseller,fidmember,falamatkrm,fnostockist,fidproduk,fjumlah,ftanggal,fhargasat,fsubtotal,fpointsat,fsubtotpoint,fketerangan,ftglentry,ftgltrans,frekdest,fjmltrans,fserial,fpin,fmethod) ";
+		   $vsqlin="insert into tb_penjualan(fidpenjualan,fidseller,fidmember,falamatkrm,fnostockist,fidproduk,fjumlah,ftanggal,fhargasat,fsubtotal,fpointsat,fsubtotpoint,fketerangan,ftglentry,ftgltrans,frekdest,fjmltrans,fserial,fpin,fmethod) ";
 
 		   $vsqlin.="values('$vNoJual','$vIDSeller','$vIDMember','$pAlamat','$pStockist','$vIDProduk',$vQty,'$pTanggal',$vHargaSat,$vSubTotal,$vPointSat,$vSubTotPoint,'$vKet',now(),'$pTglTrans','$pRekDest','$pJmlTrans','$pSerial','$pPIN','$pMethod')";
 
@@ -598,7 +598,7 @@
 
             global $oDB;   
 
-  			$oDB->query("delete from  tb_trxstok_member_temp where fidseller='$pID'");
+  			$oDB->query("delete from  tb_penjualan_temp where fidseller='$pID'");
 
      }
 
@@ -666,7 +666,7 @@
 
    global $oDB, $oRules, $oProduct;
 
-    $vsql="select coalesce(sum(fsubtotal),0) as fbuy from tb_trxstok_member where  fjenis='RO' or fjenis='AutoRO' and  DATE_FORMAT(ftanggal,'%Y%m') = '$pThBul' ";
+    $vsql="select coalesce(sum(fsubtotal),0) as fbuy from tb_penjualan where  fjenis='RO' or fjenis='AutoRO' and  DATE_FORMAT(ftanggal,'%Y%m') = '$pThBul' ";
 
 	$oDB->query($vsql);
 
@@ -708,7 +708,7 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select sum(fsubtotal) as fbuy from tb_trxstok_member where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
+   $vsql="select sum(fsubtotal) as fbuy from tb_penjualan where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
 
 	$oDB->query($vsql);
 
@@ -810,9 +810,9 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select sum(fbuy) as fbuy from (select sum(fsubtotal) as fbuy from tb_trxstok_member where 1 and  fidpenjualan='$pID' ";
+   $vsql="select sum(fbuy) as fbuy from (select sum(fsubtotal) as fbuy from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-    $vsql.=" union all select sum(fsubtotal) as fbuy from tb_trxstok_member_temp where 1 and  fidpenjualan='$pID') as a ";
+    $vsql.=" union all select sum(fsubtotal) as fbuy from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a ";
 
 	$oDB->query($vsql);
 
@@ -846,9 +846,9 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select * from (select fidproduk as fidprod from tb_trxstok_member where 1 and  fidpenjualan='$pID' ";
+   $vsql="select * from (select fidproduk as fidprod from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-    $vsql.=" union all select fidproduk as fidprod from tb_trxstok_member_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+    $vsql.=" union all select fidproduk as fidprod from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
@@ -880,9 +880,9 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select * from (select fmethod as fmet from tb_trxstok_member where 1 and  fidpenjualan='$pID' ";
+   $vsql="select * from (select fmethod as fmet from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-    $vsql.=" union all select fmethod as fmet from tb_trxstok_member_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+    $vsql.=" union all select fmethod as fmet from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
@@ -912,9 +912,9 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select * from (select * from tb_trxstok_member where 1 and  fidpenjualan='$pID' ";
+   $vsql="select * from (select * from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-     $vsql.=" union all select * from tb_trxstok_member_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+     $vsql.=" union all select * from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
@@ -945,9 +945,9 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select * from (select '2'  as fstatus from tb_trxstok_member where 1 and  fidpenjualan='$pID' ";
+   $vsql="select * from (select '2'  as fstatus from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-    $vsql.=" union all select '0'  as fstatus from tb_trxstok_member_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+    $vsql.=" union all select '0'  as fstatus from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
@@ -985,7 +985,7 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select sum(fsubtotal) as fbuy from tb_trxstok_member_temp where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
+   $vsql="select sum(fsubtotal) as fbuy from tb_penjualan_temp where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
 
 	$oDB->query($vsql);
 
@@ -1014,7 +1014,7 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select fongkir as fongkir from tb_trxstok_member_temp where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
+   $vsql="select fongkir as fongkir from tb_penjualan_temp where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
 
 	$oDB->query($vsql);
 
@@ -1044,7 +1044,7 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select fongkir as fongkir from tb_trxstok_member where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
+   $vsql="select fongkir as fongkir from tb_penjualan where fidproduk not like 'KIT%' and  fidpenjualan='$pID' ";
 
 	$oDB->query($vsql);
 
@@ -1078,7 +1078,7 @@
 
       $vAnd=" and fprocessed=$pStatus";
 
-    $vsql="select sum(fsubtotal) as fbuy from tb_trxstok_member where 1 $vAnd and  fprocessed <> 4 and ftanggal between '$pAwal' and '$pAkhir' ";
+    $vsql="select sum(fsubtotal) as fbuy from tb_penjualan where 1 $vAnd and  fprocessed <> 4 and ftanggal between '$pAwal' and '$pAkhir' ";
 
 	$oDB->query($vsql);
 
@@ -1198,13 +1198,13 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_trxstok_member a";
+   $vsql="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_penjualan a";
 
    $vsql.=" left join m_product b on a.fidproduk=b.fidproduk where a.fidproduk not like 'KIT%' and  a.fidpenjualan='$pIDJual'";
 
    $vsql .= " union all ";
 
-   $vsql .="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_trxstok_member_temp a";
+   $vsql .="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_penjualan_temp a";
 
    $vsql.=" left join m_product b on a.fidproduk=b.fidproduk where a.fidproduk not like 'KIT%' and  a.fidpenjualan='$pIDJual'";
 
@@ -1486,13 +1486,13 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor, '1' as fstatus from tb_trxstok_member a";
+   $vsql="select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor, '1' as fstatus from tb_penjualan a";
 
    $vsql.=" left join m_product b on a.fidproduk=b.fidproduk where 1 and  a.fidpenjualan='$pIDJual'";
 
 
 
-   $vsql.=" union all select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor, '0' as fstatus from tb_trxstok_member_temp a";
+   $vsql.=" union all select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor, '0' as fstatus from tb_penjualan_temp a";
 
   $vsql.=" left join m_product b on a.fidproduk=b.fidproduk where 1 and  a.fidpenjualan='$pIDJual'";
 
@@ -1842,7 +1842,7 @@ function getHargaSat($pID) {
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select sum(fsubtotal) as fbuy from tb_trxstok_member_temp where  fidpenjualan='$pIDJual' ";
+   $vsql="select sum(fsubtotal) as fbuy from tb_penjualan_temp where  fidpenjualan='$pIDJual' ";
 
 	$oDB->query($vsql);
 
@@ -2330,7 +2330,7 @@ function getHargaSat($pID) {
 
        global $oDB;
 
-	   $vsql="select sum(fjumlah) as fjml from tb_trxstok_member where fidseller='$pID' and fidproduk ='$pIDProduk'";
+	   $vsql="select sum(fjumlah) as fjml from tb_penjualan where fidseller='$pID' and fidproduk ='$pIDProduk'";
 
 	   $oDB->query($vsql);
 
@@ -2342,7 +2342,7 @@ function getHargaSat($pID) {
 
 
 
-	   $vsql="select sum(fjumlah) as fjml from tb_trxstok_member_temp where fidseller='$pID' and fidproduk ='$pIDProduk'";
+	   $vsql="select sum(fjumlah) as fjml from tb_penjualan_temp where fidseller='$pID' and fidproduk ='$pIDProduk'";
 
 	   $oDB->query($vsql);
 
@@ -2402,7 +2402,7 @@ function getHargaSat($pID) {
 
        global $oDB;
 
-	   $vsql="select fidseller from tb_trxstok_member where fidpenjualan='$pIDJual' ";
+	   $vsql="select fidseller from tb_penjualan where fidpenjualan='$pIDJual' ";
 
 	   $oDB->query($vsql);
 
@@ -2719,7 +2719,7 @@ function getHargaSat($pID) {
 
 	   global $oDB;
 
-	   $vsql="select fidmember from tb_trxstok_member where fidpenjualan='$pTrx';";
+	   $vsql="select fidmember from tb_penjualan where fidpenjualan='$pTrx';";
 
 	   $oDB->query($vsql);
 
@@ -2783,15 +2783,47 @@ function getHargaSat($pID) {
 
    }
 
+   function jualIDExists($pID) {
+
+   	   global $oDB;
+
+   	   $pID = trim((string)$pID);
+
+   	   if ($pID == '')
+
+   	      return false;
+
+   	   $vTables = array('tb_penjualan', 'tb_penjualan_temp', 'tb_penjualan_temp_out');
+
+   	   foreach ($vTables as $vTable) {
+
+   	      $oDB->query("select fidpenjualan from $vTable where fidpenjualan='$pID' limit 1");
+
+   	      if ($oDB->num_rows() > 0)
+
+   	         return true;
+
+   	   }
+
+   	   return false;
+
+   }
+
    function getNextIDJual() {
 
    	   global $oDB;
 
    	   $vPrefix="J".date("Ymd");
 
-   	   $vSQL="select max(maxid) as amaxid from (select max(fidpenjualan) as maxid from tb_trxstok_member where fidpenjualan like '$vPrefix%'";
+   	   $vSQL="select max(maxid) as amaxid from (";
 
-	    $vSQL.="union all select max(fidpenjualan) as maxid from tb_trxstok_member_temp where fidpenjualan like '$vPrefix%') as a";
+   	   $vSQL.="select max(fidpenjualan) as maxid from tb_penjualan where fidpenjualan like '$vPrefix%'";
+
+   	   $vSQL.=" union all select max(fidpenjualan) as maxid from tb_penjualan_temp where fidpenjualan like '$vPrefix%'";
+
+   	   $vSQL.=" union all select max(fidpenjualan) as maxid from tb_penjualan_temp_out where fidpenjualan like '$vPrefix%'";
+
+   	   $vSQL.=") as a";
 
    	   $oDB->query($vSQL);
 
@@ -2799,9 +2831,9 @@ function getHargaSat($pID) {
 
    	   $vMaxid=$oDB->f('amaxid');
 
-   	   if ($vMaxid=='') {
+   	   if ($vMaxid=='' || strlen($vMaxid) < 14) {
 
-	   	   $vNext=$vPrefix."00001";
+	   	   $vSuffix=1;
 
    	   } else {
 
@@ -2809,17 +2841,39 @@ function getHargaSat($pID) {
 
 	   	  $vSuffix=((int) $vSuffix) + 1;
 
-	   	  $vSuffix=str_pad($vSuffix, 5, '0', STR_PAD_LEFT);
+	   }
 
-	   	  $vNext=$vPrefix.$vSuffix;
+   	   do {
 
-	   }  
+	   	  $vNext=$vPrefix.str_pad((string)$vSuffix, 5, '0', STR_PAD_LEFT);
 
-	   
+	   	  $vSuffix++;
 
-	   return $vNext;
+   	   } while ($this->jualIDExists($vNext) && $vSuffix < 100000);
 
-   	   
+   	   return $vNext;
+
+   }
+
+   function getNextIDJualOut() {
+
+   	   return $this->getNextIDJual();
+
+   }
+
+   function cancelVAOrderOut($pRefId) {
+
+   	   global $oDB;
+
+   	   if ($pRefId == '')
+
+   	      return false;
+
+   	   $oDB->query("DELETE FROM tb_trx_va WHERE va_refid = '$pRefId'");
+
+   	   $oDB->query("DELETE FROM tb_penjualan_temp_out WHERE fidpenjualan = '$pRefId'");
+
+   	   return true;
 
    }
 
@@ -3123,7 +3177,7 @@ function getHargaSat($pID) {
 
 	      global $oDB;
 
-		$vsql="select sum(fjumlah) as jml from tb_trxstok_member where fjenis='RO' and fidmember='$pUser' and DATE_FORMAT(ftanggal,'%Y%m') = '$pYearMonth'  ";  
+		$vsql="select sum(fjumlah) as jml from tb_penjualan where fjenis='RO' and fidmember='$pUser' and DATE_FORMAT(ftanggal,'%Y%m') = '$pYearMonth'  ";  
 
 	  	  $oDB->query($vsql);
 
@@ -3143,7 +3197,7 @@ function getHargaSat($pID) {
 
 	      global $oDB;
 
-		$vsql="select sum(fjumlah) as jml from tb_trxstok_member where fidpenjualan = '$IDJual'  ";  
+		$vsql="select sum(fjumlah) as jml from tb_penjualan where fidpenjualan = '$IDJual'  ";  
 
 	  	  $oDB->query($vsql);
 
@@ -3165,7 +3219,7 @@ function getHargaSat($pID) {
 
 	      global $oDB;
 
-		  $vsql="select sum(fjumlah) as jml from tb_trxstok_member where fidmember='$pUser' and fjenis='RO'";  
+		  $vsql="select sum(fjumlah) as jml from tb_penjualan where fidmember='$pUser' and fjenis='RO'";  
 
 	  	  $oDB->query($vsql);
 

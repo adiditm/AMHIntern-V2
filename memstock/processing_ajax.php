@@ -11,7 +11,7 @@ include_once("../classes/networkclass.php");
    if ($vOP=='del') {
        $vSQL="delete from m_anggota where fidmember='$vCode' and faktif='0'";
        $db->query($vSQL);
-        $vSQL="delete from tb_trxstok_member_temp where fidmember='$vCode'";
+        $vSQL="delete from tb_penjualan_temp where fidmember='$vCode'";
        $db->query($vSQL);
 
 

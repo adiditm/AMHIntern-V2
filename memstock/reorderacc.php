@@ -33,9 +33,9 @@ include_once("../classes/networkclass.php");
     $db->query('START TRANSACTION;');
     $vTotItem=0;
 	if ($lmMethod=='ctr')
-	   $vMainTable='tb_trxstok_member_temp';
+	   $vMainTable='tb_penjualan_temp';
 	else if ($lmMethod=='wacc')  
-	   $vMainTable='tb_trxstok_member';
+	   $vMainTable='tb_penjualan';
 	   
 	$vTotal=$_POST['hTotal'];
 	   

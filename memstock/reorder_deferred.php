@@ -92,7 +92,7 @@ if ($vCount=='') $vCount=1;
 	$db->query('START TRANSACTION;');
     $vTotItem=0;
 	if ($lmMethod=='ctr' || $lmMethod=='tva' || $lmMethod=='wpr')
-	   $vMainTable='tb_trxstok_member_temp';
+	   $vMainTable='tb_penjualan_temp';
 	   
 	$vTotal=$_POST['hTotal'];
 	if ($lmMethod=='wpr') {

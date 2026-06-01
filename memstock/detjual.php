@@ -42,6 +42,106 @@
 		$oJual->delItem($vNoJual,$vIDMember,$vIDProduk); 
 	 }
 
+	function amhDetGetReceiveField($dbConn) {
+		$vReceiveFields = array('freceived', 'freceive');
+		foreach ($vReceiveFields as $vFieldName) {
+			$vHasTemp = false;
+			$vHasMain = false;
+			$dbConn->query("SHOW COLUMNS FROM tb_penjualan_temp LIKE '$vFieldName'");
+			if ($dbConn->next_record())
+				$vHasTemp = true;
+			$dbConn->query("SHOW COLUMNS FROM tb_penjualan LIKE '$vFieldName'");
+			if ($dbConn->next_record())
+				$vHasMain = true;
+			if ($vHasTemp && $vHasMain)
+				return $vFieldName;
+		}
+		return '';
+	}
+
+	function amhDetLoadTrxMeta($pNoJual, $dbConn, $pReceiveSelect) {
+		$vNoJual = addslashes(trim((string)$pNoJual));
+		$vMeta = array(
+			'fstatus' => '0',
+			'fprocessed' => '0',
+			'fpaid' => '0',
+			'fsend' => '0',
+			'freceived' => '0',
+			'fmethod' => '',
+			'fuserid' => '',
+			'fketerangan' => '',
+			'ftable' => '',
+		);
+		$vSources = array(
+			array('tb_penjualan_temp', 'temp', '0'),
+			array('tb_penjualan', 'main', '1'),
+			array('tb_penjualan_temp_out', 'out', 'out'),
+		);
+		foreach ($vSources as $vSrc) {
+			$vTbl = $vSrc[0];
+			$vSQL = "select fprocessed, fpaid, fsend, fmethod, ifnull(fuserid,'') as fuserid, ifnull(fketerangan,'') as fketerangan, $pReceiveSelect
+				from $vTbl where fidpenjualan='$vNoJual' limit 1";
+			$dbConn->query($vSQL);
+			if ($dbConn->next_record()) {
+				$vMeta['fstatus'] = $vSrc[2];
+				$vMeta['ftable'] = $vSrc[1];
+				$vMeta['fprocessed'] = trim((string)$dbConn->f('fprocessed'));
+				$vMeta['fpaid'] = trim((string)$dbConn->f('fpaid'));
+				$vMeta['fsend'] = trim((string)$dbConn->f('fsend'));
+				$vMeta['freceived'] = trim((string)$dbConn->f('freceived'));
+				$vMeta['fmethod'] = trim((string)$dbConn->f('fmethod'));
+				$vMeta['fuserid'] = trim((string)$dbConn->f('fuserid'));
+				$vMeta['fketerangan'] = trim((string)$dbConn->f('fketerangan'));
+				if ($vSrc[1] != 'out')
+					break;
+				if (strtolower($vMeta['fuserid']) === 'aminahku' || stripos($vMeta['fketerangan'], 'link luar') !== false || stripos($vMeta['fketerangan'], 'menunggu pebisnis') !== false)
+					break;
+			}
+		}
+		return $vMeta;
+	}
+
+	function amhDetResolveStatusText($pMeta) {
+		$vStat = $pMeta['fstatus'];
+		$vMethod = strtolower(trim((string)$pMeta['fmethod']));
+		$vPaid = trim((string)$pMeta['fpaid']);
+		$vSend = trim((string)$pMeta['fsend']);
+		$vReceived = trim((string)$pMeta['freceived']);
+		$vFuserid = strtolower(trim((string)$pMeta['fuserid']));
+		$vFprocessed = trim((string)$pMeta['fprocessed']);
+		$vKet = (string)$pMeta['fketerangan'];
+
+		if ($vFprocessed === '2')
+			return array('Selesai', 'green');
+		if ($vFprocessed === '4')
+			return array('Rejected', 'red');
+		if ($vStat == '1' || $vStat === 'main')
+			return array('Approved', 'green');
+		if ($vStat == 'out' || ($vStat == '0' && $vFuserid === 'aminahku' && $vMethod === '' && $vFprocessed === '0'))
+			return array('Menunggu Proses', 'orange');
+		if ($vStat == '0' && $vPaid == '0' && $vMethod != 'wpr')
+			return array('Pending', 'red');
+		if ($vStat == '0' && $vMethod == 'wpr' && $vSend == '1' && $vReceived == '1')
+			return array('Diproses (Sudah Diterima)', 'blue');
+		if ($vStat == '0' && $vMethod == 'tva' && $vPaid == '1' && $vSend == '1' && $vReceived == '1')
+			return array('Diproses (Sudah Diterima)', 'blue');
+		if ($vStat == '0' && $vMethod == 'ctr' && $vPaid == '1' && $vSend == '1' && $vReceived == '1')
+			return array('Diproses (Sudah Diterima)', 'blue');
+		if ($vStat == '0' && $vPaid == '1' && $vSend == '1' && $vReceived == '1')
+			return array('Diproses (Sudah Diterima)', 'blue');
+		if ($vStat == '0' && $vMethod == 'wpr' && $vSend == '1')
+			return array('Diproses (Sudah Dikirim)', 'blue');
+		if ($vStat == '0' && $vPaid == '1' && $vSend == '1')
+			return array('Diproses (Sudah Dikirim)', 'blue');
+		if ($vStat == '0' && $vPaid == '1')
+			return array('Diproses (Sudah Dibayar)', 'blue');
+		if ($vStat == '0' && $vMethod == 'wpr')
+			return array('Pending', 'red');
+		if ($vStat == '0')
+			return array('Pending', 'red');
+		return array('', 'black');
+	}
+
 
 
 	 
@@ -161,11 +261,15 @@
       $db->next_record();
       $vBank = strtoupper($db->f('va_bankcode'));
 	   $vMethod=$oJual->getPayMethod($_GET['uNoJual']);
-	   if ($vMethod=='ctr' || $vMethod=='mTrans') 
+	   if ($vMethod=='' || $vMethod=='-1')
+	      echo 'Menunggu pebisnis';
+	   else if ($vMethod=='ctr' || $vMethod=='mTrans') 
 	      echo 'Cash/Transfer';
 	   else if ($vMethod=='tva' ) 
         echo "Transfer Virtual Account $vBank";
-     else echo 'eWallet'; 	  
+     else if ($vMethod=='wpr')
+        echo 'Saldo Bonus (eWallet)';
+     else echo htmlspecialchars((string)$vMethod, ENT_QUOTES, 'UTF-8');
 	   
 	   ?>
     </strong></td>
@@ -187,27 +291,24 @@
     </tr>
     <?
 	  $vNoJual=$_GET['uNoJual'];
-	  $vsql="select a.*, b.am_fee from(select *, 'main' as ftable from tb_trxstok_member where fidpenjualan='$vNoJual' union all select *, 'temp' as ftable from tb_trxstok_member_temp where fidpenjualan='$vNoJual') as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vNoJual' order by field(a.ftable,'main','temp')";
+	  $vReceiveField = amhDetGetReceiveField($db);
+	  $vReceiveSelect = ($vReceiveField != '') ? $vReceiveField . " as freceived" : "'0' as freceived";
+	  $vTrxMeta = amhDetLoadTrxMeta($vNoJual, $db, $vReceiveSelect);
+	  list($vStatusText, $vStatusColor) = amhDetResolveStatusText($vTrxMeta);
+
+	  $vsql="select a.*, b.am_fee from(select *, 'main' as ftable from tb_penjualan where fidpenjualan='$vNoJual' union all select *, 'temp' as ftable from tb_penjualan_temp where fidpenjualan='$vNoJual' union all select *, 'out' as ftable from tb_penjualan_temp_out where fidpenjualan='$vNoJual') as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vNoJual' order by field(a.ftable,'main','temp','out')";
 
 	  $db->query($vsql);
 	  $vNoUrut=0;
 	  $vTot=0;
 	  $vTotPoint=0;
-	  $vStatusTable='';
-	  $vProcessed='';
-	  $vPaid='0';
-	  $vSend='0';
 	  $vAMHFee=0;
+	  $vExpe = '';
 	  while ($db->next_record()) {
 	      $vNoUrut+=1;
         $vIdProdList=$db->f("fidproduk");
-        if ($vStatusTable=='') {
-          $vStatusTable=$db->f("ftable");
-          $vProcessed=$db->f("fprocessed");
-          $vPaid=$db->f("fpaid");
-          $vSend=$db->f("fsend");
+        if ($vAMHFee == 0)
           $vAMHFee = $db->f("am_fee");
-        }
         $vExpe = strtoupper($db->f("fexpe")).' Paket '.$db->f("fpack");
 	?>
 	<tr>
@@ -241,21 +342,27 @@
          // Ambil biaya ongkir yang valid (prioritaskan temp jika ada nilai > 0)
          $vCost = 0;
          $vNoJual = $_GET['uNoJual'];
-         $vSQL = "select fongkir from tb_trxstok_member_temp where fidpenjualan='".$vNoJual."' and IFNULL(fongkir,0)>0 limit 1";
+         $vSQL = "select fongkir from tb_penjualan_temp where fidpenjualan='".$vNoJual."' and IFNULL(fongkir,0)>0 limit 1";
          $db->query($vSQL);
          if ($db->next_record()) {
              $vCost = $db->f('fongkir');
          } else {
-             $vSQL = "select fongkir from tb_trxstok_member where fidpenjualan='".$vNoJual."' limit 1";
+             $vSQL = "select fongkir from tb_penjualan_temp_out where fidpenjualan='".$vNoJual."' and IFNULL(fongkir,0)>0 limit 1";
              $db->query($vSQL);
              if ($db->next_record()) {
                  $vCost = $db->f('fongkir');
+             } else {
+             $vSQL = "select fongkir from tb_penjualan where fidpenjualan='".$vNoJual."' limit 1";
+             $db->query($vSQL);
+             if ($db->next_record()) {
+                 $vCost = $db->f('fongkir');
+             }
              }
          }
          echo number_format($vCost,0,",",".");
       ?>      </td>
     </tr>
-    <? if ($vMethod=='tva' && floatval($vAMHFee) > 0) { ?>
+    <? if ($vTrxMeta['fmethod']=='tva' && floatval($vAMHFee) > 0) { ?>
     <tr>
       <td colspan="5" align="rifght">Biaya Admin</td>
       <td align="right"><?
@@ -276,36 +383,12 @@
       </strong></div></td>
     </tr>
   </table>
-    <?
-    // Tampilkan status transaksi (posisi bawah), termasuk untuk Pending (mis. Wallet Product / WPR)
-    $vStatusText='';
-    $vStatusColor='red';
-
-    if ($vProcessed=='2') {
-      $vStatusText='Approved';
-      $vStatusColor='green';
-    } else if ($vProcessed=='4') {
-      $vStatusText='Rejected';
-      $vStatusColor='red';
-    } else if ($vProcessed=='0') {
-      if ($vStatusTable=='temp' || $vStatusTable=='main') {
-        $vStatusText='Pending';
-        $vStatusColor='red';
-      }
-    } else if ($vPaid=='1' && $vSend=='1') {
-      $vStatusText='Diproses (Sudah Dikirim Oleh Seller)';
-      $vStatusColor='blue';
-    } else if ($vPaid=='1') {
-      $vStatusText='Diproses (Sudah Dibayar)';
-      $vStatusColor='blue';
-    }
-  ?>
   <br>
   <? if ($vStatusText != '') { ?>
   <b style="color:<?=$vStatusColor?>">Status: <?=$vStatusText?></b><br>
   <? } ?>
 
-  <? if (preg_match("/KIT/",$vIdProdList)) { ?>
+  <? if (isset($vIdProdList) && preg_match("/KIT/",$vIdProdList)) { ?>
   <br>
   
   <b>Detail KIT :</b><br>

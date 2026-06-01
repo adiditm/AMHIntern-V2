@@ -2,19 +2,13 @@
 include_once("../classes/memberclass.php");
 include_once("../classes/networkclass.php");
 include_once("../classes/systemclass.php");
-
-// Inisialisasi variabel bank dan rekening
-$vBank1 = $oRules->getSettingByField('fbank');
-$vRekBank1 = $oRules->getSettingByField('frekbank1');
-$vBank2 = $oRules->getSettingByField('fbank2');
-$vRekBank2 = $oRules->getSettingByField('frekbank2');
-$vBank3 = $oRules->getSettingByField('fbank3');
-$vRekBank3 = $oRules->getSettingByField('frekbank3');
+include_once("../classes/ruleconfigclass.php");
 
 /*if (count($_POST) >0) {
   print_r($_POST);
   exit;	
 }*/
+
 $vCount = $_GET['count'];
 if ($vCount=='') $vCount=1;
 	function is_base64_encoded($data)
@@ -24,7 +18,49 @@ if ($vCount=='') $vCount=1;
 		} else {
 		   return FALSE;
 		}
-	} 
+	}
+
+	function amhReorderoutGetCart() {
+		if (isset($_SESSION['save']) && is_array($_SESSION['save']) && count($_SESSION['save']) > 0)
+			return $_SESSION['save'];
+		if (isset($_SESSION['savestock']) && is_array($_SESSION['savestock']) && count($_SESSION['savestock']) > 0)
+			return $_SESSION['savestock'];
+		if (!empty($_POST['hCartJson'])) {
+			$vCart = json_decode(stripslashes((string)$_POST['hCartJson']), true);
+			if (is_array($vCart) && count($vCart) > 0)
+				return $vCart;
+		}
+		return array();
+	}
+
+	function amhReorderoutCaptureBackUrl() {
+		$vReferer = isset($_SERVER['HTTP_REFERER']) ? trim((string)$_SERVER['HTTP_REFERER']) : '';
+		if ($vReferer === '' || preg_match('/reorderout\.php/i', $vReferer))
+			return;
+		if (!isset($_SESSION['reorderout_back_url']) || $_SESSION['reorderout_back_url'] === '')
+			$_SESSION['reorderout_back_url'] = $vReferer;
+	}
+
+	function amhReorderoutGetBackUrl() {
+		if (!empty($_POST['hBackUrl'])) {
+			$vBack = trim((string)$_POST['hBackUrl']);
+			if ($vBack !== '' && !preg_match('/reorderout\.php/i', $vBack))
+				return $vBack;
+		}
+		if (!empty($_SESSION['reorderout_back_url']))
+			return trim((string)$_SESSION['reorderout_back_url']);
+		return 'https://aminahku.com';
+	}
+
+	function amhReorderoutFinish($pMessage) {
+		global $oSystem;
+		$vBack = amhReorderoutGetBackUrl();
+		unset($_SESSION['reorderout_back_url']);
+		$vMsg = str_replace(array("\\", "'"), array("\\\\", "\\'"), (string)$pMessage);
+		$vBackJs = str_replace(array("\\", "'"), array("\\\\", "\\'"), $vBack);
+		echo "<script language='JavaScript'>alert('{$vMsg}');window.location='{$vBackJs}';</script>";
+		exit;
+	}
  
   // print_r($_POST);
    while (list($key,$val)=each($_POST)) {
@@ -45,17 +81,20 @@ if ($vCount=='') $vCount=1;
    $db->next_record();
    $vSellerName = $db->f('fnama'); 
    
-  // $vUser = $_SESSION['LoginUser'];
-   if ($vRef !='')
-        $vUser = $vRef;
-	  
-	   
-   $vKotaAsal = $oMember->getMemFieldSell('fkota',$vSeller);
+   $vUser = $_SESSION['LoginUser'];
+   if ($vRef =='')
+      $vRef = $vUser;
+   if ($vRef != '')
+      $vUser = $vRef;
+   
+   $vKecAsal = $oMember->getMemFieldSell('fkec',$vSeller);
    $vHrgEco = $oRules->getSettingByField('fhrgeco');
    $vHrgBus = $oRules->getSettingByField('fhrgbus');
    $vHrgFirst = $oRules->getSettingByField('fhrgfirst');
    $vMailFrom=$oRules->getSettingByField('fmailadmin');
    $vUserHO = $oRules->getSettingByField('fuserho');
+
+
  /*  if ($vPriv=='member')
       $vSeller = $vUserHO;
    else	  
@@ -63,368 +102,74 @@ if ($vCount=='') $vCount=1;
    $vTreshUp = $oRules->getSettingByField('ftreshup');
    $vTreshMaster = $oRules->getSettingByField('ftreshmaster');
    $vByyAdmin = $oRules->getSettingByField('fbyyadmin');
-   $vSalProd = $oMember->getMemFieldAdm('fsaldovcr',$vUser);
-   $vOngkir = $_POST['tfOngkir'];
+   $vOngkir = isset($_POST['tfOngkir']) ? $_POST['tfOngkir'] : 0;
   // $vSalProd = 8000000;
   //$vSalProd = 5000000;
 
        
-   if ($_POST['hPost'] != '1') {
-      $_SESSION['save']='';
-      $_SESSION['del']='';
+   if (!isset($_POST['hPost']) || $_POST['hPost'] != '1') {
+      amhReorderoutCaptureBackUrl();
+      $_SESSION['save']=array();
+      $_SESSION['del']=array();
+      $_SESSION['savestock']=array();
     
    } else {
-    $vNextJual=$oJual->getNextIDJual();
+    $vCartItems = amhReorderoutGetCart();
+    if (count($vCartItems) <= 0) {
+       amhReorderoutFinish('Anda belum melakukan pembelanjaan!');
+    }
+    $vNextJual=$oJual->getNextIDJualOut();
     $vBuyer=$_POST['tfSernoSpon'];
-    //$vPaket=$oMember->getMemField("fpaket",$vBuyer);
-  //  $vAlamat=$oMember->getMemField('falamat',$vBuyer);
-  $vAlamat = $_POST['tfRecAddr'];
-   // @mail("a_didit_m@yahoo.com","Entri RO Spectra by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true));
-    $oSystem->smtpmailer('japri_s@yahoo.com',$vMailFrom,'Onotoko',"Entri RO Onotoko by $vUser",print_r($_POST,true)."\n\n\n".print_r($_SESSION['save'],true),'','',false);
+    $vAlamat=$_POST['tfRecAddr'];
+    $vMainTable='tb_penjualan_temp_out';
+    $vProcessed='0';
+    $vMethod='';
+    $vKeterangan='Order dari link luar (menunggu pebisnis)';
+    $vPaid='0';
+
+    $oSystem->smtpmailer('japri_s@yahoo.com',$vMailFrom,'Onotoko',"Entri RO luar oleh $vUser",print_r($_POST,true)."\n\n\n".print_r($vCartItems,true),'','',false);
 	$db->query('START TRANSACTION;');
     $vTotItem=0;
-	if ($lmMethod=='ctr' || $lmMethod=='tva')
-	   $vMainTable='tb_trxstok_member_temp';
-	else if ($lmMethod=='wpr')  
-	   $vMainTable='tb_trxstok_member';
 	   
-	$vTotal=$_POST['hTotal'];
-	   
-    while (list($key,$val) = each($_SESSION['save'])) {
-        //print_r($val);
-        $tfRecName = str_replace("'","''",$tfRecName);
-    	 $vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed, fongkir, fberat, fcountry, fprop, fkota, fkec, fexpe, fpack, frecname, frecnohp)";
-    	$vSQL.=" values('$vNextJual','$vSeller','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$lmMethod','Repeat Order',now(),'2','1981-01-01 00:00:00',$vOngkir,{$_POST['hTotWeight']},'{$_POST['fcountry']}','{$_POST['fprop']}','{$_POST['fkota']}','{$_POST['fkec']}','{$_POST['fexpe']}','{$_POST['fpack']}','$tfRecName','$tfRecPhone')";
-  	 //	echo $vSQL;
-		//exit;
+    foreach ($vCartItems as $key => $val) {
+         if ($vSeller == '')  $vSeller = $_POST['hSeller'];
+
+    	 $vSQL="insert into $vMainTable(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, fsize, fcolor, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fuserid, fprocessed, ftglprocessed, fpaid, fongkir, fberat, fcountry, fprop, fkota, fkec, fexpe, fpack, frecnohp, frecname)";
+    	$vSQL.=" values('$vNextJual','$vSeller','$vBuyer','$vAlamat','$vUser','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",'".$val['lmSize']."','".$val['lmColor']."',now(),'RO',0,'','','$vMethod','$vKeterangan',now(),'aminahku','$vProcessed','1981-01-01 00:00:00','$vPaid',$vOngkir,{$_POST['hTotWeight']},'{$_POST['fcountry']}','{$_POST['fprop']}','{$_POST['fkota']}','{$_POST['fkec']}','{$_POST['fexpe']}','{$_POST['fpack']}','{$_POST['tfRecPhone']}','{$_POST['tfRecName']}')";
   	 	$db->query($vSQL);
   	 	$vTotItem+=$val['txtJml'];
-		
-
- 
-    if ($lmMethod=='wpr') {
-	//Stock Position Seller
-			$vLastBal = $oMember->getStockPosUnig($vSeller,$val['lmKode']);
-			$vNewBal=$vLastBal - $val['txtJml'];
-			$vSQL="insert into tb_mutasi_stok(fidmember, fidproduk, fsize,fcolor, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate, fref) ";	  	 	
-			$vSQL .="values('$vSeller','".$val['lmKode']."','".$val['lmSize']."','".$val['lmColor']."','$vBuyer',now(), 'RO Sales [$vBuyer]',0 ,".$val['txtJml'].",$vNewBal,'JRO','1' , '$vUser',now(), '$vNextJual');";//belum selesai
-			$db->query($vSQL);
-			
-			$vSQL="update tb_stok_position set fbalance=fbalance-".$val['txtJml']." where fidmember='$vSeller' and fidproduk='".$val['lmKode']."'";
-			$db->query($vSQL);
-
-
-			//$oNetwork->sendFeeTitikCompress($vBuyer,20,$vTotal,$vNextJual);			
 	}
- 	    
-  	    
-    }
-  	  
 
-
-
-		
-		
-
-		if ($lmMethod=='wpr') {
-			
-			//Mutasi Si member
-
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vUser);
-			$vNewBal=$vLastBal - $vTotal;
-
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fref) "; 
-			$vsql.="values ('$vUser', '$vBuyer', now(),'Repeat Order Sales $vNextJual [Dengan Saldo] ' , 0,$vTotal ,$vNewBal ,'reorder' , '1','$vUser' , now(),0,'$vNextJual') "; 
-			$db->query($vsql); 
-			$oMember->updateBalConnWProd($vUser,$vNewBal,$db);
-
-
-//Prepare values\
-    $vProsenFeeSpon = $oRules->getSettingByField('fprosensponb');
-	$vBelanja = $vTotal;
-    $vSponFee = $vBelanja * $vProsenFeeSpon /100;
-	// $vSponFee = $oRules->getSettingByField('fprosenspon') * 1800000 / 100;
-	$vPresFee = $vBelanja * $oRules->getSettingByField('fpresfeeb') / 100;
-	$vSponsor = $oNetwork->getSponsor($vUser);	
-    $vResSponsor=$vSponsor;
-//	$vResPres = $oMember->getMemField('fidrespres',$vUser);
-	$vFeeAdmin=$oRules->getSettingByField('fbyyadmin');
-	$vProsenCash=$oRules->getSettingByField('fprosencash');
-	$vProsenWProd=$oRules->getSettingByField('fprosenwprod');
-	$vMaxWProd=$oRules->getSettingByField('fmaxwprod');
-	$vVAT=$oRules->getSettingByField('fvat');
-	//$vProsenWKit=$oRules->getSettingByField('fprosenwkit');
-	//$vProsenWAcc=$oRules->getSettingByField('fprosenwacc');
-	$vProsenTaxNPWP=$oRules->getSettingByField('ftaxnpwp');
-	$vProsenTaxNonNPWP=$oRules->getSettingByField('ftaxnonpwp');
-	
-	/*$vNPWPSpon = $oMember->getMemField('fnpwp',$vResSponsor);
-	if (trim($vNPWPSpon) != '')
-	   $vProsenTax = $vProsenTaxNPWP;
-	else    
-	   $vProsenTax = $vProsenTaxNonNPWP;*/
-	$vProsenTax=0;   
-	//$vMaxMaRO = $oRules->getSettingByField('fmaxrowal');
-	
-	
-   // $vTotBelanja=$oMember->getMemField('ftotbelanja',$pID);
-    //$vPaket=$oMember->getMemField('fpaket',$pID);
-    //$vBonusRO=35000;
-    
-    
-    //$vSponFee=$oRules->getSettingByField('fsponfee');
-   $vPTKPMonth=$oRules->getSettingByField('fptkp');
-   $vPTKPYear=$oRules->getSettingByField('fptkpy');
-   $vProsenNormaPPH=$oRules->getSettingByField('fnormapph');
-   $vProsenAdm=$oRules->getSettingByField('ffeeadmin');
-	
-    
- 
-	$vSponFeeCash=$vSponFee * $vProsenCash / 100;
-	$vSponFeeWProd=$vSponFee * $vProsenWProd / 100;
-
-	$vPresFeeCash=$vPresFee * $vProsenCash / 100;
-	$vPresFeeWProd=$vPresFee * $vProsenWProd / 100;
-
-//=============Income Sponsor===================//
-			//$vProsenAdm=0;
-		    $vYearMonth=substr(date("Y-m-d"),0,7);
-			$vYear=substr(date("Y-m-d"),0,4);
-		    $vIncomeMonth = $oKomisi->getBonusMonth($vResSponsor,$vYearMonth);
-			$vIncomeYear = $oKomisi->getBonusYear($vResSponsor,$vYear);
-
-		    $vIncomeMonthPres = $oKomisi->getBonusMonth($vResPres,$vYearMonth);
-			$vIncomeYearPres = $oKomisi->getBonusYear($vResPres,$vYear);
-
-			$vSponFeeAdm=$vSponFeeCash * ($vProsenAdm / 100);
-			$PresFeeAdm=$vPresFeeCash * ($vProsenAdm / 100);
-
-			if ($vIncomeMonth >= $vPTKPMonth || $vIncomeYear >= $vPTKPYear) {
-		  	    $vTaxPPH = $vSponFeeCash  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vSponFeeCashNett = $vSponFeeCash - $vTaxPPH - $vSponFeeAdm;
-				
-				
-				$vFeeID .= " nett with PPH $vProsenNormaPPH%";
-			} else {
-			    $vTaxPPH = 0;
-				$vSponFeeCashNett = $vSponFeeCash - $vTaxPPH - $vSponFeeAdm;
-				$vFeeID .= " nett ";
-			}
-			
-			
-			if ($vIncomeMonthPres >= $vPTKPMonth || $vIncomeYearPres >= $vPTKPYear) {
-		  	    $vTaxPPH = $vPresFeeCash  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vPresFeeCashNett = $vPresFeeCash - $vTaxPPH - $vPresFeeAdm;
-				
-				
-				$vFeeID .= " nett with PPH $vProsenNormaPPH%";
-			} else {
-			    $vTaxPPH = 0;
-				$vPresFeeCashNett = $vPresFeeCash - $vTaxPPH - $vPresFeeAdm;
-				$vFeeID .= " nett ";
-			}			
-//=============Income Sponso & Presr===================//
-	
-//Sponsor
-			//$vSponsor = $oNetwork->getSponsor($vUser);	
-		    $vsql="insert into tb_kom_spon(fidsponsor,fidregistrar,ffee,ftanggal,ffeestatus) ";
-			$vsql.="values ('$vSponsor','$vUser',$vSponFee,now(),'BSRO')"; //Masukkan komisi sponsor
-			$db->query($vsql);   
-
-//presenter
-			
-		    $vsql="insert into tb_kom_spon(fidsponsor,fidregistrar,ffee,ftanggal,ffeestatus) ";
-			$vsql.="values ('$vResPres','$vUser',$vPresFee,now(),'BPRO')"; //Masukkan komisi Presenter
-			$db->query($vsql);   
-			
-			
-//Mutasi Saldo
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vSponsor);
-			//$vLastBalWprod=$oMember->getMemField('fsaldowprod',$vSponsor);
-			
-			if ($vLastBalWprod >= $vMaxWProd) {
-					 $vTaxPPH =($vSponFeeCash + $vSponFeeWProd)  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-					 $vSponFeeCashNett =($vSponFeeCash + $vSponFeeWProd)  - $vTaxPPH - $vSponFeeAdm;				 
-					
-			}
-			
-			$vNewBal=$vLastBal + $vSponFeeCashNett;
-			$vUserL=$_SESSION['LoginUser'];
-			if (trim($vUserL) == '')
-			   $vUserL='newreg';
-			
-			$vVATNom = $vBelanja * $vVAT / 100;
-			$vsql="insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fvat) "; 
-			$vsql.="values ('$vSponsor', '$vUser', now(),'Bonus sponsor RO [$vUser] $vFeeID' , $vSponFeeCashNett,0 ,$vNewBal ,'sponb' , '1','$vUserL' , now(),$vTaxPPH,0) "; 
-			$db->query($vsql); 
-			$oMember->updateBalConn($vSponsor,$vNewBal,$db);
-			
-//Presenter
-
-
-			$vLastBalWprod=$oMember->getMemFieldAdm('fsaldovcr',$vSponsor);
-			
-			if ($vLastBalWprod >= $vMaxWProd) {
-		  	    $vTaxPPH = ($vPresFeeCash + $vPresFeeWProd)  * ($vProsenTax /100) * ($vProsenNormaPPH / 100);
-				$vPresFeeCashNett = ($vPresFeeCash + $vPresFeeWProd) - $vTaxPPH - $vPresFeeAdm;
-					
-			}
-
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vResPres);
-
-
-
-			$vNewBal=$vLastBal + $vPresFeeCashNett;
-			$vUserL=$_SESSION['LoginUser'];
-			if (trim($vUserL) == '')
-			   $vUserL='newreg';
-
-			$vsql="insert into tb_mutasi (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax,fvat) "; 
-			$vsql.="values ('$vResPres', '$vUser', now(),'Bonus presenter RO [$vUser] $vFeeID' , $vPresFeeCashNett,0 ,$vNewBal ,'presb' , '1','$vUserL' , now(),$vTaxPPH,0) "; 
-			$db->query($vsql); 
-			$oMember->updateBalConn($vResPres,$vNewBal,$db);
-			
-			
-		
-			//Wallet Prod
-			$vLastBal=$oMember->getMemFieldAdm('fsaldowprod',$vSponsor);
-
-			if ($vLastBal >= $vMaxWProd) {
-				  $vSponFeeWProd = 0;
-				  $vDescX = "Bonus sponsor RO [$vUser] - cutoff";
-			} else    $vDescX = "Bonus sponsor RO [$vUser]";
-
-			
-			$vNewBal=$vLastBal + $vSponFeeWProd;
-
-		 //Wallet Product
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax) "; 
-			$vsql.="values ('$vSponsor', '$vUser', now(),'$vDescX' , $vSponFeeWProd,0 ,$vNewBal ,'sponb' , '1','$vUserL' , now(),0) "; 
-			
-			if ($vSponFeeWProd >0)
-					$db->query($vsql); 
-			
-			$oMember->updateBalConnWProd($vSponsor,$vNewBal,$db);
-
-
-
-			//Wallet Prod
-			$vLastBal=$oMember->getMemFieldAdm('fsaldovcr',$vResPres);
-
-			if ($vLastBal >= $vMaxWProd) {
-				  $vPresFeeWProd = 0;
-				  $vDescX = "Bonus presenter RO [$vUser] - cutoff";
-			} else    $vDescX = "Bonus presenter RO [$vUser]";
-			
-			$vNewBal=$vLastBal + $vPresFeeWProd;
-
-		 //Wallet Product
-			$vsql="insert into tb_mutasi_wprod (fidmember, fidfunder, ftanggal, fdesc, fcredit, fdebit, fbalance, fkind, fstatus, flastuser, flastupdate,fincometax) "; 
-			$vsql.="values ('$vResPres', '$vUser', now(),'$vDescX ' , $vPresFeeWProd,0 ,$vNewBal ,'presb' , '1','$vUserL' , now(),0) "; 
-			if ($vPresFeeWProd >0)
-				$db->query($vsql); 
-			
-			$oMember->updateBalConnWProd($vResPres,$vNewBal,$db);
-
-//===========End Mutasi Saldo ============= //			
-
-
-
-
-		}
-    
-
-    
     $db->query('COMMIT;');
-	$oSystem->sendSMS($tfPhoneSpon,"ONOTOKO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
-     if ($lmMethod=='wpr')
-	    $oSystem->jsAlert("Order Sukses dengan ID $vNextJual!");
-	 else if ($lmMethod=='ctr')	
-	    $oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, tunggu approval dari Admin!");
-		
-		else if ($lmMethod=='tva') {
-			$oSystem->jsAlert("Permintaan Order Sukses dengan ID $vNextJual, lanjutkan dengan transfer dana ke Virtual Account!");
-			?>
-	
-	
-			<script language="javascript">
-			$(document).ready(function() {
-				 // Generate VA pembayaran sebelum submit form
-				 $.post('../main/mpurpose_ajax.php?op=generateva', {
-					amount: '<?=$_POST["hTotal"]?>',					
-					ref: '<?=$vNextJual?>'
-				}, function(response) {
-				  var result = JSON.parse(response);
-				  if (result.status == '0001') {
-					var vVA = result.data.address;
-					var vAmount = result.data.totAmount;
-					var vFee = result.data.feeAmount;
-					var vBank = result.data.channelName;
-					var vBankCode = result.data.bankCode;
-					var trxDate = result.data.trxDate;
-					var creditAmount = result.data.creditAmount;
-					var debitAmount = result.data.debitAmount;
-					var bankCode = result.data.bankCode;
-					var channelId = result.data.channelId;
-					var channelName = result.data.channelName;
-					var address = result.data.address;
-					var addressName = result.data.addressName;
-					var refId = result.data.refId;
-					$.post('../main/mpurpose_ajax.php?op=saveva',{
-						va_no:address, va_amount:vAmount, va_fee:vFee, va_bank:vBank, va_bankcode:vBankCode, va_trxdate:trxDate, va_credit:creditAmount, va_debit:debitAmount, va_bankcode:bankCode, va_channelid:channelId, va_channelname:channelName, va_address:address, va_addressname:addressName, va_refid:refId}, 
-						function(data){
-							var vaInfo = '<h2>Informasi Pembayaran</h2> <br><br>';
-							vaInfo += '<b>Nomor Virtual Account</b> : ' + address + '<br>';
-							vaInfo += '<b>Jumlah Pembayaran</b> : ' + numberFormat(vAmount) + '<br>';
-							vaInfo += '<b>Bank</b> : ' + vBank + '<br>';
-							//vaInfo += '<b>Bank Code</b> : ' + vBankCode + '<br><br>';
-							vaInfo += 'Catatlah atau screenshot informasi ini. Anda juga akan mendapatkan informasi ini di email Anda (cek folder spam / junk juga).<br>';
-							vaInfo += 'Catatan: Pembayaran Virtual Account akan dikenakan fee sebesar ' + numberFormat(vFee) + '<br>';
-							
-							var vObj = $.parseJSON(data);
-							console.log(vObj.status);
-							if (vObj.status == 'success') {
-									$('#divContent').html(vaInfo);
-									$('#btnModal').trigger('click');		
-							} else {
-								alert(vObj.message);
-								return false;
-							}
-							
-							//document.location.href='../manager/indexnonadmin.php';
-						
-					});
-					
-				  } else {
-					alert('Gagal membuat VA pembayaran: ' + result.message);
-					return false;
-				  }
-				}).fail(function() {
-				  alert('Terjadi kesalahan saat membuat VA pembayaran');
-				  return false;
-				});
-			});
-			</script>
-			<?
-			//exit;
-			}
-			
-		//$oSystem->jsLocation('../manager/indexnonadmin.php');	
-	?>
-<script language="javascript">
+    $_SESSION['save']=array();
+    $_SESSION['savestock']=array();
 
-function printTrx(pParam,pTgl,pIDMem) {
-	var vURL='../memstock/detjual.php?uNoJual='+pParam+'&uTanggal='+pTgl+'&uIDMember='+pIDMem;
-	window.open(vURL,'wPrint','width=900 height=600');
-}
+	if (isset($tfPhoneSpon) && $tfPhoneSpon != '' && $tfPhoneSpon != '-') {
+		$oSystem->sendSMS($tfPhoneSpon,"AMHTECHNO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
+	}
 
-printTrx('<?=$vNextJual?>','<?=date('Y-m-d')?>','<?=$vUser?>');
-</script>
-<?
-     //$oSystem->jsLocation("../memstock/reorder.php");
-   }   
+	$vNamaPebisnisWa = trim((string)$oMember->getMemFieldBis('fnama', $vUser));
+	if ($vNamaPebisnisWa == '')
+		$vNamaPebisnisWa = $vUser;
+	$vToNumberPebisnis = $oMember->getMemFieldBis('fnohp', $vUser);
+	$vBodyPebisnisWa = "AMHTECHNO\n\nYth. " . $vNamaPebisnisWa . ", ada permintaan order " . $vNextJual . " dari pembeli.\n\n";
+	$vBodyPebisnisWa .= "Silakan login ke https://intern.amhtechno.com untuk memilih metode pembayaran dan menyelesaikan order.";
+	if ($vToNumberPebisnis != '' && $vToNumberPebisnis != '-')
+		$oSystem->sendWAMessage($vToNumberPebisnis, $vBodyPebisnisWa);
+
+	$vNamaPenerimaWa = trim((string)$_POST['tfRecName']);
+	if ($vNamaPenerimaWa == '')
+		$vNamaPenerimaWa = 'Bapak/Ibu';
+	$vBodyPenerimaWa = "AMHTECHNO\n\nYth. " . $vNamaPenerimaWa . ", permintaan order " . $vNextJual . " telah dicatat.\n\n";
+	$vBodyPenerimaWa .= "Pebisnis akan menghubungi Anda untuk langkah pembayaran selanjutnya.\n\nTerima kasih.";
+	$vPhonePenerimaWa = trim((string)$_POST['tfRecPhone']);
+	if ($vPhonePenerimaWa != '' && $vPhonePenerimaWa != '-')
+		$oSystem->sendWAMessage($vPhonePenerimaWa, $vBodyPenerimaWa);
+
+	amhReorderoutFinish("Permintaan order berhasil dengan ID $vNextJual. Pebisnis akan menyelesaikan pembayaran melalui akun login.");
+   }
+
+   $vBackUrl = amhReorderoutGetBackUrl();
  
 //   echo $tfNama;
 ?>
@@ -460,7 +205,10 @@ printTrx('<?=$vNextJual?>','<?=date('Y-m-d')?>','<?=$vUser?>');
 
   } 
 
-
+  .error {
+	color: red;
+	
+  }
 	</style>
 <script src="../js/jquery.validate.min.js"></script>
 <script language="javascript">
@@ -470,52 +218,25 @@ function numberFormat(number, decimals = 0, decPoint = ',', thousandsSep = '.') 
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
     return decimalPart ? integerPart + decPoint + decimalPart : integerPart;
 }
-function changeRek(pThis){
-   if (pThis.value=='ctr') {
-      document.getElementById('lmBank').disabled=false;
-      $('#lmBank').css('pointer-events','auto');
-      $('#lmBank').css('background-color','#fff');
-      $('#lmBank option[value="tva"]').remove();
-   }  else {
-      // document.getElementById('lmBank').disabled=true; 
-      $('#lmBank').css('pointer-events','none');
-      $('#lmBank').css('background-color','#ccc');
-      document.getElementById('lmBank').selectedIndex=0;
-      if (pThis.value=='tva') {
-         $('#lmBank').append('<option value="tva" selected>Virtual Bank BNI</option>');
-      }
-   }
-}
+
 function validRO() {
-	//alert($('#hTot').val());
-	if(typeof $('#hTot').val() !== "undefined") {
-       return true;
-	} else { 
-	   alert('Anda belum melakukan pembelanjaan!');
-	   return false;
-	} 
+	var vTot = parseFloat($('#hTot').val()) || 0;
+	if (vTot > 0)
+		return true;
+	alert('Anda belum melakukan pembelanjaan!');
+	return false;
 }
 
 	$.validator.setDefaults({
 	    
 		submitHandler: function() {
-		     var vSalProd=$('#hSalProd').val();
-			// alert($('#hTotal').val());
-			if (parseFloat($('#hTotal').val()) > parseFloat(vSalProd) && $('#lmMethod').val().trim()=='wpr') {
-			    alert('Saldo Anda tidak mencukupi untuk pembelanjaan ini, silakan ganti metode pembayaran!');	
-				return false;
-			}
-
- /*var vPaket=document.getElementById('rbPaket').value;
-		    vPaket = vPaket.split(';');
-		    vPaket=vPaket[1];
-		    alert(vPaket);
-		    return false; */
 		    if (confirm('Anda yakin melakukan Order?')==true) {
 				var vValid= validRO();
 							
- 				if (vValid)
+ 				if (vValid) {
+ 				  
  				   document.frmReg.submit();
+				}
 				
 			} else return false;
 			
@@ -523,126 +244,71 @@ function validRO() {
 		}
 	});
 $(document).ready(function(){
-
+ //  alert('ssss');
+  // alert($('#hHarga').val());
    $('#caption').html('Entry Order <? if ($_SESSION['Priv']=='administrator') echo ' by Admin'; ?>');
-
    $('#tfTglLahir').datepicker({
-
                     format: "dd-mm-yyyy"
-
     });  
 
-
-
  // $.validator.messages.required = '<span style="color:red;font-weight:normal">This field is required!</span>';
-
   $('#frmReg input, #frmReg textarea,  #frmReg select, #frmReg checkbox, #frmReg radio').not([type="submit"]).not($("#tfNPWP")).not($("#tEmail")).not($("#tfSwift")).not($("#tfEmailSpon")).addClass('required');  
-
   $('#fcountry').val('ID');
-
   $('#fcountry').trigger('change');
-
-  
-
-
+  $('#fexpe').select2();
 
 		$("#frmReg").validate({
-
 			rules: {
-
 				tfTempat: "required",
-
 				tfNama: { 
-
 				    required : false,
-
 				      
-
 				},
-
 				tfIdent: {
-
 					required: true,
-
 					minlength: 9
-
 				},
-
 				tfEmail: {
-
 					required: false,
-
 					email: true
-
 				},
-
 				
-
 				tfRek :{
-
 				    required : true,
-
 				},
-
 				
-
 				tfEmailSpon: {
-
 					required: false,
-
 					email: false
-
 				},
-
 			
-
 				
-
 				
-
 				
-
 			},
-
 			messages: {
-
 			   // tfIdent: '<span style="color:red;font-weight:normal">This field is required with minimum 9 character length!</span>',
-
 			   // tfRek : '<span style="color:red;font-weight:normal">This field is required with minimum 10 character length!</span>',
-
 			},
-
 			
-
 			 errorPlacement: function(error,element){ 
-
                             error.insertAfter(element); 
-
                           //  alert(error.html()); 
-
                        },
-
 	               showErrors: function(errorMap, errorList){ 
-
                               this.defaultShowErrors();
-
                        }
-
 		});  
 
-
-
     $('#tfSernoSpon').trigger('blur');
-
 	
-
 	<? if ($vProd !='') {?>
-	
+	//alert('aaaaa');
 	doAddAuto('<?=$vProd?>');
-
+	//doAdd('<?=$vProd?>');
 	<? } ?>
+//	$('#tfBerat').val($('#hTotWeight').val());
 
-	
 });
 
 
@@ -662,36 +328,22 @@ $(document).ready(function(){
    
    
    function doAddAuto(pProd) {
-       
-		
-		 $('#lmKode').show();
-		
-
+	 //  alert(pProd);
+       $('#lmKode').show();
        $('#btAdd').trigger('click'); 
-
 	   $('#lmKode').val(pProd);
-
 	    $('#lmKode').trigger('change');  
-
        $('#btCancel').show();  
-
        $('#txtJml').show();   
-
 	   $('#txtJml').val('<?=$vCount?>');   
-
 	   $('#txtJml').trigger('change');   
-
 	    $('#txtJml').trigger('blur');   
-
        $('#lmSize').show(); 
-
        $('#lmColor').show();
-
         $('#trAdd').show(); 
-
        $('#btSaveRow').show(); 
-
-	    $('#btSaveRow').trigger('click'); 
+	   $('#btSaveRow').trigger('click'); 
+		//alert($('#lmKode').find('option:selected').attr('sweight'));
        
 
    }   
@@ -791,7 +443,7 @@ $(document).ready(function(){
   
     
  function calcTot() {
-	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+	var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val() || 0);
 		  $('#hTotal').val(xTot);
 	//	 alert(xTot);
 		  $('#totalpurc').html(xTot);  
@@ -837,131 +489,7 @@ $(document).ready(function(){
  
 }  
 
-
 function doSaveRow() {
-
-   var vURL = "../memstock/register_purc_ajax.php";
-
-   if ($('#lmKode').val()=='' ) {
-
-      alert('Pilih kode produk!');
-
-      return false;
-
-   }
-
-
-
-
-
-   
-
-   if (parseFloat($('#txtJml').val()) <=0 || $('#txtJml').val()=='') {
-
-      alert('Isikan jumlah item!');
-
-      $('#txtJml').focus();
-
-      return false;
-
-   }
-
-   $('#tdLoad').html('<img src="../images/ajax-loader.gif" />');
-
-   $.post(vURL,$("#frmReg").serialize(), function(data) {
-
-      $('#tbPurc').html(data);
-
-      $('#tdLoad').empty();
-
-
-
-
-
-
-		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
-
-		 $('#hTotal').val(xTot);
-
-	//	 alert(xTot);
-
-		 $('#totalpurc').html(xTot);  
-
-		      $('#totalpurc').priceFormat({     
-
-		                    prefix: ' ',
-
-		                    centsSeparator: ',',
-
-		                    thousandsSeparator: '.',
-
-		                    limit: 15,
-
-		                    centsLimit: 0
-
-		       });
-
-		 $('#spcurr').html('IDR');      
-
-		 $('#divCurr').hide();
-
-		 $('#lmCurr option:first-child').attr('selected', 'selected');
-
-		 //batasan RO
-
-
-
-         var vYMonth='<?=date("Ym")?>';
-
-         var pParam = $('#tfSernoSpon').val();
-
-         $.get('../main/mpurpose_ajax.php?op=checkmultiro&user='+pParam+'&ymonth='+vYMonth,function(data){
-
-             var vTotalRO=parseFloat(data.trim()) + parseFloat($('#hTotJum').val());
-
-		
-
-            // alert(vTotalRO);
-
-             if (vTotalRO > 100000000000) {
-
-                 alert('RO for this member ('+pParam+') was exceeded!');
-
-				 var vCount = 0;
-
-				 for(i=0;i<50;i++) {
-
-				 	if (document.getElementById('btDelItem'+i))
-
-					   vCount+=1;
-
-				 }
-
-				  if (vCount > 0) vCount-=1; 
-
-				  $('#btDelItem'+vCount).trigger('click');
-
-                 document.getElementById('btnSubmit').disabled=true;
-
-             
-
-             } else document.getElementById('btnSubmit').disabled=false;
-
-
-
-         });
-
-
-
-		 
-
-      
-
-   });
-
-}
-
-function doSaveRowIn() {
    var vURL = "../memstock/register_purc_ajax.php";
    if ($('#lmKode').val()=='' ) {
       alert('Pilih kode produk!');
@@ -982,7 +510,7 @@ function doSaveRowIn() {
 
 
 
-		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val() || 0);
 		 $('#hTotal').val(xTot);
 	//	 alert(xTot);
 		 $('#totalpurc').html(xTot);  
@@ -1000,6 +528,7 @@ function doSaveRowIn() {
 
          var vYMonth='<?=date("Ym")?>';
          var pParam = $('#tfSernoSpon').val();
+		 <? if(count($_POST)<=0){ ?>
          $.get('../main/mpurpose_ajax.php?op=checkmultiro&user='+pParam+'&ymonth='+vYMonth,function(data){
              var vTotalRO=parseFloat(data.trim()) + parseFloat($('#hTotJum').val());
 		
@@ -1018,6 +547,7 @@ function doSaveRowIn() {
              } else document.getElementById('btnSubmit').disabled=false;
 
          });
+		 <? } ?>
 
 		 
       
@@ -1034,7 +564,7 @@ function doDel(pNo, pKode,pSize,pColor,pNama,pJml,pHarga,pSubTot) {
       $('#tbPurc').html(data);
       $('#tdLoad').empty();
 
-		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val());
+		 var xTot=	parseFloat($('#hTot').val()) + parseFloat($('#tfOngkir').val() || 0);
 		 $('#hTotal').val(xTot);
 		 $('#totalpurc').html(xTot);  
 		      $('#totalpurc').priceFormat({     
@@ -1096,6 +626,7 @@ function checkKitSpon(pParam) {
          document.getElementById('btnSubmit').disabled=false;     
          document.getElementById('btAdd').disabled=false; 
          var vYMonth='<?=date("Ym")?>';
+		 <? if(count($_POST)<=0){ ?>
          $.get('../main/mpurpose_ajax.php?op=checkmultiro&user='+pParam.value+'&ymonth='+vYMonth,function(data){
              if(parseFloat(data.trim()) >=100000000000 ) {
                 alert('This member already have maximum RO in this month, please choose other member!');
@@ -1103,17 +634,22 @@ function checkKitSpon(pParam) {
 		         document.getElementById('btAdd').disabled=true;               
              }
          });
-		 
+		 <? } ?>
+		 <? if(count($_POST)<=0){ ?>
 		 $.post(vURLAddr, {sernospon : '<?=$vSeller?>'},function(data) {
 			 if (vYesAddr.test(data)) {
-			 	$('#statAddr').html('<font color="#060">, alamat seller (<?=$vSellerName?>) valid!</font>');
+				var vAddrParts = data.split('|');
+				var vWilLabel = (vAddrParts.length >= 3) ? $.trim(vAddrParts[2]) : '';
+				var vWilText = (vWilLabel !== '') ? ': ' + vWilLabel : '';
+			 	$('#statAddr').html('<font color="#060">, alamat seller (<?=htmlspecialchars($vSellerName, ENT_QUOTES, 'UTF-8')?>)' + vWilText + '</font><input type="hidden" name="hSeller" id="hSeller" value="<?=$vSeller?>">');
 			 } else {
 				 alert('Seller belum diset untuk produk ini, atau alamat seller (<?=$vSellerName?>) tidak valid, transaksi tidak dapat dilanjutkan. Hubungi admin untuk update data seller!');
 				 
-				 document.location.href='<?=$_SERVER['HTTP_REFERER']?>';
+				 document.location.href='<?=htmlspecialchars($vBackUrl, ENT_QUOTES, 'UTF-8')?>';
 				 return false;
 			 }
 		 });
+		 <? }?>
      }    
    $('#loadNama').hide();  
    });   
@@ -1124,14 +660,12 @@ function checkKitSpon(pParam) {
 function setUpper(pParam) {
    document.getElementById(pParam.name).value=document.getElementById(pParam.name).value.toUpperCase();
 }
-function submitForm() {
-   ;//document.frmReg.submit();
 
-}
 
 function setCurr(pParam,pNom) {
     var vURL='../main/mpurpose_ajax.php?op=currconvert&from=IDR&to='+pParam+'&nom='+pNom;
-	 $.get(vURL, function(data) {
+	<? if(count($_POST)<=0){ ?> 
+	$.get(vURL, function(data) {
 	  var vConvert = data ;
       $('#samaconvert').html(' = ');
       $('#convert').empty().html(vConvert);
@@ -1146,6 +680,7 @@ function setCurr(pParam,pNom) {
       
 
    });   
+	<? } ?>
 
 }
 
@@ -1212,38 +747,6 @@ function prepareKeca(pParam) {
    }
 }
 
-function addAddress(){
-	
-	var check = /Pilih/;
-	var vPropOnly;
-	var  vProp = $('#fprop option:selected').text();
-	if (!check.test(vProp)) {
-		vPropOnly = vProp.split('|');
-		vPropOnly = vPropOnly[1].trim();
-	} else vPropOnly='';
-	
-	
-	var vKotaOnly;
-	var vKota = $('#fkota option:selected').text();
-	//alert(vKota);
-	if (!check.test(vKota)) {
-		vKotaOnly = vKota.split('|');
-		vKotaOnly = vKotaOnly[1].trim();
-	} else vKotaOnly='';
-	
-	var vKecOnly;
-	var vKec = $('#fkec option:selected').text();
-	if (!check.test(vKec)) {
-		vKecOnly = vKec.split('|');
-		vKecOnly = vKecOnly[1].trim();
-	} else vKecOnly='';
-	
-	var vAllAddr =  vKecOnly+vKotaOnly+vPropOnly;
-	var vAdditionalAddr = vKecOnly+' - '+vKotaOnly+' - '+vPropOnly;
-	if (vAllAddr !='')
-		$('#tfRecAddr').val($('#hBasicAddr').val() +'\n'+ vAdditionalAddr);
-
-}
 
 
 function getPaket(pParam) {
@@ -1252,13 +755,13 @@ function getPaket(pParam) {
 	var vExpe=pParam.value;
 	var vBerat=$('#hTotWeight').val();
 	$('#tfBerat').val(vBerat);
-	var vKotaAsal = '<?=$vKotaAsal?>';
+	var vKecAsal = '<?=$vKecAsal?>';
    if (pParam.value !='PX') {
 	   var vURL="../main/mpurpose_ajax.php?op=packongkir";
 	   $('#loadPack').show();
 	   $('#tfprop').hide();
        $('#tfkota').hide();
-	   $.post(vURL, {id_kecamatan:vKec, kurir:vExpe, berat:vBerat , id_kotaasal:vKotaAsal},function(data) {
+	   $.post(vURL, {id_kecamatan:vKec, kurir:vExpe, berat:vBerat , id_kecasal:vKecAsal},function(data) {
 	       $('#fpack').html(data);
 	       $('#fpack').select2();
 		   $('#loadPack').hide();
@@ -1274,6 +777,8 @@ function getPaket(pParam) {
 
 function getOngkir(pParam) {
    $('#tfOngkir').val(($(pParam).find('option:selected').attr('ongkir')));
+   if (typeof calcTot === 'function')
+      calcTot();
   // $('#lmKode').find('option:selected').attr('sweight')
 }
 
@@ -1289,6 +794,8 @@ function zeroOngkir(){
 	$('#tfOngkir').val('0');
 	$('#fpack').val('0');	
 	$('#fpack').trigger('change');	
+	if (typeof calcTot === 'function')
+		calcTot();
 }
  </script>
 <!-- 	<link rel="stylesheet" href="../css/screen.css"> -->
@@ -1313,10 +820,14 @@ function zeroOngkir(){
   <input type="hidden" name="hArrColor<?=$i?>" id="<?=$vCode?>" value="<?=$vColor?>" >
 
 <? } ?>
+
+
+
+
 <div class="right_col" role="main">
 		<div><label><h3>Pembelian Barang / Jasa</h3></label></div> 
 
-<form method="post" id="frmReg" name="frmReg" action="<?=$_SERVER['REQUEST_URI']?>">
+<form method="post" id="frmReg" name="frmReg" action="<?=$_SERVER['PHP_SELF']?>"  >
 	<div class="container">
     <div class="row" style="width:98%;margin-top:8px">
     
@@ -1401,16 +912,16 @@ function zeroOngkir(){
 
 										  </div>
                                             
-										  <div class="col-lg-6 col-md-6 divtr" >
+  <div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
-												<span style="font-weight:bold">Alamat Penerima Barang *</span></label>
+												<span style="font-weight:bold">Alamat Lengkap Penerima *</span></label>
 												<div class="input-group">
                                       <span class="input-group-addon"> <i class="fa fa-map"></i></span>
 													<input  type="text" class="form-control" id="tfRecAddr" name="tfRecAddr" placeholder="Contoh: Jl. Sawi 89 Jakarta">
 												</div>
 										  </div>
  
-
+ 
 
 
                                <div class="col-lg-6 col-md-6 divtr" >
@@ -1446,15 +957,15 @@ function zeroOngkir(){
 
                               
 
-     							            
-								 <div class="clearfix"></div>
+     							<div class="clearfix"></div>                    
+
                                <div class="col-lg-6 col-md-6 divtr" id="divProp">
 
                                <img id="loadProp"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
 
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Propinsi*</span></label>
 
-                                                                <select class="form-control m-bot15" id="fprop" name="fprop" onChange="prepareKota(this);zeroOngkir();addAddress()">
+                                                                <select class="form-control m-bot15" id="fprop" name="fprop" onChange="prepareKota(this);zeroOngkir()">
 
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
 
@@ -1471,13 +982,13 @@ function zeroOngkir(){
                                 </div>
 
                             
-								
+
                               
 
      						 <div class="col-lg-6 col-md-6 divtr" id="divKota">
                                 <img id="loadKota"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Kabupaten/Kota*</span></label>
-                                <select class="form-control m-bot15" id="fkota" name="fkota" onChange="prepareKeca(this);zeroOngkir();addAddress()">
+                                <select class="form-control m-bot15" id="fkota" name="fkota" onChange="prepareKeca(this);zeroOngkir()">
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
                                 <option  value="KX"  >Kota Lain</option>
 								</select>
@@ -1489,7 +1000,7 @@ function zeroOngkir(){
 <div class="col-lg-6 col-md-6 divtr" id="divKec">
                                 <img id="loadKeca"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Kecamatan*</span></label>
-                                <select class="form-control m-bot15" id="fkec" name="fkec" onChange="getOther(this);zeroOngkir();addAddress()">
+                                <select class="form-control m-bot15" id="fkec" name="fkec" onChange="getOther(this);zeroOngkir()">
                                 <option  value="" selected="selected" >--Pilih / Choose--</option>
                                 <option  value="KX"  >Kec Lain</option>
 								</select>
@@ -1510,7 +1021,7 @@ function zeroOngkir(){
 								
                                </div>                               
                                                                                       
-							   <div class="clearfix"></div>
+ 
  <div class="col-lg-6 col-md-6 divtr" id="divPack">
                                 <img id="loadPack"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Jenis Paket*</span></label>
@@ -1547,9 +1058,9 @@ function zeroOngkir(){
 													<input  type="text" class="form-control" id="tfOngkir" name="tfOngkir" placeholder="Contoh: 30000 (tanpa titik/koma)" onChange="calcTot()" value="0" readonly>
 												</div>
 										  </div>
-
-											
-										
+                                          
+                                          
+                                          
 										</div>
 				</div>
 				     
@@ -1563,8 +1074,6 @@ function zeroOngkir(){
 					                    <div class="panel-heading" >
 					                             <div class="panel-title" style="margin-top:-10px">
 					        						<label for="exampleInputEmail1" style="font-weight:bold;">Pembelanjaan Produk</label>
-					                               <br style="display: block;margin: -5px 0;" /><label for="exampleInputEmail1" style="font-size:13px;color:green">Saldo  : <?=number_format($vSalProd,0,",",".")?></label>
-                                                   <input type="hidden" name="hSalProd" id="hSalProd" value="<?=$vSalProd?>" /> 
 					                     		</div>
 					                     </div>
 					                     <div class="panel-body">
@@ -1653,7 +1162,7 @@ function zeroOngkir(){
                                 <td>&nbsp;</td>
                                 <td style="width: 10%" class="hide">&nbsp;</td>
                                 <td style="width: 104px">&nbsp;</td>
-                                <td style="width: 94px">&nbsp;</td>
+                                <td style="width: 94px" align="right"><input type="hidden" name="hTot" id="hTot" value="0" /><input type="hidden" name="hTotWeight" id="hTotWeight" value="0" /><input type="hidden" name="hCartJson" id="hCartJson" value="[]" /></td>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                             </tr>
@@ -1666,34 +1175,8 @@ function zeroOngkir(){
         
                             <div class="col-md-6 form-group ">
 
-										<label style="font-weight:bold">Total Purchased : <span id="totalpurc"></span> <span id="spcurr">IDR</span><span id="samaconvert"></span><span id="convert"></span><span id="currconvert"></span></label> 
-
-       <div class="row">
-       <div class="col-lg-4">
-       
-         <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
-         <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
-           <option value="">--Pilih--</option>
-           <option value="ctr">Cash / Transfer</option>
-           <option value="wpr">Saldo Bonus</option>
-           <option value="tva">Transfer Virtual Account</option>
-           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
-         </select>
-       </div>
-       
-      <div class="col-lg-6">
-       
-         <label style="color:blue" for="lmMethod">Rekening</label>
-         <select name="lmBank" id="lmBank" class="form-control" disabled>
-           <option value="">--Pilih--</option>
-           <option value="CASH">Cash</option>
-           <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
-           <option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option>
-           <option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>
-           <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
-         </select>
-       </div>       
-       </div>									
+										<label style="font-weight:bold">Total Purchased : <span id="totalpurc"></span> <span id="spcurr">IDR</span><span id="samaconvert"></span><span id="convert"></span><span id="currconvert"></span></label>
+                                    <p class="text-muted" style="margin-top:8px;">Metode pembayaran akan ditentukan oleh pebisnis setelah transaksi ditindak lanjuti.</p>
                                     <div class="form-inline" id="divCurr" style="display:none"> <label style="font-weight:bold">Currency : </label>	 <select name="lmCurr" id="lmCurr" class="form-control" style="width:85px;" onChange="setCurr(this.value,$('#hTotal').val());">
                      <?
                          $vSQL="select distinct  frateto from tb_exrate order by frateto";
@@ -1706,10 +1189,13 @@ function zeroOngkir(){
                      <? } ?>
                      </select> </div><br><br>
 
-                            			<input type="hidden" name="hTotal" id="hTotal" value="" />
+								<input type="hidden" name="hTotal" id="hTotal" value="" />
+								<input type="hidden" name="hBackUrl" id="hBackUrl" value="<?=htmlspecialchars($vBackUrl, ENT_QUOTES, 'UTF-8')?>" />
 
 										<input type="hidden" name="hPost" id="hPost" value="1" />
-                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="submitForm(this)">Submit</button> <div id="divLoad" style="display:inline"></div>
+                                        <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button>
+                                        <input type="button" value="Cancel" class="btn btn-default" onClick="document.location.href='../memstock/etaprod.php';" style="margin-left:5px;">
+                                        <div id="divLoad" style="display:inline"></div>
                             </div>
                        
  </form>     
@@ -1752,40 +1238,5 @@ function zeroOngkir(){
 		<!-- end scroll to top btn -->
 	</div>
 	<!-- end page container -->
-
-
-	<button type="button" class="btn btn-info btn-lg" style="display:none" id="btnModal" data-toggle="modal" data-target="#dialogModal" data-backdrop="static">Open Modal</button>
-
-<div class="modal fade " id="dialogModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" id="modalhead">Selesaikan Pembayaran Virtual Account</h4>
-        </div>
-        <div class="modal-body " style="padding: 2em 4em 3em 4em">
-        <div class="row">
-             <div class="col-lg-12" id="divContent">
-                
-             </div>
-           
-          </div>
-          
-
-
-
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" id="hIdSys" name="hIdSys" value="" />
-          <input type="hidden" id="hIdTrx" name="hIdTrx" value="" />
-           <input type="hidden" id="hKind" name="hKind" value="" />
-
-          <button type="button" id="btClose" name="btClose" class="btn btn-default" data-dismiss="modal" onclick="document.location.href='../manager/indexnonadmin.php';">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
+	
 <? include_once("../framework/outer_footside.blade.php") ; ?>

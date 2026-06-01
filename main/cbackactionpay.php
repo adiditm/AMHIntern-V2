@@ -29,7 +29,7 @@ if ($data['status']=='completed') {
 
     $vIdTrx = $data['refId'];
    // include("../manager/approvesellprd.php");
-    $vSQL = "update tb_trxstok_member_temp set fpaid='1' where fidpenjualan='$vIdTrx'";
+    $vSQL = "update tb_penjualan_temp set fpaid='1' where fidpenjualan='$vIdTrx'";
     $db->query($vSQL);
     $vResponse['status'] = '1';
     $vResponse['message'] = 'Transactions succcess';

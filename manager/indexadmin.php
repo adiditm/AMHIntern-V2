@@ -229,7 +229,7 @@
               <h4>
               <?
               		$vMonthNow = date('Y-m');
-					$vSQL = "select count(*) as fcount from(select distinct fidpenjualan from tb_trxstok_member_temp) as a ";
+					$vSQL = "select count(*) as fcount from(select distinct fidpenjualan from tb_penjualan_temp) as a ";
 					$db->query($vSQL);
 					$db->next_record();
 					echo $db->f('fcount');
@@ -269,7 +269,7 @@
               <h4>
               <?
               		$vMonthNow = date('Y-m');
-					$vSQL = "select count(*) as fcount from(select distinct fidpenjualan from tb_trxstok_member) as a ";
+					$vSQL = "select count(*) as fcount from(select distinct fidpenjualan from tb_penjualan) as a ";
 					$db->query($vSQL);
 					$db->next_record();
 					echo $db->f('fcount');

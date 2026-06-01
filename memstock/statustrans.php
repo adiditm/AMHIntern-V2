@@ -2,10 +2,156 @@
 
 <?php
 
+function amhStatDispDetSellOut($pIDJual) {
+	global $db, $oProduct;
+	$vsql = "select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_penjualan_temp_out a";
+	$vsql .= " left join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$pIDJual'";
+	echo "<table width='110' border='0' style='margin-top:-0.9em'>";
+	$db->query($vsql);
+	while ($db->next_record()) {
+		$vIDProd = $db->f('fidproduk');
+		$vProd = str_replace(' ', '&nbsp;', $vIDProd . '/' . $db->f('fnamaproduk') . ' (' . number_format($db->f('fhargasat'), 0, ',', '.') . ')');
+		$vJum = $db->f('fjumlah');
+		echo '<tr><td width="90" valign="top"><div align="left">' . $vProd . '</div></td>';
+		echo '<td><div align="left" valign="top">:</div></td>';
+		echo '<td valign="top"><div align="right">' . $vJum . '</div></td></tr>';
+	}
+	echo '</table>';
+}
+
+function amhStatGetSellTotOut($pIDJual) {
+	global $db;
+	$db->query("select sum(fsubtotal) as stot from tb_penjualan_temp_out where fidpenjualan='$pIDJual'");
+	$db->next_record();
+	return (float)$db->f('stot');
+}
+
+function amhStatGetOngkirOut($pIDJual) {
+	global $db;
+	$db->query("select fongkir from tb_penjualan_temp_out where fidpenjualan='$pIDJual' limit 1");
+	if ($db->next_record())
+		return (float)$db->f('fongkir');
+	return 0;
+}
+
+function amhStatEsc($pVal) {
+	global $db;
+	if (is_object($db) && method_exists($db, 'escape_string'))
+		return $db->escape_string((string)$pVal);
+	return addslashes((string)$pVal);
+}
+
+function amhStatGetTrxReceiveField($dbConn) {
+	$vReceiveFields = array('freceived', 'freceive');
+	foreach ($vReceiveFields as $vFieldName) {
+		$vHasTemp = false;
+		$vHasMain = false;
+		$dbConn->query("SHOW COLUMNS FROM tb_penjualan_temp LIKE '$vFieldName'");
+		if ($dbConn->next_record())
+			$vHasTemp = true;
+		$dbConn->query("SHOW COLUMNS FROM tb_penjualan LIKE '$vFieldName'");
+		if ($dbConn->next_record())
+			$vHasMain = true;
+		if ($vHasTemp && $vHasMain)
+			return $vFieldName;
+	}
+	return '';
+}
+
+function amhStatDateExprOut() {
+	return "COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)";
+}
+
+function amhStatDateCrit($pAwal, $pAkhir) {
+	$vAwal = amhStatEsc($pAwal);
+	$vAkhir = amhStatEsc($pAkhir);
+	return " and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir' ";
+}
+
+function amhStatDateCritOut($pAwal, $pAkhir) {
+	$vExpr = amhStatDateExprOut();
+	$vAwal = amhStatEsc($pAwal);
+	$vAkhir = amhStatEsc($pAkhir);
+	return " and date($vExpr) >= '$vAwal' and date($vExpr) <= '$vAkhir' ";
+}
+
+function amhStatWhereAminahkuOut($pLogin) {
+	$vLogin = amhStatEsc($pLogin);
+	return " (TRIM(fnostockist)='$vLogin' OR TRIM(fidmember)='$vLogin')
+		AND (LOWER(TRIM(IFNULL(fuserid,'')))='aminahku' OR IFNULL(fketerangan,'') LIKE '%link luar%')
+		AND (IFNULL(fprocessed,'0')='0' OR IFNULL(fprocessed,0)=0) ";
+}
+
+function amhStatPullRow($pDb) {
+	return array(
+		'ftanggal' => $pDb->f('ftanggal'),
+		'fidpenjualan' => $pDb->f('fidpenjualan'),
+		'fidseller' => $pDb->f('fidseller'),
+		'fidmember' => $pDb->f('fidmember'),
+		'fketerangan' => $pDb->f('fketerangan'),
+		'fongkir' => $pDb->f('fongkir'),
+		'fstatus' => $pDb->f('fstatus'),
+		'fmethod' => $pDb->f('fmethod'),
+		'fuserid' => $pDb->f('fuserid'),
+		'fprocessed' => $pDb->f('fprocessed'),
+	);
+}
+
+function amhStatLoadMergedList($pLogin, $pAwal, $pAkhir) {
+	global $db;
+	$vLogin = amhStatEsc($pLogin);
+	$vCrit = amhStatDateCrit($pAwal, $pAkhir);
+	$vCritOut = amhStatDateCritOut($pAwal, $pAkhir);
+	$vMap = array();
+
+	$vsql = "select distinct ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir,
+		'1' as fstatus, fmethod, '' as fuserid, cast(ifnull(fprocessed,0) as char) as fprocessed
+		from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vLogin' $vCrit";
+	$db->query($vsql);
+	while ($db->next_record())
+		$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
+
+	$vsql = "select distinct ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir,
+		'0' as fstatus, fmethod, ifnull(fuserid,'') as fuserid, cast(ifnull(fprocessed,0) as char) as fprocessed
+		from tb_penjualan_temp where fidproduk not like 'KIT%' and fidmember='$vLogin' $vCrit";
+	$db->query($vsql);
+	while ($db->next_record())
+		$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
+
+	$vsql = "select distinct " . amhStatDateExprOut() . " as ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir,
+		'out' as fstatus, ifnull(fmethod,'') as fmethod, ifnull(fuserid,'') as fuserid, cast(ifnull(fprocessed,0) as char) as fprocessed
+		from tb_penjualan_temp_out
+		where fidproduk not like 'KIT%' and " . amhStatWhereAminahkuOut($pLogin) . $vCritOut;
+	if ($db->query($vsql)) {
+		while ($db->next_record())
+			$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
+	} else {
+		$vsql = "select distinct ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir,
+			'out' as fstatus, ifnull(fmethod,'') as fmethod, '' as fuserid, '0' as fprocessed
+			from tb_penjualan_temp_out
+			where fidproduk not like 'KIT%' and (TRIM(fnostockist)='$vLogin' OR TRIM(fidmember)='$vLogin')
+			and (IFNULL(fketerangan,'') LIKE '%link luar%' OR IFNULL(fketerangan,'') LIKE '%menunggu pebisnis%') $vCrit";
+		$db->query($vsql);
+		while ($db->next_record())
+			$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
+	}
+
+	$vList = array_values($vMap);
+	usort($vList, function ($a, $b) {
+		$vCmp = strcmp((string)$a['ftanggal'], (string)$b['ftanggal']);
+		if ($vCmp != 0)
+			return $vCmp;
+		return strcmp((string)$a['fidpenjualan'], (string)$b['fidpenjualan']);
+	});
+	return $vList;
+}
+
 $vOutlet=$_SESSION['LoginOutlet'];
 $vAwal=$_POST['dc'];
 $vAkhir=$_POST['dc1'];
 $vSpy = md5('spy').md5($_GET['uMemberId']);
+$vReceiveField = amhStatGetTrxReceiveField($dbin);
+$vReceiveSelect = ($vReceiveField != '') ? $vReceiveField . " as freceived" : "'0' as freceived";
 
  if ($_GET['uMemberId'] != '')
     $vUserActive=$_GET['uMemberId'];
@@ -41,17 +187,15 @@ if ($vPage=="")
  	$vPage=0;
 $vStartLimit=$vPage * $vBatasBaris;	
 
-$vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
+$vCrit = amhStatDateCrit($vAwal, $vAkhir);
 
-
-
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
- $vsql.=$vCrit;
- $vsql.=" order by ftanggal ";
- $db->query($vsql);
- $db->next_record();
- $vRecordCount=$db->num_rows();
+ $vLoginEsc = $_SESSION['LoginUser'];
+ $vStatAllRows = amhStatLoadMergedList($vLoginEsc, $vAwal, $vAkhir);
+ $vRecordCount = count($vStatAllRows);
  $vPageCount=ceil($vRecordCount/$vBatasBaris);
+ if ($vPageCount < 1)
+    $vPageCount = 1;
+ $vStatPageRows = array_slice($vStatAllRows, $vStartLimit, $vBatasBaris);
 
 ?>
 <style type="text/css">
@@ -142,7 +286,7 @@ function doApprove2(pIdSys,pIdTrx,pKind) {
 	   $.get(vURL,function(data) {
 	      if(data.trim()=='successappv') {
 	        alert('Approval succeed, stock updated!');
-	        $('#tdstat'+pIdTrx).html('Approved');
+	        $('#tdstat'+pIdTrx).html('Selesai');
   			document.getElementById('btnAppv'+pIdTrx).disabled=true;
   			document.getElementById('btnReject'+pIdTrx).disabled=true;
 			//$('#dialogModal').hide();
@@ -173,6 +317,35 @@ function doReject(pIdSys,pIdTrx) {
 	      }
 	   });
    }
+}
+
+function doMarkReceived(pIdTrx) {
+   if (!confirm('Konfirmasi pembeli sudah menerima barang untuk order ' + pIdTrx + '?'))
+      return false;
+   var vURL = '../manager/processing_ajax.php?op=markreceived&idtrx=' + encodeURIComponent(pIdTrx);
+   $.get(vURL, function(data) {
+      var vRes = data.trim();
+      if (vRes == 'success') {
+         $('#tdstat' + pIdTrx).html('Diproses (Sudah Diterima)');
+         var vBtn = document.getElementById('btnReceived' + pIdTrx);
+         if (vBtn)
+            vBtn.style.display = 'none';
+         alert('Konfirmasi penerimaan berhasil dicatat.');
+      } else if (vRes == 'already') {
+         $('#tdstat' + pIdTrx).html('Diproses (Sudah Diterima)');
+         var vBtn2 = document.getElementById('btnReceived' + pIdTrx);
+         if (vBtn2)
+            vBtn2.style.display = 'none';
+      } else if (vRes == 'notsent') {
+         alert('Barang belum ditandai dikirim oleh seller.');
+      } else if (vRes == 'notpaid') {
+         alert('Pembayaran belum selesai.');
+      } else if (vRes == 'denied') {
+         alert('Anda tidak berhak mengonfirmasi transaksi ini.');
+      } else {
+         alert('Konfirmasi penerimaan gagal. Silakan refresh halaman dan coba lagi.');
+      }
+   });
 }
 
 </script>
@@ -255,37 +428,22 @@ function doReject(pIdSys,pIdTrx) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fmethod  from tb_trxstok_member where   1  and fidmember='{$_SESSION['LoginUser']}' "; 
-			 $vsql.=$vCrit;
-
-			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fmethod  from tb_trxstok_member_temp where  1   and fidmember='{$_SESSION['LoginUser']}'"; 
-			 $vsql.=$vCrit;
-			 
-			 $vsql.=" order by ftanggal ";
-
-			 
-			 $vsql.="limit $vStartLimit ,$vBatasBaris ";
-
-
-
-
-		     $db->query($vsql);
 			 $vTotJual=0;
-			 while ($db->next_record()) {
+			 foreach ($vStatPageRows as $vStatRow) {
 			 $vNo++;
-				 $vTanggal=$db->f('ftanggal');
-				 $vIdMember=$db->f('fidmember');
-				 $vIdSeller=$db->f('fidseller');
+				 $vTanggal=$vStatRow['ftanggal'];
+				 $vIdMember=$vStatRow['fidmember'];
+				 $vIdSeller=$vStatRow['fidseller'];
 				
 				 $vNama=$oMember->getMemberNameAdm($vIdMember,'sponsor');
 				 
-				 $vKet=$db->f('fketerangan');
-				// $vOngkir=$db->f('fongkir');
-				 $vStat=$db->f('fstatus');
-				 $vMethod=$db->f('fmethod');
-				 $vIdSys=$db->f('fidsys');
-				 $vIdTrx=$db->f('fidpenjualan');
+				 $vKet=$vStatRow['fketerangan'];
+				 $vStat=$vStatRow['fstatus'];
+				 $vMethod=$vStatRow['fmethod'];
+				 $vFuserid=strtolower(trim((string)$vStatRow['fuserid']));
+				 $vFprocessed=trim((string)$vStatRow['fprocessed']);
+				 $vIdSys='';
+				 $vIdTrx=$vStatRow['fidpenjualan'];
 				  $vIdProd=$oJual->getKindProd($vIdTrx);
 				 if (preg_match("/KIT/i",$vIdProd)) 
 				    $vKind='kit';
@@ -296,37 +454,73 @@ function doReject(pIdSys,pIdTrx) {
 				 
 				 //$vtgltrans=$db->f('ftanggal');
 				 
-				 $vIDJual = $db->f('fidpenjualan');
-				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member union  select fidpenjualan, fidproduk,fpaid, fsend from tb_trxstok_member_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+				 $vIDJual = $vStatRow['fidpenjualan'];
+        $vAMHFee = 0;
+        if ($vStat == 'out') {
+				$dbin->query("select fidproduk from tb_penjualan_temp_out where fidpenjualan='$vIDJual' limit 1");
+				$dbin->next_record();
+				$vProduk = $dbin->f('fidproduk');
+				$vPaid = '0';
+				$vSend = '0';
+        } else {
+				$vSendTemp = '';
+				$vReceivedTemp = '';
+				$vSQLTemp = "select fsend, $vReceiveSelect from tb_penjualan_temp where fidpenjualan='$vIDJual' limit 1";
+				$dbin->query($vSQLTemp);
+				if ($dbin->next_record()) {
+					$vSendTemp = trim((string)$dbin->f('fsend'));
+					$vReceivedTemp = trim((string)$dbin->f('freceived'));
+				}
+				  $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
 				$dbin->query($vSQL);
 				$dbin->next_record();
 				$vProduk = $dbin->f('fidproduk');
         $vAMHFee = $dbin->f('am_fee');
-
         $vPaid = $dbin->f('fpaid');
-        $vSend = $dbin->f('fsend');
+        $vSend = ($vSendTemp !== '') ? $vSendTemp : $dbin->f('fsend');
+        $vReceived = ($vReceivedTemp !== '') ? $vReceivedTemp : trim((string)$dbin->f('freceived'));
+        }
 
-        if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
+        if ($vStat=='out')
+          $vStatus='Menunggu Proses';
+        else if ($vStat=='0' && $vFuserid=='aminahku' && trim((string)$vMethod)==='' && $vFprocessed=='0')
+          $vStatus='Menunggu Proses';
+        else if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
           $vStatus='Pending';
+        else if ($vStat=='0' && strtolower(trim((string)$vMethod))=='wpr' && $vSend=='1' && $vReceived=='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && strtolower(trim((string)$vMethod))=='tva' && $vPaid=='1' && $vSend=='1' && $vReceived=='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && strtolower(trim((string)$vMethod))=='ctr' && $vPaid=='1' && $vSend=='1' && $vReceived=='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && $vPaid=='1' && $vSend=='1' && $vReceived=='1')
+          $vStatus='Diproses (Sudah Diterima)';
+        else if ($vStat=='0' && strtolower(trim((string)$vMethod))=='wpr' && $vSend=='1')
+          $vStatus='Diproses (Sudah Dikirim)';
         else if ($vStat=='0' && $vPaid=='1' && $vSend =='1')
           $vStatus='Diproses (Sudah Dikirim)'; 
         else if ($vStat=='0' && $vPaid=='1')
           $vStatus='Diproses (Sudah Dibayar)';
         else if ($vStat=='0' && $vMethod == 'wpr')
           $vStatus='Pending';
+        else if ($vFprocessed=='2')
+          $vStatus='Selesai';
         else if ($vStat=='1')   
             $vStatus='Approved';
-        else if ($vStat=='4')  
-            $vStatus='Rejected';   
+        else if ($vStat=='4' || $vFprocessed=='4')  
+            $vStatus='Rejected';
 
        // echo "$vSQL <br>";
 				
 				
 				
-				$vSQL = "select * from  m_product where fidproduk='$vProduk'";
-				$dbin->query($vSQL);
-				$dbin->next_record();
-				$vSeller = $dbin->f('fseller');
+				$vSeller = $vIdSeller;
+				if ($vProduk != '') {
+					$vSQL = "select * from  m_product where fidproduk='$vProduk'";
+					$dbin->query($vSQL);
+					if ($dbin->next_record() && $dbin->f('fseller') != '')
+						$vSeller = $dbin->f('fseller');
+				}
 				
 				$vSQL = "select * from  m_seller where fidseller='$vSeller'";
 				$dbin->query($vSQL);
@@ -338,26 +532,38 @@ function doReject(pIdSys,pIdTrx) {
           <tr id="tr<?=$vIdSys?>">
             <td style="width: 5%" valign="top"><?=$vNo?></td>
             <td nowrap valign="top"><?=$oPhpdate->YMD2DMY($vTanggal,"-")?></td>
-            <td  valign="top"><?=$vIdTrx=$db->f('fidpenjualan')?></td>
-            <td class="hide" valign="top"><?=$db->f('fidseller')?></td>
+            <td  valign="top"><?=$vIdTrx?></td>
+            <td class="hide" valign="top"><?=$vStatRow['fidseller']?></td>
             <td valign="top" nowrap>
               <?
             	
 				echo $vNamaSeller = $dbin->f('fnama');
 			?>
             </td>
-            <td valign="top" nowrap><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
+            <td valign="top" nowrap><div align="left"><?
+             if ($vStat=='out')
+                amhStatDispDetSellOut($vIdTrx);
+             else
+                $oJual->dispDetSell($vIdTrx);
+            ?></div></td>
             <td valign="top" align="right"><?
-             $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
-           
+             if ($vStat=='out')
+                $vOngkir = amhStatGetOngkirOut($vIdTrx);
+             else {
+                $vOngkir=$oJual->getOngkir($vIdTrx);
+                if ($vOngkir == 0) $vOngkir=$oJual->getOngkirTemp($vIdTrx);
+             }
              if ($vAMHFee=='') $vAMHFee=0;
-			 if ($vOngkir == 0) $vOngkir=$oJual->getOngkirTemp($db->f('fidpenjualan'));
 			 
 			echo number_format($vOngkir,0,",",".");?></td>
             <td valign="top"><div align="right">
             <?
-             $vSubTot=$oJual->getSellTot($db->f('fidpenjualan'));
-			 if ($vSubTot == 0) $vSubTot=$oJual->getSellTotTemp($db->f('fidpenjualan'));
+             if ($vStat=='out')
+                $vSubTot = amhStatGetSellTotOut($vIdTrx);
+             else {
+                $vSubTot=$oJual->getSellTot($vIdTrx);
+			    if ($vSubTot == 0) $vSubTot=$oJual->getSellTotTemp($vIdTrx);
+             }
 			 
 			
 			 
@@ -369,6 +575,24 @@ function doReject(pIdSys,pIdTrx) {
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap">&nbsp;
               <input type="button" class="btn btn-xs btn-success" name="button" id="button" value="Detail Receipt" onClick="printTrx('<?=$vIdTrx?>','<?=$vTanggal?>','<?=$vIdMember?>')">
+              <? 
+                 $vCanProsesAminahku = ($_SESSION['Priv']=='sponsor' && $vFprocessed=='0' && trim((string)$vMethod)===''
+                    && ($vFuserid=='aminahku' || stripos($vKet, 'link luar') !== false)
+                    && ($vStat=='out' || $vStat=='0'));
+                 if ($vCanProsesAminahku) {
+                   $vProcOut = rawurlencode($vIdTrx);
+                   $vCurMenu = isset($_GET['current']) ? htmlspecialchars($_GET['current'], ENT_QUOTES, 'UTF-8') : 'mdm_pebisnis';
+                   $vMenuParam = isset($_GET['menu']) ? htmlspecialchars($_GET['menu'], ENT_QUOTES, 'UTF-8') : '';
+              ?>
+              <input type="button" class="btn btn-xs btn-info" value="Proses" onClick="document.location.href='reorder.php?processout=<?=$vProcOut?>&amp;current=<?=$vCurMenu?>&amp;menu=<?=$vMenuParam?>';">
+              <? }
+                 $vCanMarkReceived = ($_SESSION['Priv']=='sponsor' && $vStat=='0' && $vStat!='out' && $vFprocessed!='2'
+                    && $vSend=='1' && $vReceived!='1'
+                    && (strtolower(trim((string)$vMethod))=='wpr' || $vPaid=='1'));
+                 if ($vCanMarkReceived) {
+              ?>
+              <input type="button" class="btn btn-xs btn-warning" id="btnReceived<?=$vIdTrx?>" value="Pembeli Sudah Terima" onClick="doMarkReceived('<?=$vIdTrx?>')">
+              <? } ?>
             </td>  
           </tr>
            <? } //if seller

@@ -41,7 +41,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
 
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
+ $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
  $vsql.=$vCrit;
  $vsql.=" order by ftanggal ";
  $db->query($vsql);
@@ -154,7 +154,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
             </div></td>
             <td class=""><div align="right">
               <?
-                  $vSQL="select sum(fsubtotal) as fsub from tb_trxstok_member where date(ftanggal) between '$vAwal' and '$vAkhir' ";
+                  $vSQL="select sum(fsubtotal) as fsub from tb_penjualan where date(ftanggal) between '$vAwal' and '$vAkhir' ";
 				  $db->query($vSQL);
 				  $db->next_record();
 				  $vSell=$db->f('fsub');

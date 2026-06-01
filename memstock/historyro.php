@@ -47,7 +47,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
 
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_trxstok_member where fjenis <> 'FO' and fidseller='$vUserActive'  ";
+ $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fjenis <> 'FO' and fidseller='$vUserActive'  ";
  $vsql.=$vCrit;
  $vsql.=" order by ftanggal ";
  $db->query($vsql);
@@ -165,9 +165,9 @@ function printTrx(pParam,pTgl,pIDMem) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fprocessed,fmethod from tb_trxstok_member where fjenis <> 'FO' and fidseller='$vUserActive' "; 
+			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fprocessed,fmethod from tb_penjualan where fjenis <> 'FO' and fidseller='$vUserActive' "; 
 			 $vsql.=" union all ";
-			 $vsql.= "select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,'0' as fprocessed,fmethod  from tb_trxstok_member_temp where fjenis <> 'FO' and fidseller='$vUserActive' "; 
+			 $vsql.= "select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,'0' as fprocessed,fmethod  from tb_penjualan_temp where fjenis <> 'FO' and fidseller='$vUserActive' "; 
 			 $vsql.=$vCrit;
 			 $vsql.=" order by ftanggal ";
 			$vsql.="limit $vStartLimit ,$vBatasBaris ";

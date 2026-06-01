@@ -133,7 +133,7 @@ td.diagonal
               <td><strong>Dana Repeat Order</strong></td>
               <td colspan="2"><div align="right">
               <?
-                  $vSQL="select sum(fsubtotal) as subtotal from tb_trxstok_member where 1 $vFiltterTglRO ";
+                  $vSQL="select sum(fsubtotal) as subtotal from tb_penjualan where 1 $vFiltterTglRO ";
 				 $db->query($vSQL);
 				 $db->next_record();
 				 $vTotRO=$db->f('subtotal');

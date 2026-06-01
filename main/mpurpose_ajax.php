@@ -46,6 +46,173 @@ $vUser=$_SESSION['LoginUser'];
 
 	}	
 
+	function amhWilayahDisplayName($pName) {
+		$v = trim((string)$pName);
+		if ($v === '')
+			return '';
+		if (function_exists('mb_convert_case'))
+			return mb_convert_case(strtolower($v), MB_CASE_TITLE, 'UTF-8');
+		return ucwords(strtolower($v));
+	}
+
+	function amhWilayahPropShort($pName) {
+		$v = trim((string)$pName);
+		if ($v === '')
+			return '';
+		if (preg_match('/\(([^)]+)\)/', $v, $vMatch))
+			return amhWilayahDisplayName($vMatch[1]);
+		$vUpper = strtoupper($v);
+		$vMap = array(
+			'JAWA TIMUR' => 'Jatim',
+			'JAWA BARAT' => 'Jabar',
+			'JAWA TENGAH' => 'Jateng',
+			'DI YOGYAKARTA' => 'DIY',
+			'DKI JAKARTA' => 'Jakarta',
+			'NUSA TENGGARA BARAT (NTB)' => 'NTB',
+			'NUSA TENGGARA TIMUR (NTT)' => 'NTT',
+			'NANGGROE ACEH DARUSSALAM (NAD)' => 'Aceh',
+			'KEPULAUAN RIAU' => 'Kepri',
+			'PAPUA BARAT' => 'Papua Barat',
+			'BANGKA BELITUNG' => 'Babel',
+		);
+		if (isset($vMap[$vUpper]))
+			return $vMap[$vUpper];
+		return amhWilayahDisplayName($v);
+	}
+
+	function amhInsertOngkirCallLog($pEndpoint, $pCallingFor, $pMethod, $pRequestPayload, $pResponsePayload, $pStatusCode, $pResponseTimeMs) {
+		global $oDB;
+		$vEndpoint = addslashes((string)$pEndpoint);
+		$vCallingFor = addslashes((string)$pCallingFor);
+		$vMethod = addslashes((string)$pMethod);
+		$vRequest = addslashes((string)$pRequestPayload);
+		$vResponse = addslashes((string)$pResponsePayload);
+		if ($pStatusCode === null || $pStatusCode === '' || $pStatusCode === false)
+			$vStatusSql = 'NULL';
+		else
+			$vStatusSql = (int)$pStatusCode;
+		$vTime = (int)$pResponseTimeMs;
+		$vIp = addslashes(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '');
+		$vSQL = "INSERT INTO tb_ongkircall_log (fendpoint, fcalling_for, fmethod, frequest_payload, fresponse_payload, fstatus_code, fresponse_time_ms, fclient_ip) VALUES (
+			'$vEndpoint',
+			'$vCallingFor',
+			'$vMethod',
+			'$vRequest',
+			'$vResponse',
+			$vStatusSql,
+			'$vTime',
+			'$vIp'
+		)";
+		$oDB->query($vSQL);
+	}
+
+	function amhRajaOngkirApiRequest($pUrl, $pRules, $pCallingFor, $pMethod = 'GET', $pPostFields = '') {
+		$vMethod = strtoupper((string)$pMethod);
+		$vHeaders = array('key: ' . $pRules->getSettingByField('fkeyongkir', ''));
+		$vOpts = array(
+			CURLOPT_URL => $pUrl,
+			CURLOPT_SSL_VERIFYHOST => 0,
+			CURLOPT_SSL_VERIFYPEER => 0,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => $vMethod,
+		);
+		if ($vMethod === 'POST') {
+			$vHeaders[] = 'content-type: application/x-www-form-urlencoded';
+			$vOpts[CURLOPT_POSTFIELDS] = $pPostFields;
+			$vOpts[CURLOPT_CAINFO] = '/etc/pki/tls/certs/ca-bundle.crt';
+			$vOpts[CURLOPT_CAPATH] = '/etc/pki/tls/certs/';
+		}
+		$vOpts[CURLOPT_HTTPHEADER] = $vHeaders;
+
+		$curl = curl_init();
+		curl_setopt_array($curl, $vOpts);
+		$vStart = microtime(true);
+		$response = curl_exec($curl);
+		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		$err = curl_error($curl);
+		$vResponseTime = (int)round((microtime(true) - $vStart) * 1000);
+		curl_close($curl);
+
+		$vRequestPayload = ($vMethod === 'POST') ? (string)$pPostFields : (string)$pUrl;
+		if ($response === false) {
+			amhInsertOngkirCallLog($pUrl, $pCallingFor, $vMethod, $vRequestPayload, (string)$err, ($httpCode > 0 ? $httpCode : null), $vResponseTime);
+			return '';
+		}
+		amhInsertOngkirCallLog($pUrl, $pCallingFor, $vMethod, $vRequestPayload, (string)$response, ($httpCode > 0 ? $httpCode : null), $vResponseTime);
+		return $response;
+	}
+
+	function amhRajaOngkirApiGet($pUrl, $pRules, $pCallingFor = 'RajaOngkir GET') {
+		$response = amhRajaOngkirApiRequest($pUrl, $pRules, $pCallingFor, 'GET', '');
+		if ($response === '')
+			return array();
+		$vArr = json_decode($response, true);
+		return is_array($vArr) ? $vArr : array();
+	}
+
+	function amhResolveSellerWilayahLabel($pPropId, $pKotaId, $pKecId, $pRules) {
+		$vPropName = '';
+		$vKotaName = '';
+		$vKecName = '';
+		$vPropId = trim((string)$pPropId);
+		$vKotaId = trim((string)$pKotaId);
+		$vKecId = trim((string)$pKecId);
+
+		if ($vPropId !== '') {
+			$vArrProp = amhRajaOngkirApiGet('https://rajaongkir.komerce.id/api/v1/destination/province', $pRules, 'Get Province (seller label)');
+			if (isset($vArrProp['data']) && is_array($vArrProp['data'])) {
+				foreach ($vArrProp['data'] as $vPropRow) {
+					if ((string)$vPropRow['id'] === $vPropId) {
+						$vPropName = amhWilayahPropShort($vPropRow['name']);
+						break;
+					}
+				}
+			}
+		}
+		if ($vKotaId !== '' && $vPropId !== '') {
+			$vArrKota = amhRajaOngkirApiGet('https://rajaongkir.komerce.id/api/v1/destination/city/' . $vPropId, $pRules, 'Get City (seller label)');
+			if (isset($vArrKota['data']) && is_array($vArrKota['data'])) {
+				foreach ($vArrKota['data'] as $vKotaRow) {
+					if ((string)$vKotaRow['id'] === $vKotaId) {
+						$vKotaName = amhWilayahDisplayName($vKotaRow['name']);
+						break;
+					}
+				}
+			}
+		}
+		if ($vKecId !== '' && $vKotaId !== '') {
+			$vArrKec = amhRajaOngkirApiGet('https://rajaongkir.komerce.id/api/v1/destination/district/' . $vKotaId, $pRules, 'Get District (seller label)');
+			if (isset($vArrKec['data']) && is_array($vArrKec['data'])) {
+				foreach ($vArrKec['data'] as $vKecRow) {
+					if ((string)$vKecRow['id'] === $vKecId) {
+						$vKecName = amhWilayahDisplayName($vKecRow['name']);
+						break;
+					}
+				}
+			}
+		}
+		return array(
+			'kec' => $vKecName,
+			'kota' => $vKotaName,
+			'prop' => $vPropName,
+		);
+	}
+
+	function amhFormatSellerWilayahInline($pWil) {
+		$vParts = array();
+		if (!empty($pWil['kec']))
+			$vParts[] = $pWil['kec'];
+		if (!empty($pWil['kota']))
+			$vParts[] = $pWil['kota'];
+		if (!empty($pWil['prop']))
+			$vParts[] = $pWil['prop'];
+		return implode(' - ', $vParts);
+	}
+
    
 
    $vGetWil=$_GET['wil'];
@@ -89,29 +256,8 @@ $vUser=$_SESSION['LoginUser'];
 			
 			
 					$id_propinsi = "a3";
-					
-					$curl = curl_init();
-					curl_setopt_array($curl, array(
-					 // CURLOPT_URL            => "https://pro.rajaongkir.com/api/province",
-					  CURLOPT_URL            => "https://rajaongkir.komerce.id/api/v1/destination/province",
-					  CURLOPT_SSL_VERIFYHOST => 0,
-					  CURLOPT_SSL_VERIFYPEER => 0,
-					  CURLOPT_RETURNTRANSFER => true,
-					  CURLOPT_ENCODING       => "",
-					  CURLOPT_MAXREDIRS      => 10,
-					  CURLOPT_TIMEOUT        => 30,
-					  CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-					  CURLOPT_CUSTOMREQUEST  => "GET",
-					  CURLOPT_HTTPHEADER     => array(
-						"key: ".$oRules->getSettingByField('fkeyongkir','')
-					  ),
-					));
-					
-					$response_propinsi = curl_exec($curl);
-					$err               = curl_error($curl);
-					
-					curl_close($curl);
-					//print_r($response_propinsi);
+					$vUrlProp = 'https://rajaongkir.komerce.id/api/v1/destination/province';
+					$response_propinsi = amhRajaOngkirApiRequest($vUrlProp, $oRules, 'Get Province', 'GET');
 					 $array_propinsi = json_decode($response_propinsi, true);
  					
 
@@ -161,31 +307,8 @@ $vUser=$_SESSION['LoginUser'];
 			$provinsi_id = $_GET['prov_id'];
 			if ($provinsi_id !='') {
 					$id_kota = "aaaaaaa106";
-					
-					$curl = curl_init();
-					// Disable SSL certificate verification for this request (bypass checks)
-					curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-					curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-					curl_setopt_array($curl, array(
-					//  CURLOPT_URL            => "https://pro.rajaongkir.com/api/city?province=" . $provinsi_id,
-					    CURLOPT_URL            => "https://rajaongkir.komerce.id/api/v1/destination/city/$provinsi_id",
-					  CURLOPT_SSL_VERIFYHOST => 0,
-					  CURLOPT_SSL_VERIFYPEER => 0,
-					  CURLOPT_RETURNTRANSFER => true,
-					  CURLOPT_ENCODING       => "",
-					  CURLOPT_MAXREDIRS      => 10,
-					  CURLOPT_TIMEOUT        => 30,
-					  CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-					  CURLOPT_CUSTOMREQUEST  => "GET",
-					  CURLOPT_HTTPHEADER     => array(
-						"key: ".$oRules->getSettingByField('fkeyongkir','')
-					  ),
-					));
-					
-					$response_kota = curl_exec($curl);
-					$err           = curl_error($curl);
-					
-					curl_close($curl);
+					$vUrlKota = "https://rajaongkir.komerce.id/api/v1/destination/city/$provinsi_id";
+					$response_kota = amhRajaOngkirApiRequest($vUrlKota, $oRules, 'Get City', 'GET');
 					
 					 $array_kota = json_decode($response_kota, true);
 					  // var_dump($array_kota);
@@ -225,33 +348,11 @@ $vUser=$_SESSION['LoginUser'];
 			if ($kota_id !='') {
 					$kota_id = $_GET['kota_id'];
 					$id_kecamatan     = "aaaaaaa106";
-					//echo "key: ".$oRules->getSettingByField('fkeyongkir','');
-					$curl = curl_init();
-					curl_setopt_array($curl, array(
-					 // CURLOPT_URL            => "https://pro.rajaongkir.com/api/subdistrict?city=" . $kota_id,
-					  //https://rajaongkir.komerce.id/api/v1/destination/district/{city_id}
-					  CURLOPT_URL			=> "https://rajaongkir.komerce.id/api/v1/destination/district/$kota_id",
-					  CURLOPT_SSL_VERIFYHOST => 0,
-					  CURLOPT_SSL_VERIFYPEER => 0,
-					  CURLOPT_RETURNTRANSFER => true,
-					  CURLOPT_ENCODING       => "",
-					  CURLOPT_MAXREDIRS      => 10,
-					  CURLOPT_TIMEOUT        => 30,
-					  CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-					  CURLOPT_CUSTOMREQUEST  => "GET",
-					  CURLOPT_HTTPHEADER     => array(
-						"key: ".$oRules->getSettingByField('fkeyongkir','')
-					  ),
-					));
-					
-					$response_kecamatan = curl_exec($curl);
-					$err           = curl_error($curl);
-					curl_close($curl);
-					//print_r($response_kecamatan);
+					$vUrlKec = "https://rajaongkir.komerce.id/api/v1/destination/district/$kota_id";
+					$response_kecamatan = amhRajaOngkirApiRequest($vUrlKec, $oRules, 'Get District', 'GET');
 					
 				  $array_kecamatan = json_decode($response_kecamatan, true);
-				  $data_kecamatan  = $array_kecamatan['rajaongkir']['results'];
-				  //{"meta":{"message":"Success Get District By City ID","code":200,"status":"success"},"data":[{"id":3893,"name":"BLIMBING"},{"id":3894,"name":"KEDUNGKANDANG"},{"id":3895,"name":"KLOJEN"},{"id":3896,"name":"LOWOKWARU"},{"id":3897,"name":"SUKUN"},{"id":3926,"name":"KEPANJEN"},{"id":3927,"name":"AMPELGADING"},{"id":3928,"name":"BANTUR"},{"id":3929,"name":"BULULAWANG"},{"id":3930,"name":"DAMPIT"},{"id":3931,"name":"DAU"},{"id":3932,"name":"DONOMULYO"},{"id":3933,"name":"GEDANGAN"},{"id":3934,"name":"GONDANGLEGI"},{"id":3935,"name":"JABUNG"},{"id":3936,"name":"KALIPARE"},{"id":3937,"name":"KARANGPLOSO"},{"id":3938,"name":"KROMENGAN"},{"id":3939,"name":"NGAJUNG (NGAJUM)"},{"id":3940,"name":"PAGAK"},{"id":3941,"name":"PAKIS"},{"id":3942,"name":"PAKISAJI"},{"id":3943,"name":"PONCOKUSUMO"},{"id":3944,"name":"SINGOSARI"},{"id":3945,"name":"SUMBERPUCUNG"},{"id":3946,"name":"SUMBERMANJING WETAN"},{"id":3947,"name":"TAJINAN"},{"id":3948,"name":"TIRTOYUDO"},{"id":3949,"name":"TUREN"},{"id":3950,"name":"TUMPANG"},{"id":3951,"name":"WAGIR"},{"id":3952,"name":"WAJAK"},{"id":3953,"name":"WONOSARI"},{"id":3954,"name":"NGANTANG"},{"id":3955,"name":"PUJON"},{"id":3956,"name":"KASEMBON"},{"id":3957,"name":"LAWANG"},{"id":3958,"name":"PAGELARAN"}]}
+				  //{"meta":{"message":"Success Get District By City ID"...
 				
 					// Ambil data kecamatan dari response JSON
 					$data_kecamatan = array();
@@ -1985,56 +2086,31 @@ $vUser=$_SESSION['LoginUser'];
 	   } 
 	    
   } else if ($vOp=='addrongkir') {
-	  $vSQL = "select * from m_seller where fprop <> '' and fkota <> '' and fkec <> '' and fidseller='$vKitSpon'";
+	  $vSellerEsc = addslashes(trim((string)$vKitSpon));
+	  $vSQL = "select fprop, fkota, fkec from m_seller where fprop <> '' and fkota <> '' and fkec <> '' and fidseller='$vSellerEsc'";
 	  $db->query($vSQL);
-	  if ($db->num_rows() >0){	  
-        echo 'yesaddr|'.$oMember->getMemberName($vKitSpon);
-	  } else  echo 'noaddr|'.$oMember->getMemberName($vKitSpon);
+	  if ($db->num_rows() > 0) {
+		$db->next_record();
+		$vWil = amhResolveSellerWilayahLabel($db->f('fprop'), $db->f('fkota'), $db->f('fkec'), $oRules);
+		$vWilLabel = amhFormatSellerWilayahInline($vWil);
+		echo 'yesaddr|' . $oMember->getMemberName($vKitSpon) . '|' . $vWilLabel;
+	  } else {
+		echo 'noaddr|' . $oMember->getMemberName($vKitSpon);
+	  }
   } else if ($vOp=='packongkir') {
 	  		$vBerat = $_POST['berat'];
 			
 			if ($vBerat < 1000) $vBerat = 1000;
-			$id_kotaasal  = $_POST['id_kotaasal'];
+			$id_kecasal = isset($_POST['id_kecasal']) ? $_POST['id_kecasal'] : $_POST['id_kotaasal'];
 			$berat        = $vBerat;
 			$id_kecamatan = $_POST['id_kecamatan'];
-			$kota = $_POST['id_kecamatan'];
 			$kurir        = $_POST['kurir'];
-
-		$curl = curl_init();
-		curl_setopt_array(
-		  $curl,
-		  array(
-			//CURLOPT_URL            => "https://pro.rajaongkir.com/api/cost",
-			CURLOPT_URL 		  => "https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost",
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_ENCODING       => "",
-			CURLOPT_MAXREDIRS      => 10,
-			CURLOPT_TIMEOUT        => 30,
-			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-			CURLOPT_SSL_VERIFYHOST => 0,
-			CURLOPT_SSL_VERIFYPEER => 0,
-			CURLOPT_CUSTOMREQUEST  => "POST",
-			// CURLOPT_POSTFIELDS     => "origin=" . $id_kotaasal . "&destination=" . $id_kotatujuan . "&weight=" . $berat . "&courier=" . $kurir . "",
-			CURLOPT_POSTFIELDS => "origin=" . $id_kotaasal . "&originType=city&destination=" . $id_kecamatan . "&destinationType=subdistrict&weight=" . $berat . "&courier=" . $kurir . "",
-			CURLOPT_HTTPHEADER     => array(
-			  "content-type: application/x-www-form-urlencoded",
-			  "key: ".$oRules->getSettingByField('fkeyongkir','')
-			),
-			CURLOPT_CAINFO => "/etc/pki/tls/certs/ca-bundle.crt",
-    		CURLOPT_CAPATH => "/etc/pki/tls/certs/",
-		  )
-		);
-
-		 $response = curl_exec($curl);
-		$err = curl_error($curl);
-		//print_r($response);
-		$info = curl_getinfo($curl);
-		//print_r($info);
-
-		curl_close($curl);
+			$vUrlCost = 'https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost';
+			$vPostCost = "origin=" . $id_kecasal . "&destination=" . $id_kecamatan . "&weight=" . $berat . "&courier=" . $kurir;
+			$response = amhRajaOngkirApiRequest($vUrlCost, $oRules, 'Calculate Domestic Cost', 'POST', $vPostCost);
 		
 		if (false) {
-		  echo "cURL Error #:" . $err;
+		  echo "cURL Error #:";
 		} else {
 		  // echo $response; //untuk ngetes hasil
 		
@@ -2181,7 +2257,7 @@ $vUser=$_SESSION['LoginUser'];
 
 	if ($vRefId != '') {
 		$db->query("DELETE FROM tb_trx_va WHERE va_refid = '$vRefId'");
-		$db->query("DELETE FROM tb_trxstok_member_temp WHERE fidpenjualan = '$vRefId'");
+		$db->query("DELETE FROM tb_penjualan_temp WHERE fidpenjualan = '$vRefId'");
 		$vArrOut['status'] = 'success';
 		$vArrOut['message'] = 'Transaksi dibatalkan';
 	}
@@ -2216,7 +2292,7 @@ $vUser=$_SESSION['LoginUser'];
 	$db->next_record();
 	$vCount = $db->f('count');
 
-	$vSQLGetTrx = "select * from tb_trxstok_member_temp where fidpenjualan='$vRefId' ";
+	$vSQLGetTrx = "select * from tb_penjualan_temp where fidpenjualan='$vRefId' ";
 	$db->query($vSQLGetTrx);
 	$db->next_record();
 	$vIdSeller = $db->f('fidseller');
@@ -2239,7 +2315,9 @@ $vUser=$_SESSION['LoginUser'];
 		$vMailFrom=$oRules->getSettingByField('fmailadmin');
 		$vToNumberBuyer = $_POST['va_recnohp'];
 		$vToNumberSeller = $oMember->getMemFieldSell('fnohp',$vIdSeller);
-		$vNamaSeller = $oMember->getMemFieldSell('fnama',$vIdSeller);
+		$vNamaSeller = trim((string)$oMember->getMemFieldSell('fnama',$vIdSeller));
+		if ($vNamaSeller === '' || $vNamaSeller === '-1')
+			$vNamaSeller = trim((string)$vIdSeller);
 
 		$vBody = 'Yth. Pebisnis ' . $vMailToName . ", terima kasih sudah berbelanja di AMH Techno\n\n";
 		$vBody .= 'Nomor Order / Pembelian : ' . $vRefId . "\n";

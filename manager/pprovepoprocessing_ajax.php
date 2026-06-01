@@ -210,7 +210,7 @@
 
 		  
 
-		  $vSQL="select sum(fsubtotal) as ftotal from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL="select sum(fsubtotal) as ftotal from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 		  $dbin->query($vSQL);
 
@@ -220,9 +220,9 @@
 
 		  
 
-		  $vSQL ="insert into  tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
+		  $vSQL ="insert into  tb_penjualan( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
 
-		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 			  
 
@@ -236,7 +236,7 @@
 
 	      
 
-		  $vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";  
+		  $vSQLSelect = "select * from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";  
 
 		  $dbin->query($vSQLSelect);
 
@@ -294,7 +294,7 @@
 
 		  }	
 
-				  $vSQL="update tb_trxstok_member set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
+				  $vSQL="update tb_penjualan set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
 
 				  $db->query($vSQL);
 
@@ -312,7 +312,7 @@
 
 		
 
-			$vSQL="delete from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+			$vSQL="delete from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 			$db->query($vSQL);
 
@@ -372,7 +372,7 @@
 
 		  
 
-		  $vSQL="select sum(fsubtotal) as ftotal from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL="select sum(fsubtotal) as ftotal from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 		  $dbin->query($vSQL);
 
@@ -382,9 +382,9 @@
 
 		  
 
-		  $vSQL ="insert into  tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
+		  $vSQL ="insert into  tb_penjualan( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
 
-		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 			  
 
@@ -398,7 +398,7 @@
 
 	      
 
-		  $vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";  
+		  $vSQLSelect = "select * from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";  
 
 		  $dbin->query($vSQLSelect);
 
@@ -464,7 +464,7 @@
 
 		  }	
 
-				  $vSQL="update tb_trxstok_member set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
+				  $vSQL="update tb_penjualan set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
 
 				  $db->query($vSQL);
 
@@ -482,7 +482,7 @@
 
 		
 
-			$vSQL="delete from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+			$vSQL="delete from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 			$db->query($vSQL);
 
@@ -552,7 +552,7 @@
 
 		  
 
-		  $vSQL="select sum(fsubtotal) as ftotal from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL="select sum(fsubtotal) as ftotal from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 		  $dbin->query($vSQL);
 
@@ -562,9 +562,9 @@
 
 		  
 
-		  $vSQL ="insert into  tb_trxstok_member( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
+		  $vSQL ="insert into  tb_penjualan( `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , `ftglprocessed`)  ";
 
-		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+		  $vSQL.="select  `fidpenjualan` , `fidseller` , `fidmember` , `falamatkrm` , `fnostockist` , `fidproduk` , `fjumlah` , `ftanggal` , `fhargasat` , `fsubtotal` , `fsize` , `fcolor` , `ftgltrans` , `fjenis` , `fjmltrans` , `fserial` , `fpin` , `fmethod` , `fketerangan` , `ftglentry` , `fprocessed` , now()    from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 			  
 
@@ -578,7 +578,7 @@
 
 			  
 
-				  $vSQLSelect = "select * from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";  
+				  $vSQLSelect = "select * from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";  
 
 				  $dbin->query($vSQLSelect);
 
@@ -598,7 +598,7 @@
 
 				  }	
 
-				  $vSQL="update tb_trxstok_member set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
+				  $vSQL="update tb_penjualan set fketerangan=concat(fketerangan,', Ket: $vResi') where fidpenjualan='$vIdTrx'";
 
 				  $db->query($vSQL);
 
@@ -608,7 +608,7 @@
 
 				
 
-				$vSQL="delete from tb_trxstok_member_temp where fidpenjualan='$vIdTrx' ";
+				$vSQL="delete from tb_penjualan_temp where fidpenjualan='$vIdTrx' ";
 
 				$db->query($vSQL);
 

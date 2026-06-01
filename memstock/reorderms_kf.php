@@ -35,7 +35,7 @@
     while (list($key,$val) = each($_SESSION['save'])) {
         //print_r($val);
         
-    	$vSQL="insert into tb_trxstok_member(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed,fdiscount,fshipcost,fdiscglobal)";
+    	$vSQL="insert into tb_penjualan(fidpenjualan, fidseller, fidmember, falamatkrm, fnostockist, fidproduk, fjumlah, ftanggal, fhargasat, fsubtotal, ftgltrans, fjenis, fjmltrans, fserial, fpin, fmethod, fketerangan, ftglentry, fprocessed, ftglprocessed,fdiscount,fshipcost,fdiscglobal)";
     	$vSQL.=" values('$vNextJual','$vUser','$vBuyer','$vAlamat','$vOutlet','".$val['lmKode']."',".$val['txtJml'].",now(),".$val['hHarga'].",".$val['hSubTot'].",now(),'RO',0,'','','mTrans','Repeat Order',now(),'2','1981-01-01 00:00:00',0,$tfShCost,$tfDiscG)";
   	 	
   	 	$db->query($vSQL);

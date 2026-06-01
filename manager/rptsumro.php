@@ -37,7 +37,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
 
 
-			 $vsql="select  fidpenjualan,ftanggal,sum(fsubtotal) as subtotal from tb_trxstok_member where  fidproduk not like 'KIT%'    "; 
+			 $vsql="select  fidpenjualan,ftanggal,sum(fsubtotal) as subtotal from tb_penjualan where  fidproduk not like 'KIT%'    "; 
 			 $vsql.=$vCrit;
 			 
 			  $vsql.=" group by fidpenjualan,ftanggal ";
@@ -139,7 +139,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
             <td align="center" style="height: 24px; "><strong>Sub Total </strong></td>
           </tr>
           <? 
-             $vSQLSum = "select sum(fsubtotal) as ftot from tb_trxstok_member where 1 ";
+             $vSQLSum = "select sum(fsubtotal) as ftot from tb_penjualan where 1 ";
              $vSQLSum .=$vCrit;
              $db->query($vSQLSum);
 			 $db->next_record();
@@ -149,7 +149,7 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
 		
 
              $vNo=0;
-			 $vsql="select  fidpenjualan,ftanggal,sum(fsubtotal) as subtotal from tb_trxstok_member where  fidproduk not like 'KIT%'    "; 
+			 $vsql="select  fidpenjualan,ftanggal,sum(fsubtotal) as subtotal from tb_penjualan where  fidproduk not like 'KIT%'    "; 
 			 $vsql.=$vCrit;
 			 
 			  $vsql.=" group by fidpenjualan,ftanggal ";

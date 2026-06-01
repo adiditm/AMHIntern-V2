@@ -69,9 +69,9 @@ $vCrit.=" and date(a.ftanggal) >= '$vAwal' and date(a.ftanggal) <= '$vAkhir'" ;
 
 
 
- $vsql="select * from (select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_trxstok_member a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit"; 
+ $vsql="select * from (select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_penjualan a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit"; 
  $vsql.=" union all ";
- $vsql.= "select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_trxstok_member_temp a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit) as x"; 
+ $vsql.= "select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_penjualan_temp a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit) as x"; 
  
  //$vsql.=" where x.fidseller in ($vIDJson) ";
  $vsql.=" order by x.ftanggal ";
@@ -240,9 +240,9 @@ function doBayarBuy(pKode,pKomisi,pSisa,pBatas) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select * from (select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_trxstok_member a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit"; 
+			 $vsql="select * from (select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_penjualan a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit"; 
 			 $vsql.=" union all ";
-			 $vsql.= "select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_trxstok_member_temp a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit) as x"; 
+			 $vsql.= "select distinct a.ftanggal, a.fidpenjualan,fidseller,fidmember, a.fketerangan, a.fprocessed, a.fshipcost, a.fdiscount, a.fdiscglobal  from tb_penjualan_temp a left join m_outlet b on a.fnostockist = b.fidoutlet where a.fidproduk not like 'KIT%' $vAnd $vCrit) as x"; 
 			// $vsql.=" where x.fidseller in ($vIDJson) ";
 			 $vsql.=" order by x.ftanggal ";
 			  $vsql.="limit $vStartLimit ,$vBatasBaris ";

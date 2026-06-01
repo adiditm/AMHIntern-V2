@@ -60,7 +60,7 @@ $vSQLBasic = "select * from (select  ftanggal,fidproduk,fsize,fcolor,fjumlah  fr
 
 $vSQLBasic .= "union all ";
 
-$vSQLBasic .= "select  ftanggal,fidproduk,fsize,fcolor,fjumlah  from tb_trxstok_member where fidseller in (select fidmember from m_admin) and fidproduk not like 'KIT%') as a ";
+$vSQLBasic .= "select  ftanggal,fidproduk,fsize,fcolor,fjumlah  from tb_penjualan where fidseller in (select fidmember from m_admin) and fidproduk not like 'KIT%') as a ";
 
 
 
