@@ -882,7 +882,9 @@
 
    $vsql="select * from (select fmethod as fmet from tb_penjualan where 1 and  fidpenjualan='$pID' ";
 
-    $vsql.=" union all select fmethod as fmet from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+    $vsql.=" union all select fmethod as fmet from tb_penjualan_temp where 1 and  fidpenjualan='$pID' ";
+
+    $vsql.=" union all select fmethod as fmet from tb_penjualan_temp_out where 1 and  fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
@@ -912,15 +914,19 @@
 
    global $oDB, $oRules, $oProduct;
 
-   $vsql="select * from (select * from tb_penjualan where 1 and  fidpenjualan='$pID' ";
+   $pFieldEsc = preg_replace('/[^a-zA-Z0-9_]/', '', $pField);
 
-     $vsql.=" union all select * from tb_penjualan_temp where 1 and  fidpenjualan='$pID') as a limit 1 ";
+   $vsql="select val from (select $pFieldEsc as val from tb_penjualan where fidpenjualan='$pID' ";
+
+      $vsql.=" union all select $pFieldEsc as val from tb_penjualan_temp where fidpenjualan='$pID' ";
+
+      $vsql.=" union all select $pFieldEsc as val from tb_penjualan_temp_out where fidpenjualan='$pID') as a limit 1 ";
 
 	$oDB->query($vsql);
 
 	while ($oDB->next_record()) {
 
-	   $vres1=$oDB->f($pField);
+	   $vres1=$oDB->f('val');
 
 	}
 

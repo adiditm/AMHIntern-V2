@@ -67,9 +67,15 @@ if ($vCount=='') $vCount=1;
       $$key = $val;
    }
    
-   if (is_base64_encoded($_GET['ref']))
-   			$vRef = base64_decode($_GET['ref']);
-	else 	$vRef = $_GET['ref'];
+   if (!empty($_POST['hRef'])) {
+		$vRef = trim((string)$_POST['hRef']);
+   } else {
+		$vRefParam = isset($_GET['ref']) ? trim((string)$_GET['ref']) : '';
+		if ($vRefParam != '' && is_base64_encoded($vRefParam))
+			$vRef = base64_decode($vRefParam);
+		else
+			$vRef = $vRefParam;
+   }
    $vProd = $_GET['prod'];
    $vSQL = "select * from m_product where fidproduk='$vProd'";
    $db->query($vSQL);
@@ -148,13 +154,13 @@ if ($vCount=='') $vCount=1;
 		$oSystem->sendSMS($tfPhoneSpon,"AMHTECHNO\n\n$tfSponsor, terima kasih atas order Anda!",'','');
 	}
 
-	$vNamaPebisnisWa = trim((string)$oMember->getMemFieldBis('fnama', $vUser));
-	if ($vNamaPebisnisWa == '')
-		$vNamaPebisnisWa = $vUser;
-	$vToNumberPebisnis = $oMember->getMemFieldBis('fnohp', $vUser);
+	$vNamaPebisnisWa = trim((string)$oMember->getMemFieldBis('fnama', $vRef));
+	if ($vNamaPebisnisWa == '' || $vNamaPebisnisWa == '-1')
+		$vNamaPebisnisWa = $vRef;
+	$vToNumberPebisnis = trim((string)$oMember->getMemFieldBis('fnohp', $vRef));
 	$vBodyPebisnisWa = "AMHTECHNO\n\nYth. " . $vNamaPebisnisWa . ", ada permintaan order " . $vNextJual . " dari pembeli.\n\n";
 	$vBodyPebisnisWa .= "Silakan login ke https://intern.amhtechno.com untuk memilih metode pembayaran dan menyelesaikan order.";
-	if ($vToNumberPebisnis != '' && $vToNumberPebisnis != '-')
+	if ($vToNumberPebisnis != '' && $vToNumberPebisnis != '-' && $vToNumberPebisnis != '-1')
 		$oSystem->sendWAMessage($vToNumberPebisnis, $vBodyPebisnisWa);
 
 	$vNamaPenerimaWa = trim((string)$_POST['tfRecName']);
@@ -1191,6 +1197,7 @@ function zeroOngkir(){
 
 								<input type="hidden" name="hTotal" id="hTotal" value="" />
 								<input type="hidden" name="hBackUrl" id="hBackUrl" value="<?=htmlspecialchars($vBackUrl, ENT_QUOTES, 'UTF-8')?>" />
+								<input type="hidden" name="hRef" id="hRef" value="<?=htmlspecialchars($vRef, ENT_QUOTES, 'UTF-8')?>" />
 
 										<input type="hidden" name="hPost" id="hPost" value="1" />
                                         <button id="btnSubmit" type="submit" class="btn btn-primary" disabled="disabled" onClick="">Submit</button>

@@ -117,7 +117,9 @@
 			return array('Rejected', 'red');
 		if ($vStat == '1' || $vStat === 'main')
 			return array('Approved', 'green');
-		if ($vStat == 'out' || ($vStat == '0' && $vFuserid === 'aminahku' && $vMethod === '' && $vFprocessed === '0'))
+		if (($vStat == 'out' && $vFprocessed === '0') || ($vStat == '0' && $vFuserid === 'aminahku' && $vMethod === '' && $vFprocessed === '0'))
+			return array('Pending [pebisnis]', 'orange');
+		if ($vStat == 'out')
 			return array('Menunggu Proses', 'orange');
 		if ($vStat == '0' && $vPaid == '0' && $vMethod != 'wpr')
 			return array('Pending', 'red');
@@ -230,25 +232,41 @@
       <?=$_GET['uIDMember']." / ".$oMember->getMemberNameAdm($_GET['uIDMember'],'sponsor')?>
     </strong></div></td>
   </tr>
+  <?php
+  $vNoJual = addslashes(trim((string)$_GET['uNoJual']));
+  $vSQLHeader = "select frecname, falamatkrm, frecnohp, fmethod from (";
+  $vSQLHeader .= " select frecname, falamatkrm, frecnohp, fmethod from tb_penjualan where fidpenjualan='$vNoJual' ";
+  $vSQLHeader .= " union all select frecname, falamatkrm, frecnohp, fmethod from tb_penjualan_temp where fidpenjualan='$vNoJual' ";
+  $vSQLHeader .= " union all select frecname, falamatkrm, frecnohp, fmethod from tb_penjualan_temp_out where fidpenjualan='$vNoJual' ";
+  $vSQLHeader .= ") as a limit 1";
+  $db->query($vSQLHeader);
+  $vRecName = '-1';
+  $vRecAddr = '-1';
+  $vRecPhone = '-1';
+  $vMethod = '-1';
+  if ($db->next_record()) {
+      $vRecName = $db->f('frecname');
+      $vRecAddr = $db->f('falamatkrm');
+      $vRecPhone = $db->f('frecnohp');
+      $vMethod = $db->f('fmethod');
+  }
+  ?>
   <tr>
     <td valign="top"><strong>Alamat Kirim</strong></td>
     <td valign="top"><strong>:</strong></td>
     <td valign="top" nowrap><strong>
-      <?
-    		echo $oJual->getJualField($_GET['uNoJual'],'frecname');
-			echo "<br>";
-			echo $oJual->getJualField($_GET['uNoJual'],'falamatkrm');
-	?>
+      <?php
+      echo htmlspecialchars((string)$vRecName, ENT_QUOTES, 'UTF-8');
+      echo "<br>";
+      echo htmlspecialchars((string)$vRecAddr, ENT_QUOTES, 'UTF-8');
+      ?>
     </strong></td>
   </tr>
   <tr >
     <td><strong>HP No</strong></td>
     <td><strong>:</strong></td>
     <td><strong>
-      <?
-    		
-			echo $oJual->getJualField($_GET['uNoJual'],'frecnohp');
-	?>
+      <?=htmlspecialchars((string)$vRecPhone, ENT_QUOTES, 'UTF-8')?>
     </strong></td>
   </tr>
   <tr>
@@ -256,11 +274,10 @@
     <td><strong>:</strong></td>
     <td><strong>
       <? 
-      $vSQL = "select * from tb_trx_va where va_refid ='".$_GET['uNoJual']."';";
+      $vSQL = "select * from tb_trx_va where va_refid ='".$vNoJual."';";
       $db->query($vSQL);
       $db->next_record();
       $vBank = strtoupper($db->f('va_bankcode'));
-	   $vMethod=$oJual->getPayMethod($_GET['uNoJual']);
 	   if ($vMethod=='' || $vMethod=='-1')
 	      echo 'Menunggu pebisnis';
 	   else if ($vMethod=='ctr' || $vMethod=='mTrans') 

@@ -364,9 +364,22 @@ if ($vOP == "rejectst") {
 	$dbin->next_record();
 	$vTotal = (float)$dbin->f('ftotal');
 	$vFeeAminah = 0;
-	$vSellBonusPct = (float)$oRules->getBnsSetting('REG', 20, 'HPSPON', 'REG');
-	if ($vSellBonusPct < 0) $vSellBonusPct = 0;
-	$vSellBonusAmt = $vTotal * $vSellBonusPct / 100;
+	$vSellBonusAmt = 0;
+	$vProductProgram = '';
+	$vSQL = "select b.fprogram from tb_penjualan_temp a inner join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$vIdTrx' limit 1";
+	$dbin->query($vSQL);
+	if ($dbin->next_record()) {
+		$vProductProgram = trim((string)$dbin->f('fprogram'));
+	}
+	if ($vProductProgram != '') {
+		$vProductProgramEsc = addslashes($vProductProgram);
+		$vSQL = "select fbnssponhp from tb_rules_bnskorwil where fidprogram='$vProductProgramEsc' limit 1";
+		$dbin->query($vSQL);
+		if ($dbin->next_record()) {
+			$vSellBonusAmt = (float)$dbin->f('fbnssponhp');
+			if ($vSellBonusAmt < 0) $vSellBonusAmt = 0;
+		}
+	}
 
 	// fongkir tidak dinormalkan: cukup ambil 1 baris untuk 1 fidpenjualan
 	$vSQL = "select fongkir from tb_penjualan_temp where fidpenjualan='$vIdTrx' limit 1";

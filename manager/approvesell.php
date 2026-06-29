@@ -22,6 +22,38 @@ function amhGetTrxReceiveField($dbConn)
 	return '';
 }
 
+function amhApproveDispDetSellOut($pIDJual) {
+	global $oDB, $oProduct;
+	$vsql = "select a.fidproduk,a.fhargasat, a.fjumlah, b.fnamaproduk,a.fsize, a.fcolor from tb_penjualan_temp_out a";
+	$vsql .= " left join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$pIDJual'";
+	echo "<table width='110' border='0' style='margin-top:-0.9em'>";
+	$oDB->query($vsql);
+	while ($oDB->next_record()) {
+		$vIDProd = $oDB->f('fidproduk');
+		$vProd = str_replace(' ', '&nbsp;', $vIDProd . '/' . $oDB->f('fnamaproduk') . ' (' . number_format($oDB->f('fhargasat'), 0, ',', '.') . ')');
+		$vJum = $oDB->f('fjumlah');
+		echo '<tr><td width="90" valign="top"><div align="left">' . $vProd . '</div></td>';
+		echo '<td><div align="left" valign="top">:</div></td>';
+		echo '<td valign="top"><div align="right">' . $vJum . '</div></td></tr>';
+	}
+	echo '</table>';
+}
+
+function amhApproveGetSellTotOut($pIDJual) {
+	global $oDB;
+	$oDB->query("select sum(fsubtotal) as stot from tb_penjualan_temp_out where fidpenjualan='$pIDJual'");
+	$oDB->next_record();
+	return (float)$oDB->f('stot');
+}
+
+function amhApproveGetOngkirOut($pIDJual) {
+	global $oDB;
+	$oDB->query("select fongkir from tb_penjualan_temp_out where fidpenjualan='$pIDJual' limit 1");
+	if ($oDB->next_record())
+		return (float)$oDB->f('fongkir');
+	return 0;
+}
+
 $vOutlet=$_SESSION['LoginOutlet'];
 $vAwal=$_POST['dc'];
 $vAkhir=$_POST['dc1'];
@@ -141,17 +173,27 @@ if ($vPage=="")
  	$vPage=0;
 $vStartLimit=$vPage * $vBatasBaris;	
 
-$vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
+$vSellerFilter = "";
+if ($_SESSION['Priv'] == 'seller') {
+	$vSellerEsc = addslashes($vUser);
+	$vSellerFilter = " and fidseller = '$vSellerEsc' ";
+}
+
+$vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" . $vSellerFilter;
 
 
+$vsqlCount = "select count(distinct fidpenjualan) as cnt from (";
+$vsqlCount .= " select fidpenjualan from tb_penjualan where 1 " . $vCrit;
+$vsqlCount .= " union all select fidpenjualan from tb_penjualan_temp where 1 " . $vCrit;
+$vsqlCount .= " union all select fidpenjualan from tb_penjualan_temp_out where (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0) ";
+$vsqlCount .= $vSellerFilter;
+$vsqlCount .= " and (date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) >= '$vAwal' and date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) <= '$vAkhir' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) = '0000-00-00 00:00:00' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) is null) ";
+$vsqlCount .= ") as temp";
 
- $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
- $vsql.=$vCrit;
- $vsql.=" order by ftanggal ";
- $db->query($vsql);
- $db->next_record();
- $vRecordCount=$db->num_rows();
- $vPageCount=ceil($vRecordCount/$vBatasBaris);
+$db->query($vsqlCount);
+$db->next_record();
+$vRecordCount = (int)$db->f('cnt');
+$vPageCount = ceil($vRecordCount / $vBatasBaris);
 
 ?>
 <style type="text/css">
@@ -510,6 +552,9 @@ function doReject(pIdSys,pIdTrx) {
 			 
 			 $vsql.=" union all select distinct fidsys, ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fpaid, fsend, $vReceiveSelect, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed  from tb_penjualan_temp where  1 "; 
 			 $vsql.=$vCrit;
+
+			 $vsql.=" union all select distinct 0 as fidsys, COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) as ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir, 'out' as fstatus, fpaid, '0' as fsend, '0' as freceived, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan_temp_out where (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0) ";
+			 $vsql.=" and (date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) >= '$vAwal' and date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) <= '$vAkhir' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) = '0000-00-00 00:00:00' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) is null) " . $vSellerFilter;
 			 
 			 $vsql.=" order by ftanggal ";
 
@@ -550,22 +595,34 @@ function doReject(pIdSys,pIdTrx) {
 				 //$vtgltrans=$db->f('ftanggal');
 				 
 				 $vIDJual = $db->f('fidpenjualan');
-			 	 // Prioritize temporary transaction status when it exists
-			 	 $vSendTemp = '';
-			 	 $vSQLTemp = "select fsend from tb_penjualan_temp where fidpenjualan='$vIDJual' limit 1";
-			 	 $dbin->query($vSQLTemp);
-			 	 if ($dbin->next_record()) {
-			 	 	 $vSendTemp = $dbin->f('fsend');
+			 	 if ($vStat == 'out') {
+			 	 	 $dbin->query("select fidproduk from tb_penjualan_temp_out where fidpenjualan='$vIDJual' limit 1");
+			 	 	 $dbin->next_record();
+			 	 	 $vProduk = $dbin->f('fidproduk');
+			 	 	 $vAMHFee = 0;
+			 	 	 $vPaid = '0';
+			 	 	 $vSend = '0';
+			 	 	 $vReceived = '0';
+			 	 } else {
+				 	 // Prioritize temporary transaction status when it exists
+				 	 $vSendTemp = '';
+				 	 $vSQLTemp = "select fsend from tb_penjualan_temp where fidpenjualan='$vIDJual' limit 1";
+				 	 $dbin->query($vSQLTemp);
+				 	 if ($dbin->next_record()) {
+				 	 	 $vSendTemp = $dbin->f('fsend');
+				 	 }
+				 	 $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
+					$dbin->query($vSQL);
+					$dbin->next_record();
+			        $vProduk = $dbin->f('fidproduk');
+			        $vAMHFee = $dbin->f('am_fee');
+			
+			        $vPaid = $dbin->f('fpaid');
+			        $vSend = ($vSendTemp !== '') ? $vSendTemp : $dbin->f('fsend');
 			 	 }
-			 	 $vSQL = "select * from  (select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan union  select fidpenjualan, fidproduk,fpaid, fsend, $vReceiveSelect from tb_penjualan_temp) as a left join tb_trx_va b on a.fidpenjualan=b.va_refid where a.fidpenjualan='$vIDJual' ";
-				$dbin->query($vSQL);
-				$dbin->next_record();
-        $vProduk = $dbin->f('fidproduk');
-        $vAMHFee = $dbin->f('am_fee');
-
-       $vPaid = $dbin->f('fpaid');
-       $vSend = ($vSendTemp !== '') ? $vSendTemp : $dbin->f('fsend');
-       if ($vStat=='0' && $vMethod=='tva' && $vPaid!='1')
+       if ($vStat=='out' && $vFprocessed=='0')
+          $vStatus='Menunggu Proses [pebisnis]';
+       else if ($vStat=='0' && $vMethod=='tva' && $vPaid!='1')
           $vStatus='Pending [buyer]';
         else if ($vStat=='0' && $vMethod=='tva' && $vPaid=='1' && $vSend !='1')
           $vStatus='Pending [seller]';
@@ -653,42 +710,56 @@ function doReject(pIdSys,pIdTrx) {
 				echo $vNamaSeller = $dbin->f('fnama');
 			?>
             </td>
-            <td valign="top" nowrap class="hide"><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
-            <td valign="top" style="vertical-align:top">
-            <?php
-            // Display payment method instead of note
-            $vMethodDisplay = '';
-            if ($vMethod == 'ctr') {
-                $vMethodDisplay = 'Cash/Transfer';
-            } else if ($vMethod == 'tva') {
-                $vMethodDisplay = 'Transfer Virtual Account';
-            } else if ($vMethod == 'wpr') {
-                $vMethodDisplay = 'eWallet';
-            } else {
-                $vMethodDisplay = $vMethod;
-            }
-            echo $vMethodDisplay;
-            ?>
-            </td>
-            <td valign="top" align="right"><?
-             $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
-           
-             if ($vAMHFee=='') $vAMHFee=0;
-			 if ($vOngkir == 0) $vOngkir=$oJual->getOngkirTemp($db->f('fidpenjualan'));
+             <td valign="top" nowrap class="hide"><div align="left"><?
+             	if ($vStat == 'out') {
+             		amhApproveDispDetSellOut($vIdTrx);
+             	} else {
+             		$oJual->dispDetSell($db->f('fidpenjualan'));
+             	}
+             ?></div></td>
+             <td valign="top" style="vertical-align:top">
+             <?php
+             // Display payment method instead of note
+             $vMethodDisplay = '';
+             if ($vMethod == 'ctr') {
+                 $vMethodDisplay = 'Cash/Transfer';
+             } else if ($vMethod == 'tva') {
+                 $vMethodDisplay = 'Transfer Virtual Account';
+             } else if ($vMethod == 'wpr') {
+                 $vMethodDisplay = 'eWallet';
+             } else {
+                 $vMethodDisplay = $vMethod;
+             }
+             echo $vMethodDisplay;
+             ?>
+             </td>
+             <td valign="top" align="right"><?
+              if ($vStat == 'out') {
+                  $vOngkir = amhApproveGetOngkirOut($vIdTrx);
+              } else {
+                  $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
+                  if ($vOngkir == 0) $vOngkir=$oJual->getOngkirTemp($db->f('fidpenjualan'));
+              }
+            
+              if ($vAMHFee=='') $vAMHFee=0;
 			 
 			echo number_format($vOngkir,0,",",".");?></td>
-            <td valign="top"><div align="right">
-            <?
-             $vSubTot=$oJual->getSellTot($db->f('fidpenjualan'));
-			 if ($vSubTot == 0) $vSubTot=$oJual->getSellTotTemp($db->f('fidpenjualan'));
+             <td valign="top"><div align="right">
+             <?
+              if ($vStat == 'out') {
+                  $vSubTot = amhApproveGetSellTotOut($vIdTrx);
+              } else {
+                  $vSubTot=$oJual->getSellTot($db->f('fidpenjualan'));
+                  if ($vSubTot == 0) $vSubTot=$oJual->getSellTotTemp($db->f('fidpenjualan'));
+              }
 			 
 			
 			 
-             echo  number_format($vSubTot+$vOngkir+$vAMHFee,0,",",".");
-             $vTotalJual+=($vSubTot + $vOngkir + $vAMHFee);
-            
-            ?>
-			</div></td>
+              echo  number_format($vSubTot+$vOngkir+$vAMHFee,0,",",".");
+              $vTotalJual+=($vSubTot + $vOngkir + $vAMHFee);
+             
+             ?>
+ 			</div></td>
             <td id="tdstat<?=$vIdTrx?>" valign="top"> <?=$vStatus?></td>
             <td nowrap="nowrap"> <? if ($_SESSION['Priv'] !='seller') {?>
             <input <? if ($vStat!='0') echo 'disabled';?> onclick="doApprove1('<?=$vIdSys?>','<?=$vIdTrx?>','<?=$vKind?>','<?=$vMethod?>','<?=$vPaid?>','<?=$vSend?>','<?=$vReceived?>','<?=$vStat?>')" class="btn btn-success btn-xs" name="btnAppv" id="btnAppv<?=$vIdTrx?>" type="button" value="<? if ($vMethod=='ctr' && $vStat=='0' && $vPaid!='1' && $vSend!='1' && $vReceived!='1') echo 'Approve Payment'; else echo 'Approve';?>">&nbsp;
@@ -734,7 +805,7 @@ function doReject(pIdSys,pIdTrx) {
      $vOffset=$i*$vBatasBaris;
      if ($i!=$vPage) {
 ?>
-          <a href="../memstock/historypo.php?uPage=<?=$i?>&amp;uAwal=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")?>&amp;uAkhir=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")?>" >
+          <a href="approvesell.php?uPage=<?=$i?>&amp;uAwal=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")?>&amp;uAkhir=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")?>" >
           <?=$i+1?>
           </a>
           <?
