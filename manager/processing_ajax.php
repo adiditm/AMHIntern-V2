@@ -556,6 +556,12 @@ if ($vOP == "rejectst") {
 			}
 			$vNewBalBonus = $vLastBalBonus + $vSellBonusAmt;
 			$oKomisi->insertMutasiConn($vUserTrx, $vBuyer, date("Y-m-d H:i:s"), "Bonus hasil penjualan $vNextJual", $vSellBonusAmt, 0, $vNewBalBonus, 'reorder', $vNextJual, $db);
+			$vAdminBhpRate = (float)$oRules->getSettingByField('fbyyadmin');
+			if ($vAdminBhpRate > 0) {
+				$vAdminBhpAmt = $vSellBonusAmt * ($vAdminBhpRate / 100);
+				$vNewBalBonus = $vNewBalBonus - $vAdminBhpAmt;
+				$oKomisi->insertMutasiConn($vUserTrx, $vBuyer, date("Y-m-d H:i:s"), "Biaya admin bonus hasil penjualan ($vAdminBhpRate%)", 0, $vAdminBhpAmt, $vNewBalBonus, 'reorder', $vNextJual, $db);
+			}
 			$oMember->updateBalConnWProdBiz($vUserTrx, $vNewBalBonus, $db);
 		}
 		

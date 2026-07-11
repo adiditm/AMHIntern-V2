@@ -19,8 +19,17 @@ if ($vAkhir=="")
 	$vAkhir=$_GET['uAkhir'];
 
 
-if ($vAwal=="")
+if ($vAwal=="") {
    $vAwal=date('Y-m-d', strtotime('-30 days'));
+   $vSQLMin = "select min(date(ftanggal)) as mindate from tb_penjualan_temp where fidseller='{$_SESSION['LoginUser']}' and fpaid='1' and (ifnull(fsend,'0')='0' or fsend='')";
+   $dbin->query($vSQLMin);
+   if ($dbin->next_record()) {
+      $vMinDate = $dbin->f('mindate');
+      if ($vMinDate != '' && $vMinDate < $vAwal) {
+         $vAwal = $vMinDate;
+      }
+   }
+}
    
 if ($vAkhir=="")
    $vAkhir=$oPhpdate->getNowYMD("-");
@@ -387,7 +396,7 @@ function uploadFileX(transactionId) {
 				 
 				 if ($_SESSION['Priv'] != 'seller' || ($_SESSION['Priv'] == 'seller' && (strtoupper($_SESSION['LoginUser'])==strtoupper($vSeller) || strtoupper($_SESSION['LoginUser'])==strtoupper($vIdSeller)))) {
 		  ?>
-          <tr id="tr<?=$vIdSys?>">
+          <tr id="tr<?=$vIdSys?>" <? if (isset($_GET['hl']) && $_GET['hl']==$vIdTrx) echo 'style="background-color: #ffffcc !important;"'; ?> >
             <td style="width: 5%" valign="top"><?=$vNo?></td>
             <td nowrap valign="top"><?=$oPhpdate->YMD2DMY($vTanggal,"-")?></td>
             <td  valign="top"><?=$vIdTrx=$db->f('fidpenjualan')?></td>

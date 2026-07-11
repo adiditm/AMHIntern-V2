@@ -135,6 +135,16 @@ function amhStatLoadMergedList($pLogin, $pAwal, $pAkhir) {
 		while ($db->next_record())
 			$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
 	}
+	
+	// Add records from tb_penjualan_temp_out where fidmember matches the logged-in seller
+	$vsql = "select distinct " . amhStatDateExprOut() . " as ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir,
+		'out' as fstatus, ifnull(fmethod,'') as fmethod, ifnull(fuserid,'') as fuserid, cast(ifnull(fprocessed,0) as char) as fprocessed
+		from tb_penjualan_temp_out
+		where fidproduk not like 'KIT%' and TRIM(fidmember)='$vLogin' $vCritOut";
+	if ($db->query($vsql)) {
+		while ($db->next_record())
+			$vMap[$db->f('fidpenjualan')] = amhStatPullRow($db);
+	}
 
 	$vList = array_values($vMap);
 	usort($vList, function ($a, $b) {
@@ -165,8 +175,17 @@ if ($vAkhir=="")
 	$vAkhir=$_GET['uAkhir'];
 
 
-if ($vAwal=="")
-   $vAwal=date('Y-m-d', strtotime('-30 days'));
+if ($vAwal=="") {
+   $vAwal=date('Y-m-d', mktime(0, 0, 0, date('m') - 1, 1, date('Y')));
+   $vSQLMin = "select min(date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal))) as mindate from tb_penjualan_temp_out where TRIM(fidmember)='{$_SESSION['LoginUser']}' and (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0)";
+   $dbin->query($vSQLMin);
+   if ($dbin->next_record()) {
+      $vMinDate = $dbin->f('mindate');
+      if ($vMinDate != '' && $vMinDate < $vAwal) {
+         $vAwal = $vMinDate;
+      }
+   }
+}
    
 if ($vAkhir=="")
    $vAkhir=$oPhpdate->getNowYMD("-");
@@ -482,7 +501,7 @@ function doMarkReceived(pIdTrx) {
         }
 
         if ($vStat=='out')
-          $vStatus='Menunggu Proses';
+          $vStatus='Menunggu Proses [pebisnis]';
         else if ($vStat=='0' && $vFuserid=='aminahku' && trim((string)$vMethod)==='' && $vFprocessed=='0')
           $vStatus='Menunggu Proses';
         else if ($vStat=='0' && $vPaid=='0' && $vMethod != 'wpr')
@@ -529,7 +548,7 @@ function doMarkReceived(pIdTrx) {
 				 
 				 if ($_SESSION['Priv'] != 'seller' || ($_SESSION['Priv'] == 'seller' && strtoupper($_SESSION['LoginUser'])==strtoupper($vSeller))) {
 		  ?>
-          <tr id="tr<?=$vIdSys?>">
+          <tr id="tr<?=$vIdSys?>" <? if (isset($_GET['hl']) && $_GET['hl']==$vIdTrx) echo 'style="background-color: #ffffcc !important;"'; ?> >
             <td style="width: 5%" valign="top"><?=$vNo?></td>
             <td nowrap valign="top"><?=$oPhpdate->YMD2DMY($vTanggal,"-")?></td>
             <td  valign="top"><?=$vIdTrx?></td>

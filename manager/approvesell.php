@@ -73,8 +73,17 @@ if ($vAkhir=="")
 	$vAkhir=$_GET['uAkhir'];
 
 
-if ($vAwal=="")
+if ($vAwal=="") {
    $vAwal=date('Y-m-d', strtotime('-30 days'));
+   $vSQLMin = "select min(date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal))) as mindate from tb_penjualan_temp_out where (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0)";
+   $db->query($vSQLMin);
+   if ($db->next_record()) {
+      $vMinDate = $db->f('mindate');
+      if ($vMinDate != '' && $vMinDate < $vAwal) {
+         $vAwal = $vMinDate;
+      }
+   }
+}
    
 if ($vAkhir=="")
    $vAkhir=$oPhpdate->getNowYMD("-");
@@ -697,7 +706,7 @@ function doReject(pIdSys,pIdTrx) {
 				 
 				 if ($_SESSION['Priv'] != 'seller' || ($_SESSION['Priv'] == 'seller' && strtoupper($_SESSION['LoginUser'])==strtoupper($vSeller))) {
 		  ?>
-          <tr id="tr<?=$vIdSys?>">
+          <tr id="tr<?=$vIdSys?>" <? if (isset($_GET['hl']) && $_GET['hl']==$vIdTrx) echo 'style="background-color: #ffffcc !important;"'; ?> >
             <td style="width: 5%" valign="top"><?=$vNo?></td>
             <td nowrap valign="top"><?=$oPhpdate->YMD2DMY($vTanggal,"-")?></td>
             <td  valign="top"><?=$vIdTrx=$db->f('fidpenjualan')?></td>

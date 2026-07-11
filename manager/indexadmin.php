@@ -389,6 +389,33 @@ Lobibox.notify('warning',  // Available types 'warning', 'info', 'success', 'err
 }
 ?>
 
+
+<? if ($vPriv=='administrator' && $vScriptName!='approvesell.php') { 
+
+				$vsql ="select distinct fidpenjualan from tb_penjualan_temp_out where (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0)";
+				 			
+			$db->query($vsql);
+			while($db->next_record()) {
+				$vIDJual = $db->f('fidpenjualan');
+				
+				
+
+?>
+Lobibox.notify('warning',  // Available types 'warning', 'info', 'success', 'error'
+{
+   closeOnEsc      : true,
+   draggable       : true, 
+   msg					:'Pemrosesan transaksi produk (<?=$vIDJual?>)! Klik <a style="color:blue" href="../manager/approvesell.php?hl=<?=$vIDJual?>">di sini</a> untuk melihat.',
+   delay: false,
+   closeOnClick : false,
+   size : 'mini' 
+
+
+});
+<? } 
+}
+?>
+
    
 </script>
 

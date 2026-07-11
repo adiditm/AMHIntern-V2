@@ -277,8 +277,42 @@
 	   
    });
    
- 
-
+<? if (trim((string)$vUser) != '') { 
+	$vsql ="select distinct fidpenjualan from tb_penjualan_temp_out where TRIM(fidmember)='$vUser' and (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0)";
+	$db->query($vsql);
+	while($db->next_record()) {
+		$vIDJual = $db->f('fidpenjualan');
+?>
+Lobibox.notify('warning',  // Available types 'warning', 'info', 'success', 'error'
+{
+   closeOnEsc      : true,
+   draggable       : true, 
+   msg					:'Pemrosesan transaksi produk (<?=$vIDJual?>)! Klik <a style="color:blue" href="../memstock/statustrans.php?hl=<?=$vIDJual?>">di sini</a> untuk memproses.',
+   delay: false,
+   closeOnClick : false,
+   size : 'mini' 
+});
+<? } 
+}
+?>
+<? if (trim((string)$vUser) != '') { 
+	$vsql ="select distinct fidpenjualan from tb_penjualan_temp where fidseller='$vUser' and fpaid='1' and (ifnull(fsend,'0')='0' or fsend='')";
+	$db->query($vsql);
+	while($db->next_record()) {
+		$vIDJual = $db->f('fidpenjualan');
+?>
+Lobibox.notify('warning',  // Available types 'warning', 'info', 'success', 'error'
+{
+   closeOnEsc      : true,
+   draggable       : true, 
+   msg					:'Pemrosesan transaksi produk (<?=$vIDJual?>)! Klik <a style="color:blue" href="../memstock/statustrans_sell.php?hl=<?=$vIDJual?>">di sini</a> untuk memproses.',
+   delay: false,
+   closeOnClick : false,
+   size : 'mini' 
+});
+<? } 
+}
+?>
    
 </script>
 
