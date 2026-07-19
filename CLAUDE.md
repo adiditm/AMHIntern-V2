@@ -122,3 +122,8 @@ UI uses Blade-syntax fragments from `framework/` (e.g., `manager_topnav.blade.ph
   - Corrected pagination page numbers link target from `historypo.php` to `approvesell.php`.
 - **Detail Pembelian (detjual.php)**:
   - Fixed display of "Alamat Kirim" (`frecname`, `falamatkrm`) and "HP No" (`frecnohp`) for pending referral orders (`tb_penjualan_temp_out`) by querying database directly via union of the three main tables in [detjual.php](file:///Z:/ProjectsX/AMHIntern/memstock/detjual.php).
+- **Integrasi Chat AI (Juli 2026)**:
+  - Merancang `Bahan/recommendation_ai.md` sebagai panduan integrasi AI.
+  - Membuat UI widget chat interaktif di `framework/chat_widget.blade.php`.
+  - Membuat backend proxy ke Gemini API (`gemini-flash-latest`) di `main/api_chat.php` (memanfaatkan metode `file_get_contents` untuk mem-bypass error `cURL SSL 20`).
+  - Menginjeksi widget secara global ke halaman login (`main/loginform.php`) dan admin/member (`framework/admin_footside.blade.php`).
