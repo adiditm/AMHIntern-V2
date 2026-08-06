@@ -312,6 +312,13 @@ if ($vCount=='') $vCount=1;
 	$vTotal=$_POST['hTotal'];
 	$vPaid = '0';
 	if ($lmMethod=='wpr') {
+		if ($vAminahkuSubmit) {
+			$db->query('ROLLBACK;');
+			$oSystem->jsAlert("Metode pembayaran Saldo Bonus hanya bisa dipergunakan untuk transaksi pebisnis sendiri, bukan memproses transaksi pembeli lain. Gunakan metode pembayaran yang lain.");
+			$oSystem->jsLocation("statustrans.php");
+			exit;
+		}
+
 		$vSalBizNow = $oMember->getMemFieldBis('fsaldovcr',$vUser);
 		if ($vSalBizNow < $vTotal) {
 			$db->query('ROLLBACK;');
@@ -651,6 +658,15 @@ function validRO() {
 		submitHandler: function() {
 		     var vSalProd=$('#hSalProd').val();
 			// alert($('#hTotal').val());
+
+			<? if ($vLoadAminahkuOut) { ?>
+			if ($('#lmMethod').val().trim()=='wpr') {
+				alert('Metode pembayaran Saldo Bonus hanya bisa dipergunakan untuk transaksi pebisnis sendiri, bukan memproses transaksi pembeli lain. Gunakan metode pembayaran yang lain.');
+				window.location.href = 'statustrans.php';
+				return false;
+			}
+			<? } ?>
+
 			if (parseFloat($('#hTotal').val()) > parseFloat(vSalProd) && $('#lmMethod').val().trim()=='wpr') {
 			    alert('Saldo Anda tidak mencukupi untuk pembelanjaan ini, silakan ganti metode pembayaran!');	
 				return false;
@@ -1783,9 +1799,9 @@ function zeroOngkir(){
            <option value="">--Pilih--</option>
            <option value="ctr">Cash / Transfer</option>
            <option value="wpr">Saldo Bonus</option>
-		   <? if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
+		   <? /* if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
            <option value="tva">Transfer Virtual Account</option>
-		   <? } ?>
+		   <? } */ ?>
            <!-- <option value="wtr">Wallet Product + Cash / Transfer</option> -->
          </select>
        </div>

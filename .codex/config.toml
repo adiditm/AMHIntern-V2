@@ -1,0 +1,10 @@
+[mcp_servers.caveman-shrink]
+command = "npx"
+args = [
+    "-y",
+    "caveman-shrink",
+]
+
+[mcp_servers.codebase-memory]
+command = "codebase-memory-mcp"
+args = ["serve"]

@@ -148,10 +148,10 @@ function amhStatLoadMergedList($pLogin, $pAwal, $pAkhir) {
 
 	$vList = array_values($vMap);
 	usort($vList, function ($a, $b) {
-		$vCmp = strcmp((string)$a['ftanggal'], (string)$b['ftanggal']);
+		$vCmp = strcmp((string)$b['ftanggal'], (string)$a['ftanggal']);
 		if ($vCmp != 0)
 			return $vCmp;
-		return strcmp((string)$a['fidpenjualan'], (string)$b['fidpenjualan']);
+		return strcmp((string)$b['fidpenjualan'], (string)$a['fidpenjualan']);
 	});
 	return $vList;
 }
@@ -440,6 +440,7 @@ function doMarkReceived(pIdTrx) {
             <td  width="15%" style="height: 24px" class="hide"><strong>Seller Username</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>Seller</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>&nbsp;Detail Product </strong></td>
+            <td width="15%" align="center" style="height: 24px"><strong>Cara Bayar</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Status</strong></td>
@@ -565,6 +566,21 @@ function doMarkReceived(pIdTrx) {
              else
                 $oJual->dispDetSell($vIdTrx);
             ?></div></td>
+            <td valign="top" style="vertical-align:top">
+            <?php
+            $vMethodDisplay = '';
+            if ($vMethod == 'ctr') {
+                $vMethodDisplay = 'Cash/Transfer';
+            } else if ($vMethod == 'tva') {
+                $vMethodDisplay = 'Transfer Virtual Account';
+            } else if ($vMethod == 'wpr') {
+                $vMethodDisplay = 'eWallet';
+            } else {
+                $vMethodDisplay = $vMethod;
+            }
+            echo $vMethodDisplay;
+            ?>
+            </td>
             <td valign="top" align="right"><?
              if ($vStat=='out')
                 $vOngkir = amhStatGetOngkirOut($vIdTrx);
@@ -621,7 +637,7 @@ function doMarkReceived(pIdTrx) {
             <td ><div align="right"><strong>Grand Total </strong></div></td>
             <td class="hide">&nbsp;</td>
             <td class="hide">&nbsp;</td>
-            <td colspan="4" ><div align="right"><strong>
+            <td colspan="5" ><div align="right"><strong>
               <?=number_format($vTotalJual,0,",",".")?>
             </strong></div></td>
             <td >&nbsp;</td>

@@ -565,7 +565,7 @@ function doReject(pIdSys,pIdTrx) {
 			 $vsql.=" union all select distinct 0 as fidsys, COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) as ftanggal, fidpenjualan, fidseller, fidmember, fketerangan, fongkir, 'out' as fstatus, fpaid, '0' as fsend, '0' as freceived, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan_temp_out where (ifnull(fprocessed,'0')='0' or ifnull(fprocessed,0)=0) ";
 			 $vsql.=" and (date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) >= '$vAwal' and date(COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal)) <= '$vAkhir' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) = '0000-00-00 00:00:00' or COALESCE(NULLIF(ftanggal,'0000-00-00 00:00:00'), NULLIF(ftglentry,'0000-00-00 00:00:00'), ftanggal) is null) " . $vSellerFilter;
 			 
-			 $vsql.=" order by ftanggal ";
+			 $vsql.=" order by ftanggal desc ";
 
 			 
 			 $vsql.="limit $vStartLimit ,$vBatasBaris ";

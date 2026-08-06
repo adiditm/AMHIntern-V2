@@ -56,7 +56,7 @@ $vCrit.=" and date(ftanggal) >= '$vAwal' and date(ftanggal) <= '$vAkhir'" ;
 
  $vsql="select distinct ftanggal, fidpenjualan,fidmember, fketerangan  from tb_penjualan where fidproduk not like 'KIT%' and fidmember='$vUserActive' ";
  $vsql.=$vCrit;
- $vsql.=" order by ftanggal ";
+ $vsql.=" order by ftanggal desc ";
  $db->query($vsql);
  $db->next_record();
  $vRecordCount=$db->num_rows();
@@ -306,7 +306,8 @@ function uploadFileX(transactionId) {
             <td  width="15%" style="height: 24px" class="hide"><strong>Seller Username</strong></td>
             <td align="center" style="width: 23%; height: 24px;"><strong>Pembeli</strong></td>
             <td width="12%" align="center" style="height: 24px"><strong>&nbsp;Detail Product </strong></td>
-            <td width="35%" align="center" style="height: 24px"><strong>Note</strong></td>
+            <td width="20%" align="center" style="height: 24px"><strong>Note</strong></td>
+            <td width="15%" align="center" style="height: 24px"><strong>Cara Bayar</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Ongkos Krm & Admin</strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Total Produk </strong></td>
             <td width="14%" align="center" style="height: 24px"><strong>Status</strong></td>
@@ -314,14 +315,14 @@ function uploadFileX(transactionId) {
           </tr>
           <? 
              $vNo=0;
-			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan where   1 and fidseller ='{$_SESSION['LoginUser']}' ";
+			 $vsql="select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '1' as fstatus, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan where   1 and fidseller ='{$_SESSION['LoginUser']}' ";
 			 $vsql.=$vCrit;
 
 			 
-			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan_temp where  1  and fidseller ='{$_SESSION['LoginUser']}' ";
+			 $vsql.=" union all select distinct ftanggal, fidpenjualan,fidseller,fidmember, fketerangan,fongkir, '0' as fstatus, fmethod, cast(ifnull(fprocessed,0) as char) as fprocessed from tb_penjualan_temp where  1  and fidseller ='{$_SESSION['LoginUser']}' ";
 			 $vsql.=$vCrit;
 			 
-			 $vsql.=" order by ftanggal ";
+			 $vsql.=" order by ftanggal desc ";
 
 			 
 			   $vsql.="limit $vStartLimit ,$vBatasBaris ";
@@ -342,6 +343,7 @@ function uploadFileX(transactionId) {
 				 $vKet=$db->f('fketerangan');
 				// $vOngkir=$db->f('fongkir');
 				 $vStat=$db->f('fstatus');
+				 $vMethod=$db->f('fmethod');
 				 $vFprocessed=trim((string)$db->f('fprocessed'));
 				 $vIdSys=$db->f('fidsys');
 				 $vIdTrx=$db->f('fidpenjualan');
@@ -403,7 +405,22 @@ function uploadFileX(transactionId) {
             <td class="hide" valign="top"><?=$db->f('fidseller')?></td>
             <td style="width: 23%" valign="top"><?=$vNama?></td>
             <td valign="top" nowrap><div align="left"><?=$oJual->dispDetSell($db->f('fidpenjualan'))?></div></td>
-            <td valign="top" style="vertical-align:top;witdh:30%"><?=$vKet?></td>
+            <td valign="top" style="vertical-align:top;width:20%"><?=$vKet?></td>
+            <td valign="top" style="vertical-align:top">
+            <?php
+            $vMethodDisplay = '';
+            if ($vMethod == 'ctr') {
+                $vMethodDisplay = 'Cash/Transfer';
+            } else if ($vMethod == 'tva') {
+                $vMethodDisplay = 'Transfer Virtual Account';
+            } else if ($vMethod == 'wpr') {
+                $vMethodDisplay = 'eWallet';
+            } else {
+                $vMethodDisplay = $vMethod;
+            }
+            echo $vMethodDisplay;
+            ?>
+            </td>
             <td valign="top" align="right"><?
              $vOngkir=$oJual->getOngkir($db->f('fidpenjualan'));
            
@@ -539,7 +556,7 @@ function uploadFileX(transactionId) {
             <td ><div align="right"><strong>Grand Total </strong></div></td>
             <td class="hide">&nbsp;</td>
             <td class="hide">&nbsp;</td>
-            <td colspan="5" ><div align="right"><strong>
+            <td colspan="6" ><div align="right"><strong>
               <?=number_format($vTotalJual,0,",",".")?>
             </strong></div></td>
             <td >&nbsp;</td>

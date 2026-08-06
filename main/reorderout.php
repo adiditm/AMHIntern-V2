@@ -52,13 +52,53 @@ if ($vCount=='') $vCount=1;
 		return 'https://aminahku.com';
 	}
 
-	function amhReorderoutFinish($pMessage) {
+	function amhReorderoutFinish($pMessage, $pNoJual = '', $pIDMember = '', $pTanggal = '') {
 		global $oSystem;
 		$vBack = amhReorderoutGetBackUrl();
 		unset($_SESSION['reorderout_back_url']);
 		$vMsg = str_replace(array("\\", "'"), array("\\\\", "\\'"), (string)$pMessage);
 		$vBackJs = str_replace(array("\\", "'"), array("\\\\", "\\'"), $vBack);
-		echo "<script language='JavaScript'>alert('{$vMsg}');window.location='{$vBackJs}';</script>";
+		
+		if ($pNoJual != '') {
+			$vUrlDet = "../memstock/detjual.php?uNoJual=" . urlencode($pNoJual) . "&uIDMember=" . urlencode($pIDMember) . "&uTanggal=" . urlencode($pTanggal) . "&src=reorderout";
+			echo "
+			<style>
+			.custom-modal-overlay {
+				position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+				background: rgba(0,0,0,0.6); z-index: 999999;
+				display: flex; justify-content: center; align-items: center;
+			}
+			.custom-modal-content {
+				background: #fff; width: 90%; max-width: 800px; height: 90%;
+				border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+				position: relative; overflow: hidden; display: flex; flex-direction: column;
+			}
+			.custom-modal-header {
+				padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #ddd;
+				display: flex; justify-content: space-between; align-items: center;
+			}
+			.custom-modal-header h4 { margin: 0; font-family: sans-serif; font-size: 16px; }
+			.custom-modal-close {
+				background: #dc3545; color: white; border: none; padding: 6px 15px;
+				border-radius: 4px; cursor: pointer; font-weight: bold;
+			}
+			.custom-modal-close:hover { background: #c82333; }
+			</style>
+			<div class='custom-modal-overlay'>
+				<div class='custom-modal-content'>
+					<div class='custom-modal-header'>
+						<h4>Detail Nota: $pNoJual</h4>
+						<button class='custom-modal-close' onclick='window.location=\"{$vBackJs}\"'>Tutup &amp; Lanjutkan</button>
+					</div>
+					<iframe src='{$vUrlDet}' style='width:100%; flex: 1; border:none;'></iframe>
+				</div>
+			</div>
+			<script language='JavaScript'>
+			alert('{$vMsg}');
+			</script>";
+		} else {
+			echo "<script language='JavaScript'>alert('{$vMsg}');window.location='{$vBackJs}';</script>";
+		}
 		exit;
 	}
  
@@ -172,7 +212,7 @@ if ($vCount=='') $vCount=1;
 	if ($vPhonePenerimaWa != '' && $vPhonePenerimaWa != '-')
 		$oSystem->sendWAMessage($vPhonePenerimaWa, $vBodyPenerimaWa);
 
-	amhReorderoutFinish("Permintaan order berhasil dengan ID $vNextJual. Pebisnis akan menyelesaikan pembayaran melalui akun login.");
+	amhReorderoutFinish("Permintaan order berhasil dengan ID $vNextJual. Pebisnis akan menyelesaikan pembayaran melalui akun login.", $vNextJual, $vBuyer, date('Y-m-d'));
    }
 
    $vBackUrl = amhReorderoutGetBackUrl();
@@ -854,7 +894,9 @@ function zeroOngkir(){
 									</div>
 									<div class="panel-body">
                                     <div class="form-group" style="margin-left:-15px" id="phonemailspon">
-										<div class="col-lg-6 col-md-6 divtr">
+										<div class="row">
+<div class="col-md-6">
+<div class="col-lg-12 col-md-12 divtr">
 											<label for="exampleInputEmail1">
 											ID 
 											Pebisnis * 
@@ -907,30 +949,7 @@ function zeroOngkir(){
 												</div>
 											</div>
 
-<div class="col-lg-6 col-md-6 divtr" >
-												<label for="exampleInputEmail1" >
-												<span style="font-weight:bold">Nama Penerima Barang *</span></label>
-												<div class="input-group">
-                                      <span class="input-group-addon"> <i class="fa fa-user"></i></span>
-													<input  type="text" class="form-control" id="tfRecName" name="tfRecName" placeholder="Nama Penerima">
-												</div>
-
-
-										  </div>
-                                            
-  <div class="col-lg-6 col-md-6 divtr" >
-												<label for="exampleInputEmail1" >
-												<span style="font-weight:bold">Alamat Lengkap Penerima *</span></label>
-												<div class="input-group">
-                                      <span class="input-group-addon"> <i class="fa fa-map"></i></span>
-													<input  type="text" class="form-control" id="tfRecAddr" name="tfRecAddr" placeholder="Contoh: Jl. Sawi 89 Jakarta">
-												</div>
-										  </div>
- 
- 
-
-
-                               <div class="col-lg-6 col-md-6 divtr" >
+<div class="col-lg-12 col-md-12 divtr" >
  
 
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Negara*</span></label>
@@ -963,9 +982,9 @@ function zeroOngkir(){
 
                               
 
-     							<div class="clearfix"></div>                    
+     							                    
 
-                               <div class="col-lg-6 col-md-6 divtr" id="divProp">
+                               <div class="col-lg-12 col-md-12 divtr" id="divProp">
 
                                <img id="loadProp"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
 
@@ -991,7 +1010,62 @@ function zeroOngkir(){
 
                               
 
-     						 <div class="col-lg-6 col-md-6 divtr" id="divKota">
+     						 <div class="col-lg-12 col-md-12 divtr" id="divKec">
+                                <img id="loadKeca"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Kecamatan*</span></label>
+                                <select class="form-control m-bot15" id="fkec" name="fkec" onChange="getOther(this);zeroOngkir()">
+                                <option  value="" selected="selected" >--Pilih / Choose--</option>
+                                <option  value="KX"  >Kec Lain</option>
+								</select>
+								<input style="display:none" type="text" class="form-control" id="tfkec" name="tfkec" placeholder="Other City">
+                               </div>
+                               
+                         
+<div class="col-lg-12 col-md-12 divtr" id="divPack">
+                                <img id="loadPack"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Jenis Paket*</span></label>
+                                <select class="form-control m-bot15" id="fpack" name="fpack" onChange="getOngkir(this);calcTot()">
+                                <option  value="" selected="selected" >--Pilih / Choose--</option>
+                                
+								</select>
+								
+                               </div>
+                                              
+<div class="col-lg-12 col-md-12 divtr" >
+												<label for="exampleInputEmail1" >
+												<span style="font-weight:bold">Berat Total (gr) *</span></label>
+												<div class="input-group">
+                                      <span class="input-group-addon"> <i class="fa fa-money"></i></span>
+													<input  type="text" class="form-control" id="tfBerat" name="tfBerat"  value="0" readonly>
+												</div>
+										  </div>
+
+		</div>
+<div class="col-md-6">
+<div class="col-lg-12 col-md-12 divtr" >
+												<label for="exampleInputEmail1" >
+												<span style="font-weight:bold">Nama Penerima Barang *</span></label>
+												<div class="input-group">
+                                      <span class="input-group-addon"> <i class="fa fa-user"></i></span>
+													<input  type="text" class="form-control" id="tfRecName" name="tfRecName" placeholder="Nama Penerima">
+												</div>
+
+
+										  </div>
+                                            
+  <div class="col-lg-12 col-md-12 divtr" >
+												<label for="exampleInputEmail1" >
+												<span style="font-weight:bold">Alamat Lengkap Penerima *</span></label>
+												<div class="input-group">
+                                      <span class="input-group-addon"> <i class="fa fa-map"></i></span>
+													<input  type="text" class="form-control" id="tfRecAddr" name="tfRecAddr" placeholder="Contoh: Jl. Sawi 89 Jakarta">
+												</div>
+										  </div>
+ 
+ 
+
+
+                               <div class="col-lg-12 col-md-12 divtr" id="divKota">
                                 <img id="loadKota"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Kabupaten/Kota*</span></label>
                                 <select class="form-control m-bot15" id="fkota" name="fkota" onChange="prepareKeca(this);zeroOngkir()">
@@ -1003,18 +1077,7 @@ function zeroOngkir(){
 
                               
 
-<div class="col-lg-6 col-md-6 divtr" id="divKec">
-                                <img id="loadKeca"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Kecamatan*</span></label>
-                                <select class="form-control m-bot15" id="fkec" name="fkec" onChange="getOther(this);zeroOngkir()">
-                                <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                <option  value="KX"  >Kec Lain</option>
-								</select>
-								<input style="display:none" type="text" class="form-control" id="tfkec" name="tfkec" placeholder="Other City">
-                               </div>
-                               
-                         
-<div class="col-lg-6 col-md-6 divtr" id="divExpe">
+<div class="col-lg-12 col-md-12 divtr" id="divExpe">
                                 <img id="loadexpe"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Expedisi*</span></label>
   <select class="form-control m-bot15 " id="fexpe" name="fexpe" onChange="getPaket(this);zeroOngkir()">
@@ -1028,17 +1091,7 @@ function zeroOngkir(){
                                </div>                               
                                                                                       
  
- <div class="col-lg-6 col-md-6 divtr" id="divPack">
-                                <img id="loadPack"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Jenis Paket*</span></label>
-                                <select class="form-control m-bot15" id="fpack" name="fpack" onChange="getOngkir(this);calcTot()">
-                                <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                
-								</select>
-								
-                               </div>
-                                              
-<div class="col-lg-6 col-md-6 divtr" >
+ <div class="col-lg-12 col-md-12 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">No HP Penerima Barang *</span></label>
 												<div class="input-group">
@@ -1047,16 +1100,7 @@ function zeroOngkir(){
 												</div>
 										  </div>
 
-<div class="col-lg-6 col-md-6 divtr" >
-												<label for="exampleInputEmail1" >
-												<span style="font-weight:bold">Berat Total (gr) *</span></label>
-												<div class="input-group">
-                                      <span class="input-group-addon"> <i class="fa fa-money"></i></span>
-													<input  type="text" class="form-control" id="tfBerat" name="tfBerat"  value="0" readonly>
-												</div>
-										  </div>
-
-		<div class="col-lg-6 col-md-6 divtr" >
+<div class="col-lg-12 col-md-12 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">Biaya/Ongkos Kirim *</span></label>
 												<div class="input-group">
@@ -1067,6 +1111,8 @@ function zeroOngkir(){
                                           
                                           
                                           
+</div>
+</div>
 										</div>
 				</div>
 				     
