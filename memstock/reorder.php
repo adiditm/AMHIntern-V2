@@ -215,6 +215,12 @@ if ($vCount=='') $vCount=1;
             $vOutPack = $db->f('fpack');
             $vOutOngkir = (float)$db->f('fongkir');
             $vOutBerat = (float)$db->f('fberat');
+            $vOutMethod = trim((string)$db->f('fmethod'));
+            $vOutKeterangan = trim((string)$db->f('fketerangan'));
+            $vOutBank = '';
+            if (preg_match('/Tujuan Transfer:\s*(.+)$/i', $vOutKeterangan, $matches)) {
+                $vOutBank = trim($matches[1]);
+            }
             if ($db->f('fidseller') != '') {
                $vSeller = $db->f('fidseller');
                $vSellerName = amhGetSellerNama($vSeller);
@@ -377,7 +383,7 @@ if ($vCount=='') $vCount=1;
 		if ($vNamaPebisnisWa == '')
 			$vNamaPebisnisWa = trim((string)$vUser);
 
-		$vBodyPebisnisWa = "AMHTECHNO\n\nYth. " . $vNamaPebisnisWa . ", pembelian " . $vNextJual . " (Cash/Transfer) telah dicatat.\n\n";
+		$vBodyPebisnisWa = "AMHTECHNO\n\nYth. " . $vNamaPebisnisWa . ", pembelian " . $vNextJual . " (Transfer) telah dicatat.\n\n";
 		if ($vBankDestCtr != '') {
 			$vBodyPebisnisWa .= 'Silakan info ke pembeli Anda untuk mentransfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan berikut: ' . $vBankDestCtr . '. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
 		} else {
@@ -388,7 +394,7 @@ if ($vCount=='') $vCount=1;
 		$vNamaPenerimaWa = trim((string)$tfRecName);
 		if ($vNamaPenerimaWa == '')
 			$vNamaPenerimaWa = 'Bapak/Ibu';
-		$vBodyPenerimaWa = "AMHTECHNO\n\nYth. " . $vNamaPenerimaWa . ", pembelian " . $vNextJual . " (Cash/Transfer) telah dicatat.\n\n";
+		$vBodyPenerimaWa = "AMHTECHNO\n\nYth. " . $vNamaPenerimaWa . ", pembelian " . $vNextJual . " (Transfer) telah dicatat.\n\n";
 		if ($vBankDestCtr != '') {
 			$vBodyPenerimaWa .= 'Silakan transfer dana sebesar Rp' . $vTotalRpFmt . ' ke rekening/tujuan berikut: ' . $vBankDestCtr . '. Sertakan kode pembelian ' . $vNextJual . ' di berita transfer. Order akan diproses setelah admin menyetujui pembayaran.';
 		} else {
@@ -416,7 +422,7 @@ if ($vCount=='') $vCount=1;
 			$vAdminNumbersCtr[] = $vAdminCsCtr;
 		$vAdminNumbersCtr = array_values(array_unique($vAdminNumbersCtr));
 		if (count($vAdminNumbersCtr) > 0) {
-			$vBodyAdminCtr = 'Yth. Admin, ada transaksi AMHTECHNO metode Cash/Transfer dari pebisnis [' . $vNamaPebisnisCtr . ']';
+			$vBodyAdminCtr = 'Yth. Admin, ada transaksi AMHTECHNO metode Transfer dari pebisnis [' . $vNamaPebisnisCtr . ']';
 			if ($vBankDestCtr != '')
 				$vBodyAdminCtr .= "\nTujuan pembayaran: " . $vBankDestCtr;
 			$vBodyAdminCtr .= "\n\nNomor Order: " . $vNextJual . "\n";
@@ -596,7 +602,7 @@ function amhReorderSetBankFeeByMethod(pMethodVal) {
 
 function changeRek(pThis){
     $('#loadRek').show();
-	var vDefault = '<option value="">--Pilih--</option><option value="CASH">Cash</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
+	var vDefault = '<option value="">--Pilih--</option><option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option><option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option><option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>';
 
 	var vBankList ='';
 	
@@ -698,7 +704,15 @@ $(document).ready(function(){
   $('#frmReg input, #frmReg textarea,  #frmReg select, #frmReg checkbox, #frmReg radio').not([type="submit"]).not($("#tfNPWP")).not($("#tEmail")).not($("#tfSwift")).not($("#tfEmailSpon")).addClass('required');  
   <? if ($vLoadAminahkuOut) { ?>
   $('#caption').html('Proses Order Referral Aminahku [<?=htmlspecialchars($vAminahkuOutId, ENT_QUOTES, 'UTF-8')?>]');
-  $('#lmMethod').val('');
+  if ('<?=htmlspecialchars($vOutMethod, ENT_QUOTES, 'UTF-8')?>' !== '') {
+      $('#lmMethod').val('<?=htmlspecialchars($vOutMethod, ENT_QUOTES, 'UTF-8')?>');
+      $('#lmMethod').trigger('change');
+      if ('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>' !== '') {
+          $('#lmBank').val('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>');
+      }
+  } else {
+      $('#lmMethod').val('');
+  }
   $('#fexpe').select2();
   amhPrefillAminahkuWilayah();
   <? } else { ?>
@@ -1797,7 +1811,7 @@ function zeroOngkir(){
          <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
          <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
            <option value="">--Pilih--</option>
-           <option value="ctr">Cash / Transfer</option>
+           <option value="ctr">Transfer</option>
            <option value="wpr">Saldo Bonus</option>
 		   <? /* if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
            <option value="tva">Transfer Virtual Account</option>

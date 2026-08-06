@@ -140,6 +140,13 @@ if ($vCount=='') $vCount=1;
    $vMailFrom=$oRules->getSettingByField('fmailadmin');
    $vUserHO = $oRules->getSettingByField('fuserho');
 
+   $vBank1 = $oRules->getSettingByField('fbank');
+   $vBank2 = $oRules->getSettingByField('fbank2');
+   $vBank3 = $oRules->getSettingByField('fbank3');
+   $vRekBank1 = $oRules->getSettingByField('frekbank1');
+   $vRekBank2 = $oRules->getSettingByField('frekbank2');
+   $vRekBank3 = $oRules->getSettingByField('frekbank3');
+
 
  /*  if ($vPriv=='member')
       $vSeller = $vUserHO;
@@ -169,8 +176,12 @@ if ($vCount=='') $vCount=1;
     $vAlamat=$_POST['tfRecAddr'];
     $vMainTable='tb_penjualan_temp_out';
     $vProcessed='0';
-    $vMethod='';
+    $vMethod=isset($_POST['lmMethod']) ? trim((string)$_POST['lmMethod']) : '';
+    $vBank=isset($_POST['lmBank']) ? trim((string)$_POST['lmBank']) : '';
     $vKeterangan='Order dari link luar (menunggu pebisnis)';
+    if ($vMethod == 'ctr' && $vBank != '') {
+        $vKeterangan .= ' - Tujuan Transfer: ' . $vBank;
+    }
     $vPaid='0';
 
     $oSystem->smtpmailer('japri_s@yahoo.com',$vMailFrom,'Onotoko',"Entri RO luar oleh $vUser",print_r($_POST,true)."\n\n\n".print_r($vCartItems,true),'','',false);
@@ -1228,7 +1239,21 @@ function zeroOngkir(){
                             <div class="col-md-6 form-group ">
 
 										<label style="font-weight:bold">Total Purchased : <span id="totalpurc"></span> <span id="spcurr">IDR</span><span id="samaconvert"></span><span id="convert"></span><span id="currconvert"></span></label>
-                                    <p class="text-muted" style="margin-top:8px;">Metode pembayaran akan ditentukan oleh pebisnis setelah transaksi ditindak lanjuti.</p>
+                                    <div class="form-group" style="margin-top: 15px;">
+                                       <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
+                                       <select name="lmMethod" id="lmMethod" class="form-control">
+                                          <option value="ctr">Transfer</option>
+                                       </select>
+                                    </div>
+                                    <div class="form-group" style="margin-top: 10px;">
+                                       <label style="color:blue" for="lmBank">Pilih Rekening / Tujuan</label>
+                                       <select name="lmBank" id="lmBank" class="form-control" required>
+                                          <option value="">--Pilih--</option>
+                                          <option value="<?=$vBank1?> <?=$vRekBank1?>"><?=$vBank1?> <?=$vRekBank1?></option>
+                                          <option value="<?=$vBank2?> <?=$vRekBank2?>"><?=$vBank2?> <?=$vRekBank2?></option>
+                                          <option value="<?=$vBank3?> <?=$vRekBank3?>"><?=$vBank3?> <?=$vRekBank3?></option>
+                                       </select>
+                                    </div>
                                     <div class="form-inline" id="divCurr" style="display:none"> <label style="font-weight:bold">Currency : </label>	 <select name="lmCurr" id="lmCurr" class="form-control" style="width:85px;" onChange="setCurr(this.value,$('#hTotal').val());">
                      <?
                          $vSQL="select distinct  frateto from tb_exrate order by frateto";

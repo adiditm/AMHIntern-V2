@@ -611,9 +611,9 @@ function doMarkReceived(pIdTrx) {
             <td nowrap="nowrap">&nbsp;
               <input type="button" class="btn btn-xs btn-success" name="button" id="button" value="Detail Receipt" onClick="printTrx('<?=$vIdTrx?>','<?=$vTanggal?>','<?=$vIdMember?>')">
               <? 
-                 $vCanProsesAminahku = ($_SESSION['Priv']=='sponsor' && $vFprocessed=='0' && trim((string)$vMethod)===''
+                 $vCanProsesAminahku = ($_SESSION['Priv']=='sponsor' && $vFprocessed=='0'
                     && ($vFuserid=='aminahku' || stripos($vKet, 'link luar') !== false)
-                    && ($vStat=='out' || $vStat=='0'));
+                    && ($vStat=='out' || ($vStat=='0' && trim((string)$vMethod)==='')));
                  if ($vCanProsesAminahku) {
                    $vProcOut = rawurlencode($vIdTrx);
                    $vCurMenu = isset($_GET['current']) ? htmlspecialchars($_GET['current'], ENT_QUOTES, 'UTF-8') : 'mdm_pebisnis';
