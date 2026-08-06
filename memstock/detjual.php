@@ -10,7 +10,7 @@
 	include_once CLASS_DIR."jualclass.php";
 	include_once CLASS_DIR."komisiclass.php";
 	
-	 if ($_SESSION['LoginUser']=="") {
+	 if (empty($_SESSION['LoginUser']) && (!isset($_GET['src']) || $_GET['src'] !== 'reorderout')) {
 		$oSystem->jsAlert("Not Authorized");
 		//$oSystem->jsLocation("logout.php");
 		$oSystem->jsCloseWin();
@@ -434,8 +434,22 @@
 
   <? } ?>
   <br>
+  <? if ($vMethod == 'ctr' || $vMethod == 'mTrans' || $vTrxMeta['ftable'] == 'out') { ?>
+  <div class="style1" style="padding:10px; border:1px dashed #ccc; background-color:#f9f9f9; display:inline-block;">
+    Pembayaran dianggap sah, jika masuk ke rekening perusahaan PT. Aminah<br>
+    ( konfirmasi bukti pembayaran )<br><br>
+    BCA 778 2822 888<br>
+    MANDIRI 141 000 036 6996<br>
+    BRI 0584 01001297305
+  </div>
   <br>
+  <? } ?>
   <br>
+  <div style="text-align: center; margin: 20px 0; font-weight: bold; color: #d9534f; font-size: 16px;">
+      Silakan simpan nota ini untuk referensi Anda!
+  </div>
+  <br>
+
 </form>
 <span style="font-family: Verdana, Arial, Helvetica, sans-serif">
 <iframe width=188 height=166 name="gToday:datetime:agenda.js:gfPop:plugins_timeSec.js" id="gToday:datetime:agenda.js:gfPop:plugins_time.js" src="ipopeng.htm" scrolling="no" frameborder="0" style="visibility:visible; z-index:999; position:absolute; top:-500px; left:-500px;">
