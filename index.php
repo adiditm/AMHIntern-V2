@@ -1,6 +1,8 @@
 <?php
     error_reporting (E_ALL ^ E_NOTICE);
-    session_start();
+echo "Anu";
+exit;    
+session_start();
     include_once("server/config.php");
 
 	if ($_SESSION['LoggedIn']=="Yes") {
