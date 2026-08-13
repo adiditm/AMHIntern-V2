@@ -2,9 +2,9 @@
     $vHost=$_SERVER['HTTP_HOST'];
  //$vRoot=getcwd().'/';
  if (preg_match("/trial.amhtechno/i",$vHost))
- 		$vRoot='/home/amhtechno/public_html/trial.amhtechno.com/';
+ 		$vRoot='/home/amhtechno/public_html/v2.amhtechno.com/';
  else		
- 		$vRoot='/home/amhtechno/public_html/intern.amhtechno.com/';
+ 		$vRoot='/home/amhtechno/public_html/v2.amhtechno.com/';
 		//$vRoot='/home/coidotoko/public_html/xsystem/';
  
 
@@ -20,11 +20,11 @@
  $CLASS_DIR = DOC_ROOT.'classes/';
  include_once($CLASS_DIR."systemclass.php");
 
-  if (preg_match("/training.amhtechno/i",$vHost)){  
+  if (preg_match("/v2.amhtechno/i",$vHost)){  
         class DB_Example extends DB_MySQL {
 			var $Host     = "localhost";
-			var $Database = "amhtechn_intrain";
-			var $User     = "amhtechn_intrain";
+			var $Database = "amhtechno_inv2";
+			var $User     = "amhtechno_inv2";
 			var $Password = "j4l4nm4sihp4nj4ng";     
         }
         $vMarkDev="TRAINING SITE";

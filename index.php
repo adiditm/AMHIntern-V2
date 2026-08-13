@@ -1,7 +1,6 @@
 <?php
     error_reporting (E_ALL ^ E_NOTICE);
-echo "Anu";
-exit;    
+   
 session_start();
     include_once("server/config.php");
 
