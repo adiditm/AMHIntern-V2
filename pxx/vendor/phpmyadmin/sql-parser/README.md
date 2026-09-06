@@ -4,9 +4,9 @@ A validating SQL lexer and parser with a focus on MySQL dialect.
 
 ## Code status
 
-[![Build Status](https://travis-ci.org/phpmyadmin/sql-parser.svg?branch=master)](https://travis-ci.org/phpmyadmin/sql-parser)
+![Tests](https://github.com/phpmyadmin/sql-parser/workflows/Run%20tests/badge.svg?branch=QA)
 [![Code Coverage](https://scrutinizer-ci.com/g/phpmyadmin/sql-parser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/phpmyadmin/sql-parser/?branch=master)
-[![codecov.io](https://codecov.io/github/phpmyadmin/sql-parser/coverage.svg?branch=master)](https://codecov.io/github/phpmyadmin/sql-parser?branch=master)
+[![codecov.io](https://codecov.io/github/phpmyadmin/sql-parser/coverage.svg?branch=QA)](https://codecov.io/github/phpmyadmin/sql-parser?branch=QA)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/phpmyadmin/sql-parser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/phpmyadmin/sql-parser/?branch=master)
 [![Translation status](https://hosted.weblate.org/widgets/phpmyadmin/-/svg-badge.svg)](https://hosted.weblate.org/engage/phpmyadmin/?utm_source=widget)
 [![Packagist](https://img.shields.io/packagist/dt/phpmyadmin/sql-parser.svg)](https://packagist.org/packages/phpmyadmin/sql-parser)
@@ -16,7 +16,7 @@ A validating SQL lexer and parser with a focus on MySQL dialect.
 
 Please use [Composer][1] to install:
 
-```
+```sh
 composer require phpmyadmin/sql-parser
 ```
 
@@ -47,6 +47,13 @@ Command line utility to tokenize SQL query:
 ./vendor/bin/tokenize-query --query "SELECT 1"
 ```
 
+All commands are able to parse input from stdin (standard in), such as:
+
+```sh
+echo "SELECT 1" | ./vendor/bin/highlight-query
+cat example.sql | ./vendor/bin/lint-query
+```
+
 ### Formatting SQL query
 
 ```php
@@ -69,7 +76,7 @@ echo $flags['querytype'];
 ### Parsing and building SQL query
 
 ```php
-require __DIR__."/vendor/autoload.php";
+require __DIR__ . '/vendor/autoload.php';
 
 $query1 = "select * from a";
 $parser = new PhpMyAdmin\SqlParser\Parser($query1);
@@ -96,12 +103,12 @@ var_dump($query2); // outputs string(19) "SELECT  * FROM "b" "
 
 ## Localization
 
-You can localize error messages installing `phpmyadmin/motranslator` version `3.0` or newer:
+You can localize error messages installing `phpmyadmin/motranslator` version `4.0` or newer:
 ```sh
-composer require phpmyadmin/motranslator:^3.0
+composer require phpmyadmin/motranslator:^4.0
 ```
 
-The locale is automatically detected from your enrivonment, you can also set a different locale
+The locale is automatically detected from your environment, you can also set a different locale
 
 **From cli**:
 ```sh
@@ -110,7 +117,7 @@ LC_ALL=pl ./vendor/bin/lint-query --query "SELECT 1"
 
 **From php**:
 ```php
-require __DIR__."/vendor/autoload.php";
+require __DIR__ . '/vendor/autoload.php';
 
 $GLOBALS['lang'] = 'pl';
 

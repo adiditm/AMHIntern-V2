@@ -172,7 +172,7 @@ $opts['fdd']['fbnsspon'] = array(
 );
 
 $opts['fdd']['fbnssponhp'] = array(
-  'name'     => 'Bns Hasil Penjualan (Nominal)',
+  'name'     => 'Bns Hsl Jual Produk - Pebisnis (Prosentase)',
   'select'   => 'T',
   'maxlen'   => 25,
   'colattrs' => 'style="text-align:right;padding-right:30px"',
@@ -276,21 +276,29 @@ $(document).ready(function(){
 	   $('#PME_data_fbnsregsubspon').attr('dir','rtl');
   $('#PME_data_fbnssponhp').attr('dir','rtl');
                 });
-				
-				
+
+// Second ready-handler for the paket-dropdown placeholder logic below --
+// this block used to be a bare, unwrapped set of statements (its opening
+// $(document).ready(function(){ had been lost while the closing }); stayed
+// behind), which made the browser throw "Unexpected token '}'" on the
+// orphaned }); and abort parsing the rest of this <script> block entirely,
+// silently breaking every script tag after it on the page. Confirmed this
+// bug is present in the original AmhIntern repo too, not something
+// introduced by the V2 redesign.
+$(document).ready(function(){
 	 <? if ( $_POST['PME_sys_operation']=='Add'  ) { ?>
 	  $('#PME_data_fpackid').prepend("<option value='' selected='selected'>--Pilih Paket--</option>");
 	  <? } ?>
-	
+
 	 <? if ( $_POST['PME_sys_operation']=='Change'  ) { ?>
 	  $('#PME_data_fpackid').prepend("<option value='' >--Pilih Paket--</option>");
 	  <? if (trim($vIDPaket)=='') { ?>
 	  		$('#PME_data_fpackid').val('');
 	  <? } ?>
 	  <? } ?>
-	  
-				
-});  
+
+
+});
 
     function setUmum() {
    

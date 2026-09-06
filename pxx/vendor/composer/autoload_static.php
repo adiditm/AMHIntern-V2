@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01
+class ComposerStaticInit3199a2d18f5fba981addb1142bd22d5b
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -152,6 +152,7 @@ class ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
@@ -171,10 +172,10 @@ class ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInita28629400f69f0a1c61616c7b7ff5e01::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3199a2d18f5fba981addb1142bd22d5b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3199a2d18f5fba981addb1142bd22d5b::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3199a2d18f5fba981addb1142bd22d5b::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3199a2d18f5fba981addb1142bd22d5b::$classMap;
 
         }, null, ClassLoader::class);
     }

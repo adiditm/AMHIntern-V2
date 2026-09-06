@@ -83,7 +83,20 @@ if ($vCount=='') $vCount=1;
 				border-radius: 4px; cursor: pointer; font-weight: bold;
 			}
 			.custom-modal-close:hover { background: #c82333; }
-			</style>
+			
+/* This page's Provinsi/Kabupaten-Kota/Kecamatan/Expedisi (and similar)
+   selects are enhanced by the Select2 plugin (vendor/select2), which
+   hides the real <select> (1px, aria-hidden) and renders its own markup
+   instead (.select2-container > .select2-selection__rendered) --
+   confirmed live via DOM inspection, which is why the .right_col select
+   background rule above never had any visual effect: it was styling an
+   invisible element. Select2's bundled default theme CSS hardcodes a
+   white box, so it needs its own override, not just the plain <select>
+   one. The open dropdown *list* (.select2-dropdown / .select2-results)
+   is appended to <body> by Select2, not inside .right_col, so those
+   selectors are intentionally unscoped here -- safe since this whole
+   block only ever loads on this one page. */
+</style>
 			<div class='custom-modal-overlay'>
 				<div class='custom-modal-content'>
 					<div class='custom-modal-header'>
@@ -670,7 +683,7 @@ function checkKitSpon(pParam) {
 		   vEmail=vNamaS[3];
 		   vAlamat=vNamaS[4];
          
-         $('#statKitSpon').html('<font color="#00f">Pebisnis valid!</font>');
+         $('#statKitSpon').html('<font color="#38bdf8">Pebisnis valid!</font>');
          $('#tfSponsor').val(vNama);
          $('#tfPhoneSpon').val(vPhone);
          $('#tfEmailSpon').val(vEmail);
@@ -698,7 +711,7 @@ function checkKitSpon(pParam) {
 				var vAddrParts = data.split('|');
 				var vWilLabel = (vAddrParts.length >= 3) ? $.trim(vAddrParts[2]) : '';
 				var vWilText = (vWilLabel !== '') ? ': ' + vWilLabel : '';
-			 	$('#statAddr').html('<font color="#060">, alamat seller (<?=htmlspecialchars($vSellerName, ENT_QUOTES, 'UTF-8')?>)' + vWilText + '</font><input type="hidden" name="hSeller" id="hSeller" value="<?=$vSeller?>">');
+			 	$('#statAddr').html('<font color="#34d399">, alamat seller (<?=htmlspecialchars($vSellerName, ENT_QUOTES, 'UTF-8')?>)' + vWilText + '</font><input type="hidden" name="hSeller" id="hSeller" value="<?=$vSeller?>">');
 			 } else {
 				 alert('Seller belum diset untuk produk ini, atau alamat seller (<?=$vSellerName?>) tidak valid, transaksi tidak dapat dilanjutkan. Hubungi admin untuk update data seller!');
 				 
@@ -881,6 +894,119 @@ function zeroOngkir(){
 
 
 
+<!-- Dark/gold redesign theme, applied locally to this page only -- this
+     page uses framework/outer_headside.blade.php (the old un-redesigned
+     public-facing header, shared with a few other pages not yet reviewed
+     for this theme), not admin_headside.blade.php, so it never got
+     design-system.css or the body.amh-theme class the redesigned internal
+     pages get automatically. Rather than editing that shared header (and
+     risking those other pages), both are added here, scoped to just this
+     page: linking the stylesheet directly (valid placement even in body
+     for every real browser) and toggling the body class via a tiny inline
+     script. This page already has the same .right_col wrapper the
+     stylesheet's dark form-control/panel overrides target, so no markup
+     rewrite is needed -- it inherits the same look memstock/reorder.php
+     already has. -->
+<link href="../css/design-system.css" rel="stylesheet">
+<script>document.body.classList.add('amh-theme');</script>
+<style>
+/* Plain (non-component-class) text like <h3>/<label>/<span> inside
+   .right_col has no color rule in design-system.css by design (it
+   deliberately avoids a blanket color rule there, since most manager/
+   pages using .right_col are still old white-panel markup that would
+   become unreadable with light text forced on). This page IS fully
+   themed now though (every visible panel/input already comes from the
+   same stylesheet's .right_col-scoped rules), so its own plain text needs
+   the same light color explicitly, or it renders as default dark-on-dark
+   -- confirmed live (the "Pembelian Barang / Jasa" heading was nearly
+   invisible before this). Setting color on the .right_col container
+   itself lets every plain descendant inherit it, while anything with its
+   own explicit color (e.g. the green "Pebisnis valid!" message) keeps
+   its own -- inline/more-specific styles still win over inheritance. */
+.right_col { color: var(--amh-text); }
+/* custom.min.css has a MORE SPECIFIC selector for the same element
+   (`body .container.body .right_col`, specificity 0-3-1) than
+   design-system.css's plain `.right_col { background: transparent }`
+   (0-1-0) -- confirmed live via document.styleSheets: the old rule
+   (#F7F7F7) was winning despite loading first, purely on
+   specificity, leaving light text on a near-white background.
+   !important here is the simplest reliable way to win regardless
+   of selector specificity, safely scoped to this page only. */
+.right_col { background: transparent !important; }
+/* Some mobile browsers (confirmed: real-device testing) keep a native,
+   OS-drawn <select> "closed" appearance that ignores the background-color
+   design-system.css already sets on it (.right_col select), rendering it
+   white/light regardless -- desktop Chrome was fine, the gap only showed
+   up on an actual phone. appearance:none hands full control to CSS
+   instead of the OS, and the custom chevron replaces the native arrow
+   appearance:none also removes. */
+.right_col select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 1rem !important;
+  padding-right: 2.25rem !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+.right_col select:disabled,
+.right_col select[readonly] {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+/* This page's Provinsi/Kabupaten-Kota/Kecamatan/Expedisi (and similar)
+   selects are enhanced by the Select2 plugin (vendor/select2), which
+   hides the real <select> (1px, aria-hidden) and renders its own markup
+   instead (.select2-container > .select2-selection__rendered) --
+   confirmed live via DOM inspection, which is why the .right_col select
+   background rule above never had any visual effect: it was styling an
+   invisible element. Select2's bundled default theme CSS hardcodes a
+   white box, so it needs its own override, not just the plain <select>
+   one. The open dropdown *list* (.select2-dropdown / .select2-results)
+   is appended to <body> by Select2, not inside .right_col, so those
+   selectors are intentionally unscoped here -- safe since this whole
+   block only ever loads on this one page. */
+
+.select2-container .select2-selection--single {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 0.75rem !important;
+  height: 42px !important;
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+  color: #fff !important;
+  line-height: 40px !important;
+  padding-left: 12px !important;
+}
+.select2-container .select2-selection--single .select2-selection__arrow {
+  height: 40px !important;
+}
+.select2-container .select2-selection--single .select2-selection__arrow b {
+  border-color: #e2e8f0 transparent transparent transparent !important;
+}
+.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-color: transparent transparent #e2e8f0 transparent !important;
+}
+.select2-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+.select2-results__option {
+  color: #e2e8f0 !important;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: rgba(56,189,248,0.25) !important;
+  color: #fff !important;
+}
+.select2-search--dropdown .select2-search__field {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+</style>
 <div class="right_col" role="main">
 		<div><label><h3>Pembelian Barang / Jasa</h3></label></div> 
 
@@ -906,8 +1032,14 @@ function zeroOngkir(){
 									<div class="panel-body">
                                     <div class="form-group" style="margin-left:-15px" id="phonemailspon">
 										<div class="row">
-<div class="col-md-6">
-<div class="col-lg-12 col-md-12 divtr">
+<!-- The left/right two-column split (col-md-6 wrappers) that used to be
+     here was removed -- every field below is now a direct full-width
+     (col-lg-12/col-md-12) sibling, so the form is a single column at
+     every screen size instead of splitting into two side-by-side halves
+     on wider viewports (which kept causing field-order/alignment bugs
+     whenever fields were reordered, since each column's stacking order
+     was independent of the other's). -->
+<div class="col-lg-6 col-md-6 divtr">
 											<label for="exampleInputEmail1">
 											ID 
 											Pebisnis * 
@@ -960,7 +1092,7 @@ function zeroOngkir(){
 												</div>
 											</div>
 
-<div class="col-lg-12 col-md-12 divtr" >
+<div class="col-lg-6 col-md-6 divtr" >
  
 
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Negara*</span></label>
@@ -995,11 +1127,11 @@ function zeroOngkir(){
 
      							                    
 
-                               <div class="col-lg-12 col-md-12 divtr" id="divProp">
+                               <div class="col-lg-6 col-md-6 divtr" id="divProp">
 
                                <img id="loadProp"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
 
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Propinsi*</span></label>
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Provinsi*</span></label>
 
                                                                 <select class="form-control m-bot15" id="fprop" name="fprop" onChange="prepareKota(this);zeroOngkir()">
 
@@ -1021,7 +1153,25 @@ function zeroOngkir(){
 
                               
 
-     						 <div class="col-lg-12 col-md-12 divtr" id="divKec">
+     						 <!-- Kabupaten/Kota moved here (was further down, after Nama/Alamat) to sit
+     right after Provinsi -- prepareKota() (Provinsi's onChange) populates
+     THIS field's options, and this field's own onChange populates
+     Kecamatan's, so the visual/DOM order now matches the real
+     Provinsi -> Kota -> Kecamatan dependency chain instead of showing
+     Kecamatan (empty/non-functional until Kota is picked) before Kota
+     even appears -- confirmed live on mobile, where col-lg-12/col-md-12
+     fields stack in DOM order. -->
+<div class="col-lg-6 col-md-6 divtr" id="divKota">
+                                <img id="loadKota"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Kabupaten/Kota*</span></label>
+                                <select class="form-control m-bot15" id="fkota" name="fkota" onChange="prepareKeca(this);zeroOngkir()">
+                                <option  value="" selected="selected" >--Pilih / Choose--</option>
+                                <option  value="KX"  >Kota Lain</option>
+								</select>
+								<input style="display:none" type="text" class="form-control" id="tfkota" name="tfkota" placeholder="Other City">
+                               </div>
+
+<div class="col-lg-6 col-md-6 divtr" id="divKec">
                                 <img id="loadKeca"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Kecamatan*</span></label>
                                 <select class="form-control m-bot15" id="fkec" name="fkec" onChange="getOther(this);zeroOngkir()">
@@ -1032,7 +1182,20 @@ function zeroOngkir(){
                                </div>
                                
                          
-<div class="col-lg-12 col-md-12 divtr" id="divPack">
+<div class="col-lg-6 col-md-6 divtr" id="divExpe">
+                                <img id="loadexpe"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Expedisi*</span></label>
+  <select class="form-control m-bot15 " id="fexpe" name="fexpe" onChange="getPaket(this);zeroOngkir()">
+                                <option  value="" selected="selected" >--Pilih / Choose--</option>
+                                <option  value="jne">JNE</option>
+                                <option  value="jnt">JNT</option>
+                                <option  value="wahana">Wahana</option>
+                                <option  value="pos">POS Indonesia</option>
+								</select>
+								
+                               </div>
+
+<div class="col-lg-6 col-md-6 divtr" id="divPack">
                                 <img id="loadPack"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
                                 <label for="exampleInputEmail1" ><span style="font-weight:bold">Jenis Paket*</span></label>
                                 <select class="form-control m-bot15" id="fpack" name="fpack" onChange="getOngkir(this);calcTot()">
@@ -1042,7 +1205,7 @@ function zeroOngkir(){
 								
                                </div>
                                               
-<div class="col-lg-12 col-md-12 divtr" >
+<div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">Berat Total (gr) *</span></label>
 												<div class="input-group">
@@ -1051,9 +1214,7 @@ function zeroOngkir(){
 												</div>
 										  </div>
 
-		</div>
-<div class="col-md-6">
-<div class="col-lg-12 col-md-12 divtr" >
+<div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">Nama Penerima Barang *</span></label>
 												<div class="input-group">
@@ -1064,7 +1225,7 @@ function zeroOngkir(){
 
 										  </div>
                                             
-  <div class="col-lg-12 col-md-12 divtr" >
+  <div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">Alamat Lengkap Penerima *</span></label>
 												<div class="input-group">
@@ -1076,33 +1237,14 @@ function zeroOngkir(){
  
 
 
-                               <div class="col-lg-12 col-md-12 divtr" id="divKota">
-                                <img id="loadKota"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Kabupaten/Kota*</span></label>
-                                <select class="form-control m-bot15" id="fkota" name="fkota" onChange="prepareKeca(this);zeroOngkir()">
-                                <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                <option  value="KX"  >Kota Lain</option>
-								</select>
-								<input style="display:none" type="text" class="form-control" id="tfkota" name="tfkota" placeholder="Other City">
-                               </div>                        
+                                                       
 
                               
 
-<div class="col-lg-12 col-md-12 divtr" id="divExpe">
-                                <img id="loadexpe"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Expedisi*</span></label>
-  <select class="form-control m-bot15 " id="fexpe" name="fexpe" onChange="getPaket(this);zeroOngkir()">
-                                <option  value="" selected="selected" >--Pilih / Choose--</option>
-                                <option  value="jne">JNE</option>
-                                <option  value="jnt">JNT</option>
-                                <option  value="wahana">Wahana</option>
-                                <option  value="pos">POS Indonesia</option>
-								</select>
-								
-                               </div>                               
+                               
                                                                                       
  
- <div class="col-lg-12 col-md-12 divtr" >
+ <div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">No HP Penerima Barang *</span></label>
 												<div class="input-group">
@@ -1111,7 +1253,7 @@ function zeroOngkir(){
 												</div>
 										  </div>
 
-<div class="col-lg-12 col-md-12 divtr" >
+<div class="col-lg-6 col-md-6 divtr" >
 												<label for="exampleInputEmail1" >
 												<span style="font-weight:bold">Biaya/Ongkos Kirim *</span></label>
 												<div class="input-group">
@@ -1122,7 +1264,6 @@ function zeroOngkir(){
                                           
                                           
                                           
-</div>
 </div>
 										</div>
 				</div>

@@ -68,6 +68,6 @@ class __TwigTemplate_241b72b05126ddbab892caf79eab163f990aaca391fd6997bed77ee003b
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "display/results/multi_row_operations_form.twig", "/home/amhw8583/public_html/intern/pxx/templates/display/results/multi_row_operations_form.twig");
+        return new Twig_Source("", "display/results/multi_row_operations_form.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/display/results/multi_row_operations_form.twig");
     }
 }

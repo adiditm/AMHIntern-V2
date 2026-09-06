@@ -364,6 +364,7 @@ if ($vOP == "rejectst") {
 	$dbin->next_record();
 	$vTotal = (float)$dbin->f('ftotal');
 	$vFeeAminah = 0;
+	$vSellBonusRate = 0; // fbnssponhp sekarang = persentase dari fee AMH (fpotong)
 	$vSellBonusAmt = 0;
 	$vProductProgram = '';
 	$vSQL = "select b.fprogram from tb_penjualan_temp a inner join m_product b on a.fidproduk=b.fidproduk where a.fidpenjualan='$vIdTrx' limit 1";
@@ -376,8 +377,8 @@ if ($vOP == "rejectst") {
 		$vSQL = "select fbnssponhp from tb_rules_bnskorwil where fidprogram='$vProductProgramEsc' limit 1";
 		$dbin->query($vSQL);
 		if ($dbin->next_record()) {
-			$vSellBonusAmt = (float)$dbin->f('fbnssponhp');
-			if ($vSellBonusAmt < 0) $vSellBonusAmt = 0;
+			$vSellBonusRate = (float)$dbin->f('fbnssponhp');
+			if ($vSellBonusRate < 0) $vSellBonusRate = 0;
 		}
 	}
 
@@ -549,13 +550,20 @@ if ($vOP == "rejectst") {
 			$db->query($vsql);
 		}
 
+		// Hitung bonus hasil penjualan: fbnssponhp% dari total fee AMH (fpotong)
+		$vSellBonusAmt = 0;
+		if ($vSellBonusRate > 0 && $vFeeAminah > 0) {
+			$vSellBonusAmt = $vFeeAminah * $vSellBonusRate / 100;
+		}
+
 		if ($vSellBonusAmt > 0 && trim($vUserTrx) != '') {
 			$vLastBalBonus = (float)$oMember->getMemFieldBis('fsaldovcr', $vUserTrx);
 			if ($vLastBalBonus < 0) {
 				$vLastBalBonus = 0;
 			}
 			$vNewBalBonus = $vLastBalBonus + $vSellBonusAmt;
-			$oKomisi->insertMutasiConn($vUserTrx, $vBuyer, date("Y-m-d H:i:s"), "Bonus hasil penjualan $vNextJual", $vSellBonusAmt, 0, $vNewBalBonus, 'reorder', $vNextJual, $db);
+			$vDescBonus = "Bonus hasil penjualan $vNextJual ({$vSellBonusRate}% x " . number_format($vFeeAminah, 0, ',', '.') . ")";
+			$oKomisi->insertMutasiConn($vUserTrx, $vBuyer, date("Y-m-d H:i:s"), $vDescBonus, $vSellBonusAmt, 0, $vNewBalBonus, 'reorder', $vNextJual, $db);
 			$vAdminBhpRate = (float)$oRules->getSettingByField('fbyyadmin');
 			if ($vAdminBhpRate > 0) {
 				$vAdminBhpAmt = $vSellBonusAmt * ($vAdminBhpRate / 100);

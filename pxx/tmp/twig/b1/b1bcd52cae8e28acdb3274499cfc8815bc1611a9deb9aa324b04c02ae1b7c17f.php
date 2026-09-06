@@ -116,6 +116,6 @@ class __TwigTemplate_150de878e51970010046e0a5296cc87cd2c1b0bc14c1ad73f8b8a99c661
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "select_lang.twig", "/home/amhw8583/public_html/intern/pxx/templates/select_lang.twig");
+        return new Twig_Source("", "select_lang.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/select_lang.twig");
     }
 }

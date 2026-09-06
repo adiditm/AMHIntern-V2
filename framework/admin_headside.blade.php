@@ -132,183 +132,86 @@
   $vAddTitle=$oInterface->getMenuTitle($vMenuChoosed);  	  
 
 ?>
-
-
-
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="id">
   <head>
-
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-    <!-- Meta, title, CSS, favicons, etc. -->
-
     <meta charset="utf-8">
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link rel="icon" href="../images/favicon.ico" type="image/ico" />
-
-
-
+    <link rel="icon" href="../images/favicon.ico" type="image/ico" />
     <title><?=$oRules->getSettingByField('fsitetitle')?> | <?=$vAddTitle?></title>
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
 
-
-    <!-- Bootstrap -->
-
+    <!-- Kept: other manager/ pages still use these Bootstrap/Gentelella widgets -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-
     <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- NProgress -->
-
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-
-    <!-- iCheck -->
-
     <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-
-	
-
-    <!-- bootstrap-progressbar -->
-
     <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-
-    <!-- JQVMap -->
-
     <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
-
-    <!-- bootstrap-daterangepicker -->
-
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-      <link href="../css/lobibox.css" rel="stylesheet">
-
-
-
-    <!-- Custom Theme Style -->
-
+    <link href="../css/lobibox.css" rel="stylesheet">
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../vendor/select2/select2.min.css">
 
-    
+    <!-- New design system — loaded last so it wins on shared class names.
+         Cache-busted with the file's own mtime: without this, browsers
+         (mobile ones especially) kept serving a stale cached copy across
+         plain reloads even after a fresh upload, since the URL never
+         changed. Every future upload gets a new mtime automatically, no
+         manual versioning needed. -->
+    <? $vDsCssPath = "../css/design-system.css"; ?>
+    <link href="<?=$vDsCssPath?>?v=<?=@filemtime(dirname(__FILE__)."/".$vDsCssPath)?>" rel="stylesheet">
 
-    
-
-     <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
-
-      <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
-
-       <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-       <!-- <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/FontAwesome.otf" rel="stylesheet">
-
-         <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.eot" rel="stylesheet">
-
-          
-
-           <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.ttf" rel="stylesheet">
-
-            <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff" rel="stylesheet">
-
-             <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2" rel="stylesheet">-->
-    
-
-         <script src="../vendors/jquery/dist/jquery.min.js"></script>
-
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <script src="../js/md5.js"></script>
     <script src="../js/lobibox.js"></script>
-<link rel="stylesheet" type="text/css" href="../vendor/select2/select2.min.css">
-<script src="../vendor/select2/select2.min.js"></script>
+    <script src="../vendor/select2/select2.min.js"></script>
 
-   <!-- <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.svg" rel="stylesheet">-->
-  
-  <? if ($oDetect->isMobile()) { ?>
-   <style type="text/css">
+    <? if ($oDetect->isMobile()) { ?>
+    <style type="text/css">
       .table-responsive{max-width:340px;}
-   </style>
-  
-  <? } ?>
-    
-    
+    </style>
+    <? } ?>
   </head>
 
+  <body class="amh-theme nav-md">
+    <div class="amh-shell">
+      <div class="amh-layout">
 
-
-  <body class="nav-md">
-
-    <div class="container body">
-
-      <div class="main_container">
-
-        <div class="col-md-3 left_col">
-
-          <div class="left_col scroll-view">
-
-            <div class="navbar nav_title" style="border: 0;">
+        <div class="amh-sidebar amh-glass-nav" id="amhSidebar">
+          <div class="amh-sidebar-header">
             <? if ($vPriv=='administrator') {?>
-              <a href="../manager/indexadmin.php" class="site_title"><span><img src="../images/logoaminahnt.png" width="205" ></span> </a>
+              <a href="../manager/indexadmin.php"><img class="amh-sidebar-logo" src="../images/logoaminahnt.png" alt="Logo"></a>
             <?} else {?>
-              <a href="../manager/indexnonadmin.php" class="site_title"><span><img src="../images/logoaminahnt.png" width="205" ></span> </a>
+              <a href="../manager/indexnonadmin.php"><img class="amh-sidebar-logo" src="../images/logoaminahnt.png" alt="Logo"></a>
             <? } ?>
+            <span class="amh-sidebar-brand">Aminah Internal Office</span>
+          </div>
 
-            </div>
+          <div class="amh-sidebar-profile">
+            <span>Welcome,</span>
+            <strong>
+              <?
+              $vNama = $oMember->getMemFieldAdm('fnama',$_SESSION['LoginUser']);
+              if ($vNama == -1 ) $vNama = $oMember->getMemberName($_SESSION['LoginUser']);
+              echo $vNama;
+              ?>
+              <? if($vMarkDev !='') echo " <font color='#ff0'>$vMarkDev</font>"; ?>
+            </strong>
+          </div>
 
-
-
-            <div class="clearfix"></div>
-
-
-
-            <!-- menu profile quick info -->
-
-            <div class="profile clearfix">
-
-              <div class="profile_pic">
-
-                <img src="../images/user_circle.png" alt="..." class="img-circle profile_img">
-
-              
-
-              </div>
-
-              <div class="profile_info">
-
-                <span>Welcome,</span>
-
-                <h2><?
-                
-				$vNama = $oMember->getMemFieldAdm('fnama',$_SESSION['LoginUser']);
-				if ($vNama == -1 ) $vNama = $oMember->getMemberName($_SESSION['LoginUser']);
-				echo $vNama;
-				?>
-				<? if($vMarkDev !='') echo "<br><b><font color='#ff0'>$vMarkDev</font></b>"?></h2>
-
-              </div>
-
-            </div>
-
-            <!-- /menu profile quick info -->
-
-
-
-            <br />
-
+          <div class="amh-sidebar-nav">
             <? include_once("../framework/admin_sidebar.blade.php");?>
-
-			<? include_once("../framework/admin_footbutton.blade.php");?>
-
-			</div>
-
+          </div>
         </div>
 
-        
+        <div class="amh-sidebar-backdrop" id="amhSidebarBackdrop"></div>
+        <div class="amh-sidebar-resizer" id="amhSidebarResizer" title="Geser untuk mengubah lebar sidebar"></div>
 
         <? include_once("../framework/admin_topnav.blade.php");?>
-
-        

@@ -65,6 +65,6 @@ class __TwigTemplate_816f5cbe3946892e755250e6128036a689dd3ca1cee63d89341a2cd054c
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "database/structure/favorite_anchor.twig", "/home/amhw8583/public_html/intern/pxx/templates/database/structure/favorite_anchor.twig");
+        return new Twig_Source("", "database/structure/favorite_anchor.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/database/structure/favorite_anchor.twig");
     }
 }

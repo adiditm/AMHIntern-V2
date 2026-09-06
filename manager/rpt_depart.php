@@ -382,28 +382,15 @@ table td {
                <? } ?>
                </select>
           </div>
-       
+
         </div>
-        
 
-        
-
-<div>&nbsp;</div>
-                
-
-           
-        
-         <div class="row">&nbsp; </div>         
-        <div class="row"> 
-
-              
+        <div class="row">
               <div class="col-lg-2">
-              <button type="button" id="btnSubmit" name="btnSubmit" class="btn btn-success" onclick="document.demoform.submit()">Submit</button>
-              <button type="button" id="btnClear" name="btnClear" class="btn btn-default" onclick="clearFilter()">Reset</button>
+              <button type="button" id="btnSubmit" name="btnSubmit" class="btn btn-success" onclick="document.demoform.submit()">Refresh</button>
           </div>
-       
         </div>
-      
+
         <br>
         
         

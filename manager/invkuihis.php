@@ -344,22 +344,22 @@ table td {
 <div class="col-lg-12"  >
 
       <form name="demoform"  method="post" id="demoform" style="color:black" >
-        <div class="row"> 
-               <div class="col-lg-1">
+        <div class="row">
+               <div class="col-lg-12">
                <b> Filter Bulan Cetak</b>  </div>
               <div class="col-lg-2">
                <input name="tfFMonth" id="tfFMonth" type="text" class="form-control"  value="<?=$vFMonth?>"/>
           </div>
-       
+
         </div>
         <div>&nbsp;</div>
-        <div class="row hide"> 
-               <div class="col-lg-1">
+        <div class="row hide">
+               <div class="col-lg-12">
                <b> Filter Tgl. Berangkat </b>  </div>
               <div class="col-lg-2">
                <input name="tfFDepart" id="tfFDepart" type="text" class="form-control" value="<?=$vFDepart?>" />
           </div>
-       
+
         </div>
         
           <div>&nbsp;</div>

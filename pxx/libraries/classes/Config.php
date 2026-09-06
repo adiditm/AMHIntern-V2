@@ -116,7 +116,7 @@ class Config
      */
     public function checkSystem()
     {
-        $this->set('PMA_VERSION', '4.8.5');
+        $this->set('PMA_VERSION', '4.9.11');
         /* Major version */
         $this->set(
             'PMA_MAJOR_VERSION',
@@ -768,13 +768,18 @@ class Config
             $this->error_config_default_file = true;
             return false;
         }
-        $old_error_reporting = error_reporting(0);
+        $canUseErrorReporting = function_exists('error_reporting');
+        if ($canUseErrorReporting) {
+            $old_error_reporting = error_reporting(0);
+        }
         ob_start();
         $GLOBALS['pma_config_loading'] = true;
         $eval_result = include $this->default_source;
         $GLOBALS['pma_config_loading'] = false;
         ob_end_clean();
-        error_reporting($old_error_reporting);
+        if ($canUseErrorReporting) {
+            error_reporting($old_error_reporting);
+        }
 
         if ($eval_result === false) {
             $this->error_config_default_file = true;
@@ -820,13 +825,18 @@ class Config
          * Parses the configuration file, we throw away any errors or
          * output.
          */
-        $old_error_reporting = error_reporting(0);
+        $canUseErrorReporting = function_exists('error_reporting');
+        if ($canUseErrorReporting) {
+            $old_error_reporting = error_reporting(0);
+        }
         ob_start();
         $GLOBALS['pma_config_loading'] = true;
         $eval_result = include $this->getSource();
         $GLOBALS['pma_config_loading'] = false;
         ob_end_clean();
-        error_reporting($old_error_reporting);
+        if ($canUseErrorReporting) {
+            error_reporting($old_error_reporting);
+        }
 
         if ($eval_result === false) {
             $this->error_config_file = true;
@@ -987,7 +997,7 @@ class Config
         }
 
         // save language
-        if (isset($_COOKIE['pma_lang']) || isset($_POST['lang'])) {
+        if ($this->issetCookie('pma_lang') || isset($_POST['lang'])) {
             if ((! isset($config_data['lang'])
                 && $GLOBALS['lang'] != 'en')
                 || isset($config_data['lang'])
@@ -1061,7 +1071,7 @@ class Config
      */
     public function getUserValue($cookie_name, $cfg_value)
     {
-        $cookie_exists = isset($_COOKIE) && !empty($_COOKIE[$cookie_name]);
+        $cookie_exists = isset($_COOKIE) && !empty($this->getCookie($cookie_name));
         $prefs_type = $this->get('user_preferences');
         if ($prefs_type == 'db') {
             // permanent user preferences value exists, remove cookie
@@ -1069,7 +1079,7 @@ class Config
                 $this->removeCookie($cookie_name);
             }
         } elseif ($cookie_exists) {
-            return $_COOKIE[$cookie_name];
+            return $this->getCookie($cookie_name);
         }
         // return value from $cfg array
         return $cfg_value;
@@ -1330,6 +1340,9 @@ class Config
             $is_https = true;
         } elseif (strtolower(Core::getenv('HTTP_X_FORWARDED_PROTO')) == 'https') {
             $is_https = true;
+        } elseif (strtolower(Core::getenv('HTTP_CLOUDFRONT_FORWARDED_PROTO')) === 'https') {
+            // Amazon CloudFront, issue #15621
+            $is_https = true;
         } elseif (Core::getenv('SERVER_PORT') == 443) {
             $is_https = true;
         }
@@ -1528,20 +1541,22 @@ class Config
     /**
      * removes cookie
      *
-     * @param string $cookie name of cookie to remove
+     * @param string $cookieName name of cookie to remove
      *
      * @return boolean result of setcookie()
      */
-    public function removeCookie($cookie)
+    public function removeCookie($cookieName)
     {
+        $httpCookieName = $this->getCookieName($cookieName);
+
+        if ($this->issetCookie($cookieName)) {
+            unset($_COOKIE[$httpCookieName]);
+        }
         if (defined('TESTSUITE')) {
-            if (isset($_COOKIE[$cookie])) {
-                unset($_COOKIE[$cookie]);
-            }
             return true;
         }
         return setcookie(
-            $cookie,
+            $httpCookieName,
             '',
             time() - 3600,
             $this->getRootPath(),
@@ -1568,19 +1583,21 @@ class Config
         if (strlen($value) > 0 && null !== $default && $value === $default
         ) {
             // default value is used
-            if (isset($_COOKIE[$cookie])) {
+            if ($this->issetCookie($cookie)) {
                 // remove cookie
                 return $this->removeCookie($cookie);
             }
             return false;
         }
 
-        if (strlen($value) === 0 && isset($_COOKIE[$cookie])) {
+        if (strlen($value) === 0 && $this->issetCookie($cookie)) {
             // remove cookie, value is empty
             return $this->removeCookie($cookie);
         }
 
-        if (! isset($_COOKIE[$cookie]) || $_COOKIE[$cookie] !== $value) {
+        $httpCookieName = $this->getCookieName($cookie);
+
+        if (! $this->issetCookie($cookie) ||  $this->getCookie($cookie) !== $value) {
             // set cookie with new value
             /* Calculate cookie validity */
             if ($validity === null) {
@@ -1593,11 +1610,11 @@ class Config
                 $validity = time() + $validity;
             }
             if (defined('TESTSUITE')) {
-                $_COOKIE[$cookie] = $value;
+                $_COOKIE[$httpCookieName] = $value;
                 return true;
             }
             return setcookie(
-                $cookie,
+                $httpCookieName,
                 $value,
                 $validity,
                 $this->getRootPath(),
@@ -1611,6 +1628,41 @@ class Config
         return true;
     }
 
+    /**
+     * get cookie
+     *
+     * @param string $cookieName The name of the cookie to get
+     *
+     * @return mixed result of getCookie()
+     */
+    public function getCookie($cookieName) {
+        if (isset($_COOKIE[$this->getCookieName($cookieName)])) {
+            return $_COOKIE[$this->getCookieName($cookieName)];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the real cookie name
+     *
+     * @param string $cookieName The name of the cookie
+     * @return string
+     */
+    public function getCookieName($cookieName) {
+        return $cookieName. ( ($this->isHttps()) ? '_https' : '' );
+    }
+
+    /**
+     * isset cookie
+     *
+     * @param string $cookieName The name of the cookie to check
+     *
+     * @return bool result of issetCookie()
+     */
+    public function issetCookie($cookieName) {
+        return isset($_COOKIE[$this->getCookieName($cookieName)]);
+    }
 
     /**
      * Error handler to catch fatal errors when loading configuration

@@ -7,6 +7,8 @@
  */
 namespace PhpMyAdmin;
 
+use PhpMyAdmin\Crypto\Crypto;
+
 /**
  * Static methods for URL/hidden inputs generating
  *
@@ -33,6 +35,9 @@ class Url
     public static function getHiddenInputs($db = '', $table = '',
         $indent = 0, $skip = array()
     ) {
+        /** @var Config $PMA_Config */
+        global $PMA_Config;
+
         if (is_array($db)) {
             $params  =& $db;
             $_indent = empty($table) ? $indent : $table;
@@ -54,7 +59,7 @@ class Url
         ) {
             $params['server'] = $GLOBALS['server'];
         }
-        if (empty($_COOKIE['pma_lang']) && ! empty($GLOBALS['lang'])) {
+        if (empty($PMA_Config->getCookie('pma_lang')) && ! empty($GLOBALS['lang'])) {
             $params['lang'] = $GLOBALS['lang'];
         }
 
@@ -156,14 +161,15 @@ class Url
      *
      * @param mixed  $params  optional, Contains an associative array with url params
      * @param string $divider optional character to use instead of '?'
+     * @param bool   $encrypt whether to encrypt URL params
      *
      * @return string   string with URL parameters
      * @access  public
      */
-    public static function getCommon($params = array(), $divider = '?')
+    public static function getCommon($params = array(), $divider = '?', $encrypt = true)
     {
         return htmlspecialchars(
-            Url::getCommonRaw($params, $divider)
+            Url::getCommonRaw($params, $divider, $encrypt)
         );
     }
 
@@ -192,34 +198,111 @@ class Url
      *
      * @param mixed  $params  optional, Contains an associative array with url params
      * @param string $divider optional character to use instead of '?'
+     * @param bool   $encrypt whether to encrypt URL params
      *
      * @return string   string with URL parameters
      * @access  public
      */
-    public static function getCommonRaw($params = array(), $divider = '?')
+    public static function getCommonRaw($params = array(), $divider = '?', $encrypt = true)
     {
-        $separator = Url::getArgSeparator();
+        /** @var Config $PMA_Config */
+        global $PMA_Config;
 
         // avoid overwriting when creating navi panel links to servers
         if (isset($GLOBALS['server'])
             && $GLOBALS['server'] != $GLOBALS['cfg']['ServerDefault']
             && ! isset($params['server'])
-            && ! $GLOBALS['PMA_Config']->get('is_setup')
+            && ! $PMA_Config->get('is_setup')
         ) {
             $params['server'] = $GLOBALS['server'];
         }
 
-        if (empty($_COOKIE['pma_lang']) && ! empty($GLOBALS['lang'])) {
+        if (empty($PMA_Config->getCookie('pma_lang')) && ! empty($GLOBALS['lang'])) {
             $params['lang'] = $GLOBALS['lang'];
         }
 
-        $query = http_build_query($params, null, $separator);
+        $query = self::buildHttpQuery($params, $encrypt);
 
         if ($divider != '?' || strlen($query) > 0) {
             return $divider . $query;
         }
 
         return '';
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     * @param bool                 $encrypt whether to encrypt URL params
+     *
+     * @return string
+     */
+    public static function buildHttpQuery($params, $encrypt = true)
+    {
+        global $PMA_Config;
+
+        $separator = self::getArgSeparator();
+
+        if (! $encrypt || ! $PMA_Config->get('URLQueryEncryption')) {
+            return http_build_query($params, null, $separator);
+        }
+
+        $data = $params;
+        $keys = [
+            'db',
+            'table',
+            'field',
+            'sql_query',
+            'sql_signature',
+            'where_clause',
+            'goto',
+            'back',
+            'message_to_show',
+            'username',
+            'hostname',
+            'dbname',
+            'tablename',
+            'checkprivsdb',
+            'checkprivstable',
+        ];
+        $paramsToEncrypt = [];
+        foreach ($params as $paramKey => $paramValue) {
+            if (! in_array($paramKey, $keys)) {
+                continue;
+            }
+
+            $paramsToEncrypt[$paramKey] = $paramValue;
+            unset($data[$paramKey]);
+        }
+
+        if ($paramsToEncrypt !== []) {
+            $data['eq'] = self::encryptQuery(json_encode($paramsToEncrypt));
+        }
+
+        return http_build_query($data, null, $separator);
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return string
+     */
+    public static function encryptQuery($query)
+    {
+        $crypto = new Crypto();
+
+        return strtr(base64_encode($crypto->encrypt($query)), '+/', '-_');
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return string|null
+     */
+    public static function decryptQuery($query)
+    {
+        $crypto = new Crypto();
+
+        return $crypto->decrypt(base64_decode(strtr($query, '-_', '+/')));
     }
 
     /**
@@ -248,7 +331,7 @@ class Url
             if (mb_strpos($arg_separator, ';') !== false) {
                 $separator = ';';
             } elseif (strlen($arg_separator) > 0) {
-                $separator = $arg_separator{0};
+                $separator = $arg_separator[0];
             } else {
                 $separator = '&';
             }

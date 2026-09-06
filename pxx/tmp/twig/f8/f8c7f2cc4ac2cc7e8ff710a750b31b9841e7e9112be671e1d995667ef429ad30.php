@@ -280,6 +280,6 @@ class __TwigTemplate_dce3a66731d21fdd4f1604f37d31b40cec5d49482cad91768d00e8b7127
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "database/structure/body_for_table_summary.twig", "/home/amhw8583/public_html/intern/pxx/templates/database/structure/body_for_table_summary.twig");
+        return new Twig_Source("", "database/structure/body_for_table_summary.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/database/structure/body_for_table_summary.twig");
     }
 }

@@ -320,7 +320,20 @@ label.error{
 
 
 
-	</style>
+	
+/* This page's Provinsi/Kabupaten-Kota/Kecamatan/Expedisi (and similar)
+   selects are enhanced by the Select2 plugin (vendor/select2), which
+   hides the real <select> (1px, aria-hidden) and renders its own markup
+   instead (.select2-container > .select2-selection__rendered) --
+   confirmed live via DOM inspection, which is why the .right_col select
+   background rule above never had any visual effect: it was styling an
+   invisible element. Select2's bundled default theme CSS hardcodes a
+   white box, so it needs its own override, not just the plain <select>
+   one. The open dropdown *list* (.select2-dropdown / .select2-results)
+   is appended to <body> by Select2, not inside .right_col, so those
+   selectors are intentionally unscoped here -- safe since this whole
+   block only ever loads on this one page. */
+</style>
 
    
 
@@ -866,7 +879,7 @@ function spreadPProg(pDepart,pProg,pPaket) {
 				$('#fassure').val(vObj.data.assure);
 				$('#fairporttax').val(vObj.data.handle);
 				if (vObj.data.desc !== null && $('#fprogram').val()=='4') {
-					$('#spPromo').html('<font color="#00f">'+vObj.data.desc+'</font>');
+					$('#spPromo').html('<font color="#38bdf8">'+vObj.data.desc+'</font>');
 					$('#fpromo').val(vObj.data.idpromo);
 					
 					$('#fpaketday').val(vObj.data.haripromo);
@@ -1516,7 +1529,7 @@ function checkUserName(pParam){
 
 		  if (vValid.test(data)) {
 
-			 $('#statUser').html('<font color="#00f">User '+pParam.value+' is valid!</font>');
+			 $('#statUser').html('<font color="#38bdf8">User '+pParam.value+' is valid!</font>');
 
 			 document.getElementById('btnSubmit').disabled=false;
 
@@ -1592,7 +1605,7 @@ function checkKit(pParam) {
 
 		 
 
-         $('#statKit').html('<font color="#00f">Serial Number '+pParam.value+' is valid! ('+vData[1]+')</font>');
+         $('#statKit').html('<font color="#38bdf8">Serial Number '+pParam.value+' is valid! ('+vData[1]+')</font>');
 
 
 
@@ -1766,7 +1779,7 @@ function checkKitSpon(pParam) {
 
          
 
-         $('#statKitSpon').html('<font color="#00f">Referensi  valid!</font>');
+         $('#statKitSpon').html('<font color="#38bdf8">Referensi  valid!</font>');
 
          $('#tfSponsor').val(vNama);
 
@@ -1850,7 +1863,7 @@ function checkKitPres(pParam) {
 
          
 
-         $('#statKitPres').html('<font color="#00f">Presenter valid!</font>');
+         $('#statKitPres').html('<font color="#38bdf8">Presenter valid!</font>');
 
          $('#tfSernoPresName').val(vNama);
 
@@ -1980,7 +1993,7 @@ function checkKitUp(pParam) {
 
          
 
-         $('#statKitUp').html('<font color="#00f">Upline valid!</font>');
+         $('#statKitUp').html('<font color="#38bdf8">Upline valid!</font>');
 
          //$('#tfUpline').val(vNama);
 
@@ -2266,7 +2279,7 @@ function spreadRef(pParam){
 			  var vObj = $.parseJSON(ret);
 			  
 			  if(vObj.status=='xsuccessref') {
-				  vMessage = '<font color="#00f">'+vObj.message+'</font>';
+				  vMessage = '<font color="#38bdf8">'+vObj.message+'</font>';
 				 // alert(vObj.message); 
 				  $('#fnamarefer').val(vObj.data.nama);
 				  $('#fnohprefer').val(vObj.data.jhandphone);
@@ -2337,7 +2350,121 @@ function spreadPromo(pParam){
 
 <? } ?>
 
- <div class="right_col" role="main">
+ <!-- Dark/gold redesign theme, applied locally to this page only -- this
+     page uses framework/outer_headside.blade.php (the old un-redesigned
+     public-facing header, shared with a few other pages not yet reviewed
+     for this theme), not admin_headside.blade.php, so it never got
+     design-system.css or the body.amh-theme class the redesigned internal
+     pages get automatically. Rather than editing that shared header (and
+     risking those other pages), both are added here, scoped to just this
+     page: linking the stylesheet directly (valid placement even in body
+     for every real browser) and toggling the body class via a tiny inline
+     script. This page already has the same .right_col wrapper the
+     stylesheet's dark form-control/panel overrides target, so no markup
+     rewrite is needed -- it inherits the same look memstock/reorder.php
+     already has. -->
+<link href="../css/design-system.css" rel="stylesheet">
+<script>document.body.classList.add('amh-theme');</script>
+<style>
+/* Plain (non-component-class) text like <h3>/<label>/<span> inside
+   .right_col has no color rule in design-system.css by design (it
+   deliberately avoids a blanket color rule there, since most manager/
+   pages using .right_col are still old white-panel markup that would
+   become unreadable with light text forced on). This page IS fully
+   themed now though (every visible panel/input already comes from the
+   same stylesheet's .right_col-scoped rules), so its own plain text needs
+   the same light color explicitly, or it renders as default dark-on-dark
+   -- confirmed live (the "Pembelian Barang / Jasa" heading was nearly
+   invisible before this). Setting color on the .right_col container
+   itself lets every plain descendant inherit it, while anything with its
+   own explicit color (e.g. the green "Pebisnis valid!" message) keeps
+   its own -- inline/more-specific styles still win over inheritance. */
+.right_col { color: var(--amh-text); }
+/* custom.min.css has a MORE SPECIFIC selector for the same element
+   (`body .container.body .right_col`, specificity 0-3-1) than
+   design-system.css's plain `.right_col { background: transparent }`
+   (0-1-0) -- confirmed live via document.styleSheets: the old rule
+   (#F7F7F7) was winning despite loading first, purely on
+   specificity, leaving light text on a near-white background.
+   !important here is the simplest reliable way to win regardless
+   of selector specificity, safely scoped to this page only. */
+.right_col { background: transparent !important; }
+/* Some mobile browsers (confirmed: real-device testing) keep a native,
+   OS-drawn <select> "closed" appearance that ignores the background-color
+   design-system.css already sets on it (.right_col select), rendering it
+   white/light regardless -- desktop Chrome was fine, the gap only showed
+   up on an actual phone. appearance:none hands full control to CSS
+   instead of the OS, and the custom chevron replaces the native arrow
+   appearance:none also removes. */
+.right_col select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 1rem !important;
+  padding-right: 2.25rem !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+.right_col select:disabled,
+.right_col select[readonly] {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+/* This page's Provinsi/Kabupaten-Kota/Kecamatan/Expedisi (and similar)
+   selects are enhanced by the Select2 plugin (vendor/select2), which
+   hides the real <select> (1px, aria-hidden) and renders its own markup
+   instead (.select2-container > .select2-selection__rendered) --
+   confirmed live via DOM inspection, which is why the .right_col select
+   background rule above never had any visual effect: it was styling an
+   invisible element. Select2's bundled default theme CSS hardcodes a
+   white box, so it needs its own override, not just the plain <select>
+   one. The open dropdown *list* (.select2-dropdown / .select2-results)
+   is appended to <body> by Select2, not inside .right_col, so those
+   selectors are intentionally unscoped here -- safe since this whole
+   block only ever loads on this one page. */
+
+.select2-container .select2-selection--single {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 0.75rem !important;
+  height: 42px !important;
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+  color: #fff !important;
+  line-height: 40px !important;
+  padding-left: 12px !important;
+}
+.select2-container .select2-selection--single .select2-selection__arrow {
+  height: 40px !important;
+}
+.select2-container .select2-selection--single .select2-selection__arrow b {
+  border-color: #e2e8f0 transparent transparent transparent !important;
+}
+.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-color: transparent transparent #e2e8f0 transparent !important;
+}
+.select2-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+.select2-results__option {
+  color: #e2e8f0 !important;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: rgba(56,189,248,0.25) !important;
+  color: #fff !important;
+}
+.select2-search--dropdown .select2-search__field {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+</style>
+<div class="right_col" role="main">
 
 		<div><label>
 		<h3>Registrasi Jamaah <? if ($_GET['current']=='mdm_korwil_sub') echo " oleh Korwil / Sub Korwil";?></h3></label></div> 
@@ -2619,7 +2746,7 @@ function spreadPromo(pParam){
 
                                <img id="loadProp"  align="absmiddle" src="../images/ajax-loader.gif" style="position:absolute;z-index:2;margin-left:45px;margin-top:24px;opacity: 0.5;display:none" />
 
-                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Propinsi*</span></label>
+                                <label for="exampleInputEmail1" ><span style="font-weight:bold">Provinsi*</span></label>
 
                                                                 <select class="form-control m-bot15" id="fprop" name="fprop" onChange="prepareKota(this)">
 
@@ -2755,7 +2882,7 @@ function spreadPromo(pParam){
 
               </div>
 
-                     <div class="panel-body" style="color:black">
+                     <div class="panel-body" style="color:var(--amh-text)">
 <div style="" class=" divtr col-lg-12">
 
 							<label for="exampleInputEmail1">Pebisnis* <div align="left" style="display:inline" id="statKitPres"></div></label>
@@ -3161,7 +3288,7 @@ function spreadPromo(pParam){
 
               </div>
 
-                     <div class="panel-body" style="color:black">
+                     <div class="panel-body" style="color:var(--amh-text)">
 
 							 <div class="form-group" >
 
@@ -3644,7 +3771,7 @@ function spreadPromo(pParam){
 
               </div>
 
-                     <div class="panel-body " style="color:black">
+                     <div class="panel-body " style="color:var(--amh-text)">
 <div class="divtr col-lg-12 hide" >
                                 <label   for="tfNama">
 								Nama Lengkap Calon Pebisnis*</label>
@@ -3952,7 +4079,7 @@ function spreadPromo(pParam){
 
 
                                         <div style="color:red">SEGALA BENTUK DANA YANG MASUK, TIDAK DAPAT DITARIK KEMBALI DENGAN CARA APAPUN dan  SETUJU dengan  SYARAT & KETENTUAN yang berlaku</div>
-										<input id="cbTC" name="cbTC" type="checkbox"  ><a style="cursor:pointer;color:blue;text-decoration:underline" href="#" onClick="openTerm()">&nbsp;Data tersebut diatas adalah benar</a><br><br>
+										<input id="cbTC" name="cbTC" type="checkbox"  ><a style="cursor:pointer;color:#38bdf8;text-decoration:underline" href="#" onClick="openTerm()">&nbsp;Data tersebut diatas adalah benar</a><br><br>
 
 										<input type="hidden" name="hKit" id="hKit" value="<?=$vKit?>" />
 

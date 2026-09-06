@@ -1,4 +1,10 @@
-<? include_once("../framework/admin_headside.blade.php");
+<?php
+if (session_status() != PHP_SESSION_ACTIVE)
+   session_start();
+if (isset($_SESSION['Priv']) && $_SESSION['Priv'] == 'sponsor')
+   $_GET['current'] = 'spon_transaction';
+include_once("../framework/admin_headside.blade.php");
+
 include_once("../classes/memberclass.php");
 include_once("../classes/networkclass.php");
 include_once("../classes/systemclass.php");
@@ -274,22 +280,26 @@ if ($vCount=='') $vCount=1;
     $vAminahkuSubmit = (!empty($_POST['hAminahkuOut']) && $_POST['hAminahkuOut'] == '1' && !empty($_POST['hProcessOutId']));
     if ($vAminahkuSubmit) {
        $vNextJual = amhResolvePenjualanId($_POST['hProcessOutId']);
-       $vAminahkuSource = isset($_POST['hAminahkuSource']) ? $_POST['hAminahkuSource'] : '';
+       $vAminahkuSource = '';
        $vLoginRo = $_SESSION['LoginUser'];
        $vOkSubmit = false;
        if ($vNextJual != '') {
           $db->query("select * from tb_penjualan_temp_out where fidpenjualan='$vNextJual' limit 1");
           if ($db->next_record()) {
              $vRow = array('fnostockist'=>$db->f('fnostockist'),'fidmember'=>$db->f('fidmember'),'fuserid'=>$db->f('fuserid'),'fketerangan'=>$db->f('fketerangan'),'fprocessed'=>$db->f('fprocessed'));
-             if (amhAminahkuOwnerMatch($vRow, $vLoginRo) && amhAminahkuPendingRow($vRow))
+             if (amhAminahkuOwnerMatch($vRow, $vLoginRo) && amhAminahkuPendingRow($vRow)) {
                 $vOkSubmit = true;
+                $vAminahkuSource = 'out';
+             }
           }
           if (!$vOkSubmit) {
              $db->query("select * from tb_penjualan_temp where fidpenjualan='$vNextJual' limit 1");
              if ($db->next_record()) {
                 $vRow = array('fnostockist'=>$db->f('fnostockist'),'fidmember'=>$db->f('fidmember'),'fuserid'=>$db->f('fuserid'),'fketerangan'=>$db->f('fketerangan'),'fprocessed'=>$db->f('fprocessed'),'fmethod'=>$db->f('fmethod'));
-                if (amhAminahkuOwnerMatch($vRow, $vLoginRo) && amhAminahkuPendingRow($vRow) && trim((string)$vRow['fmethod']) === '')
+                if (amhAminahkuOwnerMatch($vRow, $vLoginRo) && amhAminahkuPendingRow($vRow) && trim((string)$vRow['fmethod']) === '') {
                    $vOkSubmit = true;
+                   $vAminahkuSource = 'temp';
+                }
              }
           }
        }
@@ -299,6 +309,11 @@ if ($vCount=='') $vCount=1;
           exit;
        }
        $vOutKet = 'Repeat Order (referral Aminahku)';
+       if ($vAminahkuSource === 'out' && $lmMethod != 'ctr') {
+          $oSystem->jsAlert('Transaksi pending pebisnis hanya dapat menggunakan metode pembayaran Transfer.');
+          $oSystem->jsLocation('statustrans.php');
+          exit;
+       }
     } else {
        $vNextJual=$oJual->getNextIDJual();
     }
@@ -704,14 +719,19 @@ $(document).ready(function(){
   $('#frmReg input, #frmReg textarea,  #frmReg select, #frmReg checkbox, #frmReg radio').not([type="submit"]).not($("#tfNPWP")).not($("#tEmail")).not($("#tfSwift")).not($("#tfEmailSpon")).addClass('required');  
   <? if ($vLoadAminahkuOut) { ?>
   $('#caption').html('Proses Order Referral Aminahku [<?=htmlspecialchars($vAminahkuOutId, ENT_QUOTES, 'UTF-8')?>]');
+  <? if ($vAminahkuSource === 'out') { ?>
+  $('#lmMethod').val('ctr');
+  $('#lmMethod').trigger('change');
+  <? } else { ?>
   if ('<?=htmlspecialchars($vOutMethod, ENT_QUOTES, 'UTF-8')?>' !== '') {
       $('#lmMethod').val('<?=htmlspecialchars($vOutMethod, ENT_QUOTES, 'UTF-8')?>');
       $('#lmMethod').trigger('change');
-      if ('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>' !== '') {
-          $('#lmBank').val('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>');
-      }
   } else {
       $('#lmMethod').val('');
+  }
+  <? } ?>
+  if ('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>' !== '') {
+      $('#lmBank').val('<?=htmlspecialchars($vOutBank, ENT_QUOTES, 'UTF-8')?>');
   }
   $('#fexpe').select2();
   amhPrefillAminahkuWilayah();
@@ -1171,6 +1191,13 @@ function amhNormKurir(pVal) {
    return String(pVal).toLowerCase().trim();
 }
 
+function amhSelectValKey(pVal) {
+   var vVal = String(pVal === null || pVal === undefined ? '' : pVal).trim().toLowerCase();
+   if (/^[0-9]+$/.test(vVal))
+      return String(parseInt(vVal, 10));
+   return vVal;
+}
+
 function amhApplySelect2Val(pSelector, pVal) {
    var vVal = (typeof pVal === 'number') ? String(pVal) : String(pVal || '').trim();
    if (vVal === '')
@@ -1182,7 +1209,7 @@ function amhApplySelect2Val(pSelector, pVal) {
       vVal = amhNormKurir(vVal);
    if ($el.find('option[value="' + vVal + '"]').length === 0) {
       $el.find('option').each(function() {
-         if (String($(this).val()).toLowerCase() === String(vVal).toLowerCase()) {
+         if (amhSelectValKey($(this).val()) === amhSelectValKey(vVal)) {
             vVal = $(this).val();
             return false;
          }
@@ -1191,16 +1218,48 @@ function amhApplySelect2Val(pSelector, pVal) {
    $el.val(vVal);
    if ($el.data('select2'))
       $el.trigger('change.select2');
-   else
-      $el.trigger('change');
+}
+
+function amhApplyStoredExpedition(pExpe) {
+   var vExpe = amhNormKurir(pExpe);
+   if (vExpe === '')
+      return;
+   var $expe = $('#fexpe');
+   var vFound = false;
+   $expe.find('option').each(function() {
+      if (amhNormKurir($(this).val()) === vExpe) {
+         vFound = true;
+         return false;
+      }
+   });
+   if (!vFound)
+      $expe.append($('<option></option>').val(vExpe).text(vExpe.toUpperCase()));
+   amhApplySelect2Val('#fexpe', vExpe);
+}
+
+function amhApplyStoredPack(pPack, pOngkir) {
+   var vPack = String(pPack || '').trim();
+   if (vPack === '' || vPack === '0')
+      return;
+   var $pack = $('#fpack');
+   var $match = $pack.find('option').filter(function() {
+      return String($(this).val()).trim().toLowerCase() === vPack.toLowerCase();
+   }).first();
+   if ($match.length === 0) {
+      $match = $('<option></option>').val(vPack).text(vPack);
+      $pack.append($match);
+   }
+   $match.attr('ongkir', pOngkir);
+   amhApplySelect2Val('#fpack', $match.val());
 }
 
 function amhFinishAminahkuShipping(o) {
-   amhApplySelect2Val('#fexpe', o.expe);
+   amhApplyStoredExpedition(o.expe);
    var vBerat = $('#hTotWeight').val();
    $('#tfBerat').val(o.berat > 0 ? o.berat : vBerat);
    var vKurir = amhNormKurir(o.expe);
    if (!o.kec || vKurir === '') {
+      amhApplyStoredPack(o.pack, o.ongkir);
       $('#tfOngkir').val(o.ongkir);
       if (typeof calcTot === 'function')
          calcTot();
@@ -1218,7 +1277,7 @@ function amhFinishAminahkuShipping(o) {
       $('#fpack').html(pdata);
       if (!$('#fpack').data('select2'))
          $('#fpack').select2();
-      amhApplySelect2Val('#fpack', o.pack);
+      amhApplyStoredPack(o.pack, o.ongkir);
       $('#tfOngkir').val(o.ongkir);
       $('#loadPack').hide();
       if (typeof calcTot === 'function')
@@ -1226,6 +1285,7 @@ function amhFinishAminahkuShipping(o) {
       document.getElementById('btnSubmit').disabled = false;
    }).fail(function() {
       $('#loadPack').hide();
+      amhApplyStoredPack(o.pack, o.ongkir);
       $('#tfOngkir').val(o.ongkir);
       if (typeof calcTot === 'function')
          calcTot();
@@ -1245,7 +1305,7 @@ function amhPrefillAminahkuWilayah() {
       'berat' => $vOutBerat,
    ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)?>;
    o.expe = amhNormKurir(o.expe);
-   amhApplySelect2Val('#fexpe', o.expe);
+   amhApplyStoredExpedition(o.expe);
    $('#fcountry').css({'pointer-events':'auto','background-color':'#fff'});
    amhApplySelect2Val('#fcountry', o.country);
    var vURL="../main/mpurpose_ajax.php?op=wil&wil=propongkir&kodewil="+o.country;
@@ -1811,8 +1871,10 @@ function zeroOngkir(){
          <label style="color:blue" for="lmMethod">Metode Pembayaran</label>
          <select name="lmMethod" id="lmMethod" class="form-control" onChange="changeRek(this)">
            <option value="">--Pilih--</option>
-           <option value="ctr">Transfer</option>
+           <option value="ctr" <?=($vLoadAminahkuOut && $vAminahkuSource === 'out') ? 'selected="selected"' : ''?>>Transfer</option>
+           <? if (!$vLoadAminahkuOut || $vAminahkuSource !== 'out') { ?>
            <option value="wpr">Saldo Bonus</option>
+		   <? } ?>
 		   <? /* if ($_SESSION['LoginUser']=='1401-0000-0001') { ?>
            <option value="tva">Transfer Virtual Account</option>
 		   <? } */ ?>

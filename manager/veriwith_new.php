@@ -208,13 +208,14 @@ $(document).ready(function() {
                         </table>
                         <hr />
                     </div>
-                    <font face="Verdana, Arial, Helvetica, sans-serif"><strong><br />
-                        Mulai Tanggal : </strong>
+                    <font face="Verdana, Arial, Helvetica, sans-serif"><br />
+                    <div>
+                        <strong>Mulai Tanggal : </strong>
                         <input name="dc" id="dc" value="<?=$vAwal?>" size="20" />
-                        &nbsp; <strong>s/d</strong>
+                        <strong>s/d</strong>
                         <input name="dc1" id="dc1" size="20" value="<?=$vAkhir?>" />
-                        &nbsp;&nbsp;
                         <input name="Submit22" type="button" class="btn btn-success btn-sm" onclick="MM_callJS('doSubmit(\'cari\')')" value="   Lihat   " />
+                    </div>
                     </font>
                     <br />
                     <strong><br />

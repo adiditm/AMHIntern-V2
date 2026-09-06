@@ -79,6 +79,6 @@ class __TwigTemplate_39aec135600429c828ed3f9f2ba74a7373e9e93201e00367277962768c8
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "div_for_slider_effect.twig", "/home/amhw8583/public_html/intern/pxx/templates/div_for_slider_effect.twig");
+        return new Twig_Source("", "div_for_slider_effect.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/div_for_slider_effect.twig");
     }
 }

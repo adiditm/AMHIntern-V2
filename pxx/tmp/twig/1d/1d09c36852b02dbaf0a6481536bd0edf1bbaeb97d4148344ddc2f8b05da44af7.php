@@ -84,6 +84,6 @@ class __TwigTemplate_0baa723087f18da263f937dcd1f1e13e6a53ef5c5c23b11f570e0fa47b2
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "display/results/table_navigation_button.twig", "/home/amhw8583/public_html/intern/pxx/templates/display/results/table_navigation_button.twig");
+        return new Twig_Source("", "display/results/table_navigation_button.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/display/results/table_navigation_button.twig");
     }
 }

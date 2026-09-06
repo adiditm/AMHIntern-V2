@@ -40,6 +40,6 @@ class __TwigTemplate_b463ce1076c26d80eb1927d24a03ba02d79561947cc039274a2ee27234d
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "login/footer.twig", "/home/amhw8583/public_html/intern/pxx/templates/login/footer.twig");
+        return new Twig_Source("", "login/footer.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/login/footer.twig");
     }
 }

@@ -104,6 +104,21 @@ class DbiMysqli implements DbiExtension
                 ! empty($server['ssl_ca_path']) ||
                 ! empty($server['ssl_ciphers'])
             ) {
+                if (! isset($server['ssl_key']) || is_null($server['ssl_key'])) {
+                    $server['ssl_key'] = '';
+                }
+                if (! isset($server['ssl_cert']) || is_null($server['ssl_cert'])) {
+                    $server['ssl_cert'] = '';
+                }
+                if (! isset($server['ssl_ca']) || is_null($server['ssl_ca'])) {
+                    $server['ssl_ca'] = '';
+                }
+                if (! isset($server['ssl_ca_path']) || is_null($server['ssl_ca_path'])) {
+                    $server['ssl_ca_path'] = '';
+                }
+                if (! isset($server['ssl_ciphers']) || is_null($server['ssl_ciphers'])) {
+                    $server['ssl_ciphers'] = '';
+                }
                 mysqli_ssl_set(
                     $link,
                     $server['ssl_key'],
@@ -134,16 +149,29 @@ class DbiMysqli implements DbiExtension
             $host = $server['host'];
         }
 
-        $return_value = mysqli_real_connect(
-            $link,
-            $host,
-            $user,
-            $password,
-            '',
-            $server['port'],
-            $server['socket'],
-            $client_flags
-        );
+        if ($server['hide_connection_errors']) {
+            $return_value = @mysqli_real_connect(
+                $link,
+                $host,
+                $user,
+                $password,
+                '',
+                $server['port'],
+                $server['socket'],
+                $client_flags
+            );
+        } else {
+            $return_value = mysqli_real_connect(
+                $link,
+                $host,
+                $user,
+                $password,
+                '',
+                $server['port'],
+                $server['socket'],
+                $client_flags
+            );
+        }
 
         if ($return_value === false || is_null($return_value)) {
             /*
@@ -165,7 +193,20 @@ class DbiMysqli implements DbiExtension
                     );
                     $server['ssl'] = true;
                     return self::connect($user, $password, $server);
+            } elseif ($error_number === 1045 && $server['hide_connection_errors']) {
+                trigger_error(
+                    sprintf(
+                        __(
+                            'Error 1045: Access denied for user. Additional error information'
+                            . ' may be available, but is being hidden by the %s configuration directive.'
+                        ),
+                        '[code][doc@cfg_Servers_hide_connection_errors]'
+                        . '$cfg[\'Servers\'][$i][\'hide_connection_errors\'][/doc][/code]'
+                    ),
+                    E_USER_ERROR
+                );
             }
+
             return false;
         }
 
@@ -520,6 +561,9 @@ class DbiMysqli implements DbiExtension
      */
     public function fieldLen($result, $i)
     {
+        if ($i >= $this->numFields($result)) {
+            return false;
+        }
         return mysqli_fetch_field_direct($result, $i)->length;
     }
 
@@ -533,6 +577,9 @@ class DbiMysqli implements DbiExtension
      */
     public function fieldName($result, $i)
     {
+        if ($i >= $this->numFields($result)) {
+            return false;
+        }
         return mysqli_fetch_field_direct($result, $i)->name;
     }
 
@@ -546,6 +593,9 @@ class DbiMysqli implements DbiExtension
      */
     public function fieldFlags($result, $i)
     {
+        if ($i >= $this->numFields($result)) {
+            return false;
+        }
         $f = mysqli_fetch_field_direct($result, $i);
         $type = $f->type;
         $charsetnr = $f->charsetnr;

@@ -40,7 +40,7 @@ class SetOperation extends Component
      * @param string $column Field's name..
      * @param string $value  new value
      */
-    public function __construct($column = null, $value = null)
+    public function __construct($column = '', $value = '')
     {
         $this->column = $column;
         $this->value = $value;
@@ -119,7 +119,7 @@ class SetOperation extends Component
                     $parser,
                     $list,
                     array(
-                        'breakOnAlias' => true,
+                        'breakOnAlias' => true
                     )
                 );
                 if (is_null($tmp)) {

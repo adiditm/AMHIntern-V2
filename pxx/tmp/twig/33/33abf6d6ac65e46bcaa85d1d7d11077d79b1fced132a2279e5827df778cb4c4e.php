@@ -291,6 +291,6 @@ class __TwigTemplate_ac5263aeb298b9e917f9b2feac3d304630fc4f2063cfd47b364120ce0d7
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "display/import/javascript.twig", "/home/amhw8583/public_html/intern/pxx/templates/display/import/javascript.twig");
+        return new Twig_Source("", "display/import/javascript.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/display/import/javascript.twig");
     }
 }

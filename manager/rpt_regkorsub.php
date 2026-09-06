@@ -1278,6 +1278,20 @@ only screen and (max-width: 760px),
 
 <form name="memberForm">
 
+<p align="center" style="margin-top:1em">
+<strong>Page :</strong>
+<select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
+              <?
+   for ($i=0;$i<$vPageCount;$i++) {
+	   $idisp=$i;
+	 if ($vOP=="post") $idisp=0;
+     $vPageUrl="rpt_regkorsub.php?lmAktif=".$vAktif."&lmMship=".$vPrem."&uPage=".$idisp."&lmSort=".$vSort."&current=".$_REQUEST['current']."&menu=".$_REQUEST['menu'];
+?>
+              <option value="<?=$vPageUrl?>" <? if ($idisp==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
+              <?  } //while?>
+</select>
+</p>
+
       <div class="table-responsive"  >
 
 
@@ -1707,30 +1721,19 @@ only screen and (max-width: 760px),
     </form>
 
  </div>
-<div class="row" align="center">
-<ul class="pagination" >
+<p align="center" style="margin-top:1em">
+<strong>Page :</strong>
+<select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
               <?
    for ($i=0;$i<$vPageCount;$i++) {
-     $vOffset=$i*$vBatasBaris;
 	   $idisp=$i;
 	 if ($vOP=="post") $idisp=0;
-     if ($idisp!=$vPage) {
+     $vPageUrl="rpt_regkorsub.php?lmAktif=".$vAktif."&lmMship=".$vPrem."&uPage=".$idisp."&lmSort=".$vSort."&current=".$_REQUEST['current']."&menu=".$_REQUEST['menu'];
 ?>
-              <li ><a  href="rpt_regkorsub.php?lmAktif=<?=$vAktif?>&lmMship=<?=$vPrem?>&uPage=<?=$idisp?>&lmSort=<?=$vSort?>&current=<?=$_REQUEST['current']?>&menu=<?=$_REQUEST['menu']?>" >
-              <?=$i+1?>
-              </a> </li> 
-              <?
-  } else {
-?>
-
-<li class="active">
-             <a> <?=$i+1?></a> </li>
-              <? } ?>
+              <option value="<?=$vPageUrl?>" <? if ($idisp==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
               <?  } //while?>
-              <span >                </span><br>
-              <br>
-              </ul>
-</div>
+</select>
+</p>
 
  <br>
       <button class="btn btn-info btn-sm hide" onClick="document.location.href='../manager/getexcel.php?arr=member&file=data_member'"><i class="fa fa-file-text-o"></i> Export Excel</button>

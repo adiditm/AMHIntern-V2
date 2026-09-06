@@ -1000,7 +1000,9 @@ class Util
                     . '$sql = "' . $query_base . '";' . "\n"
                     . '</pre></code>';
             } elseif ($query_too_big) {
-                $query_base = htmlspecialchars($query_base);
+                $query_base = '<code class="sql"><pre>' . "\n" .
+                    htmlspecialchars($query_base) .
+                    '</pre></code>';
             } else {
                 $query_base = self::formatSql($query_base);
             }
@@ -1037,7 +1039,8 @@ class Util
                     $explain_params['sql_query'] = 'EXPLAIN ' . $sql_query;
                     $explain_link = ' [&nbsp;'
                         . self::linkOrButton(
-                            'import.php' . Url::getCommon($explain_params),
+                            'import.php',
+                            $explain_params,
                             __('Explain SQL')
                         ) . '&nbsp;]';
                 } elseif (preg_match(
@@ -1048,7 +1051,8 @@ class Util
                         = mb_substr($sql_query, 8);
                     $explain_link = ' [&nbsp;'
                         . self::linkOrButton(
-                            'import.php' . Url::getCommon($explain_params),
+                            'import.php',
+                            $explain_params,
                             __('Skip Explain SQL')
                         ) . ']';
                     $url = 'https://mariadb.org/explain_analyzer/analyze/'
@@ -1057,6 +1061,7 @@ class Util
                     $explain_link .= ' ['
                         . self::linkOrButton(
                             htmlspecialchars('url.php?url=' . urlencode($url)),
+                            null,
                             sprintf(__('Analyze Explain at %s'), 'mariadb.org'),
                             array(),
                             '_blank'
@@ -1072,9 +1077,8 @@ class Util
             if (! empty($cfg['SQLQuery']['Edit'])
                 && empty($GLOBALS['show_as_php'])
             ) {
-                $edit_link .= Url::getCommon($url_params);
                 $edit_link = ' [&nbsp;'
-                    . self::linkOrButton($edit_link, __('Edit'))
+                    . self::linkOrButton($edit_link, $url_params, __('Edit'))
                     . '&nbsp;]';
             } else {
                 $edit_link = '';
@@ -1087,14 +1091,16 @@ class Util
                 if (! empty($GLOBALS['show_as_php'])) {
                     $php_link = ' [&nbsp;'
                         . self::linkOrButton(
-                            'import.php' . Url::getCommon($url_params),
+                            'import.php',
+                            $url_params,
                             __('Without PHP code')
                         )
                         . '&nbsp;]';
 
                     $php_link .= ' [&nbsp;'
                         . self::linkOrButton(
-                            'import.php' . Url::getCommon($url_params),
+                            'import.php',
+                            $url_params,
                             __('Submit query')
                         )
                         . '&nbsp;]';
@@ -1103,7 +1109,8 @@ class Util
                     $php_params['show_as_php'] = 1;
                     $php_link = ' [&nbsp;'
                         . self::linkOrButton(
-                            'import.php' . Url::getCommon($php_params),
+                            'import.php',
+                            $php_params,
                             __('Create PHP code')
                         )
                         . '&nbsp;]';
@@ -1119,7 +1126,7 @@ class Util
             ) {
                 $refresh_link = 'import.php' . Url::getCommon($url_params);
                 $refresh_link = ' [&nbsp;'
-                    . self::linkOrButton($refresh_link, __('Refresh')) . ']';
+                    . self::linkOrButton('import.php', $url_params, __('Refresh')) . ']';
             } else {
                 $refresh_link = '';
             } //refresh
@@ -1161,6 +1168,7 @@ class Util
                 $inline_edit_link = ' ['
                     . self::linkOrButton(
                         '#',
+                        null,
                         _pgettext('Inline edit query', 'Edit inline'),
                         array('class' => 'inline_edit_sql')
                     )
@@ -1292,7 +1300,7 @@ class Util
             // if the unit is not bytes (as represented in current language)
             // reformat with max length of 5
             // 4th parameter=true means do not reformat if value < 1
-            $return_value = self::formatNumber($value, 5, $comma, true);
+            $return_value = self::formatNumber($value, 5, $comma, true, false);
         } else {
             // do not reformat, just handle the locale
             $return_value = self::formatNumber($value, 0);
@@ -1500,23 +1508,23 @@ class Util
             /* l10n: Short month name */
             __('Dec'));
         $day_of_week = array(
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Sunday */
             _pgettext('Short week day name', 'Sun'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Monday */
             __('Mon'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Tuesday */
             __('Tue'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Wednesday */
             __('Wed'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Thursday */
             __('Thu'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Friday */
             __('Fri'),
-            /* l10n: Short week day name */
+            /* l10n: Short week day name for Saturday */
             __('Sat'));
 
         if ($format == '') {
-            /* l10n: See https://secure.php.net/manual/en/function.strftime.php */
+            /* l10n: See https://www.php.net/manual/en/function.strftime.php */
             $format = __('%B %d, %Y at %I:%M %p');
         }
 
@@ -1705,17 +1713,22 @@ class Util
      * - URL components are over Suhosin limits
      * - There is SQL query in the parameters
      *
-     * @param string $url        the URL
-     * @param string $message    the link message
-     * @param mixed  $tag_params string: js confirmation; array: additional tag
-     *                           params (f.e. style="")
-     * @param string $target     target
+     * @param string     $urlPath    the URL
+     * @param array|null $urlParams  URL parameters
+     * @param string     $message    the link message
+     * @param mixed      $tag_params string: js confirmation; array: additional tag params (f.e. style="")
+     * @param string     $target     target
      *
      * @return string  the results to be echoed or saved in an array
      */
     public static function linkOrButton(
-        $url, $message, $tag_params = array(), $target = ''
+        $urlPath, $urlParams, $message, $tag_params = array(), $target = ''
     ) {
+        $url = $urlPath;
+        if (is_array($urlParams)) {
+            $url = $urlPath . Url::getCommon($urlParams, '?', false);
+        }
+
         $url_length = strlen($url);
 
         if (! is_array($tag_params)) {
@@ -1758,7 +1771,9 @@ class Util
         $tag_params_strings = array();
         if (($url_length > $GLOBALS['cfg']['LinkLengthLimit'])
             || ! $in_suhosin_limits
-            || strpos($url, 'sql_query=') !== false
+            // Has as sql_query without a signature
+            || ( strpos($url, 'sql_query=') !== false && strpos($url, 'sql_signature=') === false)
+            || strpos($url, 'view[as]=') !== false
         ) {
             $parts = explode('?', $url, 2);
             /*
@@ -1772,7 +1787,11 @@ class Util
             ) {
                 $url .= '?' . explode('&', $parts[1], 2)[0];
             }
-
+        } else {
+            $url = $urlPath;
+            if (is_array($urlParams)) {
+                $url = $urlPath . Url::getCommon($urlParams);
+            }
         }
 
         foreach ($tag_params as $par_name => $par_value) {
@@ -2254,6 +2273,19 @@ class Util
         return $gotopage;
     } // end function
 
+
+    /**
+     * Calculate page number through position
+     * @param int $pos       position of first item
+     * @param int $max_count number of items per page
+     * @return int $page_num
+     * @access public
+     */
+    public static function getPageFromPosition($pos, $max_count)
+    {
+        return floor($pos / $max_count) + 1;
+    }
+
     /**
      * Prepare navigation for a list
      *
@@ -2273,6 +2305,7 @@ class Util
      *
      * @todo    use $pos from $_url_params
      */
+
     public static function getListNavigator(
         $count, $pos, array $_url_params, $script, $frame, $max_count, $name = 'pos',
         $classes = array()
@@ -2314,13 +2347,15 @@ class Util
 
                 $_url_params[$name] = 0;
                 $list_navigator_html .= '<a' . $class . $title1 . ' href="' . $script
-                    . Url::getCommon($_url_params) . '">' . $caption1
-                    . '</a>';
+                    . '" data-post="'
+                    . Url::getCommon($_url_params, '', false)
+                    . '">' . $caption1 . '</a>';
 
                 $_url_params[$name] = $pos - $max_count;
-                $list_navigator_html .= ' <a' . $class . $title2
-                    . ' href="' . $script . Url::getCommon($_url_params) . '">'
-                    . $caption2 . '</a>';
+                $list_navigator_html .= ' <a' . $class . $title2 . ' href="' . $script
+                    . '" data-post="'
+                    . Url::getCommon($_url_params, '', false)
+                    . '">' . $caption2 . '</a>';
             }
 
             $list_navigator_html .= '<form action="' . basename($script)
@@ -2330,7 +2365,7 @@ class Util
             $list_navigator_html .= self::pageselector(
                 $name,
                 $max_count,
-                floor(($pos + 1) / $max_count) + 1,
+                self::getPageFromPosition($pos, $max_count),
                 ceil($count / $max_count)
             );
             $list_navigator_html .= '</form>';
@@ -2353,17 +2388,19 @@ class Util
 
                 $_url_params[$name] = $pos + $max_count;
                 $list_navigator_html .= '<a' . $class . $title3 . ' href="' . $script
-                    . Url::getCommon($_url_params) . '" >' . $caption3
-                    . '</a>';
+                    . '" data-post="'
+                    . Url::getCommon($_url_params, '', false)
+                    . '" >' . $caption3 . '</a>';
 
                 $_url_params[$name] = floor($count / $max_count) * $max_count;
                 if ($_url_params[$name] == $count) {
                     $_url_params[$name] = $count - $max_count;
                 }
 
-                $list_navigator_html .= ' <a' . $class . $title4
-                    . ' href="' . $script . Url::getCommon($_url_params) . '" >'
-                    . $caption4 . '</a>';
+                $list_navigator_html .= ' <a' . $class . $title4 . ' href="' . $script
+                    . '" data-post="'
+                    . Url::getCommon($_url_params, '', false)
+                    . '" >' . $caption4 . '</a>';
             }
             $list_navigator_html .= '</div>' . "\n";
         }
@@ -2757,7 +2794,7 @@ class Util
      */
     public static function convertBitDefaultValue($bit_default_value)
     {
-        return rtrim(ltrim($bit_default_value, "b'"), "'");
+        return rtrim(ltrim(htmlspecialchars_decode($bit_default_value, ENT_QUOTES), "b'"), "'");
     }
 
     /**
@@ -2974,19 +3011,25 @@ class Util
     {
         // Convert to WKT format
         $hex = bin2hex($data);
-        $wktsql     = "SELECT ASTEXT(x'" . $hex . "')";
+        $spatialAsText = 'ASTEXT';
+        $spatialSrid = 'SRID';
+        if ($GLOBALS['dbi']->getVersion() >= 50600) {
+            $spatialAsText = 'ST_ASTEXT';
+            $spatialSrid = 'ST_SRID';
+        }
+        $wktsql     = "SELECT $spatialAsText(x'" . $hex . "')";
         if ($includeSRID) {
-            $wktsql .= ", SRID(x'" . $hex . "')";
+            $wktsql .= ", $spatialSrid(x'" . $hex . "')";
         }
 
         $wktresult  = $GLOBALS['dbi']->tryQuery(
             $wktsql
         );
         $wktarr     = $GLOBALS['dbi']->fetchRow($wktresult, 0);
-        $wktval     = $wktarr[0];
+        $wktval     = isset($wktarr[0]) ? $wktarr[0] : null;
 
         if ($includeSRID) {
-            $srid = $wktarr[1];
+            $srid = isset($wktarr[1]) ? $wktarr[1] : null;
             $wktval = "'" . $wktval . "'," . $srid;
         }
         @$GLOBALS['dbi']->freeResult($wktresult);
@@ -3458,19 +3501,21 @@ class Util
     /**
      * Generates GIS data based on the string passed.
      *
-     * @param string $gis_string GIS string
+     * @param string $gis_string   GIS string
+     * @param int    $mysqlVersion The mysql version as int
      *
-     * @return string GIS data enclosed in 'GeomFromText' function
+     * @return string GIS data enclosed in 'ST_GeomFromText' or 'GeomFromText' function
      */
-    public static function createGISData($gis_string)
+    public static function createGISData($gis_string, $mysqlVersion)
     {
+        $geomFromText = ($mysqlVersion >= 50600) ? 'ST_GeomFromText' : 'GeomFromText';
         $gis_string = trim($gis_string);
         $geom_types = '(POINT|MULTIPOINT|LINESTRING|MULTILINESTRING|'
             . 'POLYGON|MULTIPOLYGON|GEOMETRYCOLLECTION)';
         if (preg_match("/^'" . $geom_types . "\(.*\)',[0-9]*$/i", $gis_string)) {
-            return 'GeomFromText(' . $gis_string . ')';
+            return $geomFromText . '(' . $gis_string . ')';
         } elseif (preg_match("/^" . $geom_types . "\(.*\)$/i", $gis_string)) {
-            return "GeomFromText('" . $gis_string . "')";
+            return $geomFromText . "('" . $gis_string . "')";
         }
 
         return $gis_string;
@@ -4233,7 +4278,7 @@ class Util
     {
         $serverType = self::getServerType();
         $serverVersion = $GLOBALS['dbi']->getVersion();
-        return $serverType == 'MySQL' && $serverVersion >= 50705
+        return in_array($serverType, array('MySQL', 'Percona Server')) && $serverVersion >= 50705
              || ($serverType == 'MariaDB' && $serverVersion >= 50200);
     }
 
@@ -4469,14 +4514,15 @@ class Util
             if (Core::isValid($_REQUEST['tbl_type'], array('table', 'view'))) {
                 $tblGroupSql .= $whereAdded ? " AND" : " WHERE";
                 if ($_REQUEST['tbl_type'] == 'view') {
-                    $tblGroupSql .= " `Table_type` != 'BASE TABLE'";
+                    $tblGroupSql .= " `Table_type` NOT IN ('BASE TABLE', 'SYSTEM VERSIONED')";
                 } else {
-                    $tblGroupSql .= " `Table_type` = 'BASE TABLE'";
+                    $tblGroupSql .= " `Table_type` IN ('BASE TABLE', 'SYSTEM VERSIONED')";
                 }
             }
             $db_info_result = $GLOBALS['dbi']->query(
                 'SHOW FULL TABLES FROM ' . self::backquote($db) . $tblGroupSql,
-                null, DatabaseInterface::QUERY_STORE
+                DatabaseInterface::CONNECT_USER,
+                DatabaseInterface::QUERY_STORE
             );
             unset($tblGroupSql, $whereAdded);
 
@@ -4557,10 +4603,11 @@ class Util
      * Generates random string consisting of ASCII chars
      *
      * @param integer $length Length of string
+     * @param bool    $asHex  (optional) Send the result as hex
      *
      * @return string
      */
-    public static function generateRandom($length)
+    public static function generateRandom($length, $asHex = false)
     {
         $result = '';
         if (class_exists('phpseclib\\Crypt\\Random')) {
@@ -4577,7 +4624,7 @@ class Util
                 $result .= chr($byte);
             }
         }
-        return $result;
+        return $asHex ? bin2hex($result) : $result;
     }
 
     /**
@@ -4709,8 +4756,18 @@ class Util
             $urlParams['tbl_group'] = $_REQUEST['tbl_group'];
         }
 
-        $url = 'db_structure.php' . Url::getCommon($urlParams);
+        return self::linkOrButton('db_structure.php', $urlParams, $title . $orderImg, $orderLinkParams);
+    }
 
-        return self::linkOrButton($url, $title . $orderImg, $orderLinkParams);
+    /**
+     * Check that input is an int or an int in a string
+     *
+     * @param mixed $input
+     *
+     * @return bool
+     */
+    public static function isInteger($input)
+    {
+        return (ctype_digit((string) $input));
     }
 }
