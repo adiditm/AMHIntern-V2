@@ -126,12 +126,15 @@ function ai_chunk_text($text, $chunkSize = 700, $overlap = 75) {
     return array_values(array_filter($chunks, function ($c) { return $c !== ''; }));
 }
 
-function ai_get_embedding($text, $apiKey) {
+function ai_get_embedding($text, $apiKey, $taskType = null) {
     $payload = array(
         'content' => array(
             'parts' => array(array('text' => $text)),
         ),
     );
+    if ($taskType !== null) {
+        $payload['taskType'] = $taskType;
+    }
     // gemini-embedding-001 -- confirmed via a live ListModels call against
     // the current key that text-embedding-004 (the plan's original model
     // name) is retired; gemini-embedding-001 is the current stable
@@ -285,10 +288,10 @@ function ai_detect_chat_role() {
     $isLoggedIn = isset($_SESSION['LoginUser']) && $_SESSION['LoginUser'] !== '';
 
     if (!$isLoggedIn) {
-        return array('visitor', 'jamaah', 'seller', 'pebisnis');
+        return array('visitor', 'jamaah', 'seller', 'pebisnis', 'admin');
     }
     if (isset($_SESSION['Kind']) && $_SESSION['Kind'] === 'member') {
-        return array('jamaah');
+        return array('jamaah', 'visitor', 'admin');
     }
     if (isset($_SESSION['Priv'])) {
         $priv = $_SESSION['Priv'];
@@ -296,16 +299,16 @@ function ai_detect_chat_role() {
             return null;
         }
         if ($priv === 'seller') {
-            return array('seller');
+            return array('seller', 'jamaah', 'visitor', 'admin');
         }
         if ($priv === 'sponsor') {
-            return array('pebisnis', 'jamaah');
+            return array('pebisnis', 'jamaah', 'visitor', 'admin');
         }
         if ($priv === 'korwil' || $priv === 'subkorwil') {
-            return array('korwil');
+            return array('korwil', 'jamaah', 'visitor', 'admin');
         }
         if ($priv === '' || $priv === -1 || $priv === '-1') {
-            return array('jamaah');
+            return array('jamaah', 'visitor', 'admin');
         }
     }
     return null;
@@ -375,7 +378,7 @@ function ai_chat_role_display_name() {
 // searched) or null (search across every role -- unchanged from before
 // role detection existed). $db must be an already-connected
 // DB_MySQL-family object.
-function ai_retrieve_relevant_chunks($db, $queryEmbedding, $topK = 5, $minSimilarity = 0.5, $roles = null) {
+function ai_retrieve_relevant_chunks($db, $queryEmbedding, $topK = 5, $minSimilarity = 0.25, $roles = null) {
     if ($roles !== null && count($roles) > 0) {
         $escapedRoles = array();
         foreach ($roles as $r) {

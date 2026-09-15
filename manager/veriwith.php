@@ -4,7 +4,6 @@ if ($_GET['op'] == '') {
 } else {
     include_once("../framework/member_headside.blade.php");
 }
-include_once("../classes/actionpayclass.php");
 define("MENU_ID", "mdm_jual_verifikasi");
 
 function amhGetWithdrawAccountJenis($oMember, $pId)
@@ -118,15 +117,11 @@ function MM_callJS(jsStr) { //v2.0
     return eval(jsStr)
 }
 
-function doProcess(pURL, pBankOK, pJenisLabel) {
-  if (pBankOK=='1') {
-    vSure = confirm('Apakah Anda yakin memproses withdrawal ini?\n\nAksi ini akan mentransfer dana ke rekening ' + pJenisLabel + ' sesuai akun yang request withdraw.');
+function doProcess(pURL) {
+    vSure = confirm('Apakah Anda yakin memproses withdrawal ini secara manual?');
     if (vSure == true) {
         window.location = pURL + '&ref=withdraw';
     }
-  } else {
-    alert('Tidak dapat diproses, karena data bank dari pebisnis belum dibetulkan. Silakan dibetulkan terlebih dahulu kemudian refresh halaman ini dan lakukan pemrosesan!');
-  }
 }
 
 function doCancel(pURL) {
@@ -274,13 +269,6 @@ $(document).ready(function() {
                                 $vTgl = $db->f("ftglupdate");
                                 $vUserID = $db->f("fidmember");
                                 $vJenisWD = amhGetWithdrawAccountJenis($oMember, $vUserID);
-                                $vBankUser = $oMember->getBankAdm($vUserID,$vJenisWD);
-                                $bank = $oActionPay->getListBank();
-                                $vBankOK = '0';
-                                if($bank['status']=='0001') {
-                                  $vList = array_column($bank['data'],'code');
-                                  if (in_array($vBankUser,$vList)) $vBankOK='1';
-                                }
                                 $vSubtotal = $db->f("fnominal");
                                 $vCurr = $db->f("fcurr");
                                 $vProcessed = $db->f("fstatusrow");
@@ -293,12 +281,6 @@ $(document).ready(function() {
                                 }
                                 $vRekFrom = $db->f("frekfrom");
                                 $vRekTo = $db->f("frekto");
-                                if ($vJenisWD == 'seller')
-                                    $vJenisLabel = 'seller';
-                                else if ($vJenisWD == 'korwil')
-                                    $vJenisLabel = 'korwil';
-                                else
-                                    $vJenisLabel = 'pebisnis';
                                 $vTotHarga += $vSubtotal;
                                 if ($vProcessed == 2) {
                                     $vTotHargaV += $vSubtotal;
@@ -328,7 +310,7 @@ $(document).ready(function() {
                                 <td width="30" nowrap="nowrap" valign="middle"><?=$vProctext?></td>
                                 <td width="79" nowrap="nowrap" valign="middle">
                                     <p class="MsoNormal style4">
-                                        <input class="btn btn-primary btn-xs" type="button" name="Button" onClick="doProcess('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uUserID=<?=$vUserID?>','<?=$vBankOK?>','<?=$vJenisLabel?>');" value="Process" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
+                                        <input class="btn btn-primary btn-xs" type="button" name="Button" onClick="doProcess('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uUserID=<?=$vUserID?>');" value="Process" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
                                         <input class="btn btn-default btn-xs" type="button" name="Button2" onclick="doCancel('processwd.php?uIDJual=<?=$vIDJual?>&uSess=<?=md5('jalanku')?>&uCanc=<?=md5('bataldeh')?>&uUserID=<?=$vUserID?>');" value="Cancel" <?php if ($vProcessed == 2 || $vProcessed == 4) echo "disabled";?> />
                                         <input class="btn btn-success btn-xs" name="btnDetail" type="button" id="btnDetail" onclick="doDetail('<?=$vIDJual?>');" value="Detail" />
                                     </p>

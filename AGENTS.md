@@ -132,3 +132,20 @@ UI uses Blade-syntax fragments from `framework/` (e.g., `manager_topnav.blade.ph
   - Agent memiliki koneksi MCP bernama `php-mysql-bridge` (juga dikenal sebagai "razor") yang dapat mengakses database langsung lewat eksekusi proxy PHP (`myrzrbrdg.php`).
   - MCP ini bisa digunakan untuk mengakses `amhtechn_intern`, `amhtechn_intrial`, dan `amhtechn_intrain`.
   - Tools MCP ini bisa dipanggil menggunakan `call_mcp_tool` (dengan tool name `execute_query` atau `execute_update`) atau dijalankan via Node CLI (`node C:\Users\didit\.gemini\antigravity-cli\mcp\php-mysql-bridge\index.js`) jika belum terload ke system.
+
+### Done (September 2026)
+- **AI Chat System Instruction - Bukan MLM (Sep 2026)**:
+  - Menghapus kata "Aplikasi MLM" dari system prompt AI di `main/api_chat.php`.
+  - Menambahkan aturan tegas bahwa PT. Aminah BUKAN MLM, melainkan Pemasaran Single Level Konvensional yang Membentuk Network.
+  - Memperketat instruksi agar AI memprioritaskan dokumen internal dari `m_ai_document_chunk`.
+- **Pemisahan Alur Withdrawal Manual vs Payment Gateway (Sep 2026)**:
+  - `manager/veriwith.php` + `manager/processwd.php` → approval manual (tanpa payment gateway).
+  - `manager/veriwith_new.php` + `manager/processwd_new.php` → approval otomatis via ActionPay.
+  - Menghapus seluruh integrasi ActionPay dari `processwd.php` dan dependensi `actionpayclass.php` dari `veriwith.php`.
+- **PPOB Inquiry "selisih saldo" (Sep 2026 - Investigasi)**:
+  - Error `"ada selisih saldo di history transaksi, hubungi cs kami"` berasal 100% dari vendor Anta Utama (`antautama.co.id`), bukan bug kode internal.
+  - Mulai terjadi sejak 5 September 2026 pukul 20:31 WIB. Solusi: hubungi CS Anta Utama untuk rekonsiliasi saldo akun mitra `aminah`.
+- **Pindah Posisi Menu Dokumen Training AI (Sep 2026)**:
+  - Group menu `mdm_aitrain` (Dokumen Training AI) dipindahkan posisinya ke atas menu Log Out di sidebar admin.
+  - Tujuan: memancing refresh cache PWA di HP Android Samsung folded agar menu muncul.
+  - Dikerjakan oleh Antigravity agent App (bukan sesi ini).
