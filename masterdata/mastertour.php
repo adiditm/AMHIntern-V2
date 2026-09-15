@@ -27,6 +27,55 @@
   .divtr {
 	 margin-top:1em;  
   }
+  /* Kembalikan tampilan tabel phpMyEdit menjadi tabel dengan scroll horizontal pada layar HP/narrow screen */
+  @media (max-width: 767px) {
+    .right_col .table-responsive:has(table.pme-main) {
+      overflow-x: auto !important;
+      overflow-y: visible !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    .right_col table.pme-main.amh-card-table {
+      display: table !important;
+      width: max-content !important;
+      min-width: 100% !important;
+    }
+    .right_col table.pme-main.amh-card-table > tbody {
+      display: table-row-group !important;
+    }
+    .right_col table.pme-main.amh-card-table tr.pme-header {
+      display: table-row !important;
+    }
+    .right_col table.pme-main.amh-card-table tr.pme-header th {
+      display: table-cell !important;
+      padding: 8px 10px !important;
+      font-size: 13px !important;
+      white-space: nowrap !important;
+    }
+    .right_col table.pme-main.amh-card-table tr[class^="pme-row-"] {
+      display: table-row !important;
+      border: none !important;
+      margin: 0 !important;
+      background: inherit !important;
+      box-shadow: none !important;
+    }
+    .right_col table.pme-main.amh-card-table tr[class^="pme-row-"] > td {
+      display: table-cell !important;
+      width: auto !important;
+      padding: 8px 10px !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      white-space: nowrap !important;
+    }
+    .right_col table.pme-main.amh-card-table .amh-card-primary::before,
+    .right_col table.pme-main.amh-card-table .amh-card-secondary::before {
+      display: none !important;
+    }
+    .right_col table.pme-main.amh-card-table .amh-card-secondary {
+      display: table-cell !important;
+    }
+    .right_col table.pme-main.amh-card-table .amh-card-toggle-cell {
+      display: none !important;
+    }
+  }
 </style>
 <form name="frmFilter" id="frmFilter" style="padding-bottom:2em;<?=$vFilterShow?>" method="post" >
 <div class="row">
