@@ -1,7 +1,5 @@
 backupdb/
 Bahan/
 .DS_Store
-backupapp/
-Archive_split.*
-*.tar.gz*
-*.z[0-9]*
+pxx2/
+server/config.secret.php
