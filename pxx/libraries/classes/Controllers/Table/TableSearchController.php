@@ -8,6 +8,7 @@
 namespace PhpMyAdmin\Controllers\Table;
 
 use PhpMyAdmin\Controllers\TableController;
+use PhpMyAdmin\Core;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Relation;
 use PhpMyAdmin\Sql;
@@ -345,13 +346,15 @@ class TableSearchController extends TableController
             );
             //Append it to row array as where_clause
             $row['where_clause'] = $uniqueCondition[0];
+            $row['where_clause_sign'] = Core::signSqlQuery($uniqueCondition[0]);
 
             $tmpData = array(
                 $_POST['criteriaColumnNames'][0] =>
                     $row[$_POST['criteriaColumnNames'][0]],
                 $_POST['criteriaColumnNames'][1] =>
                     $row[$_POST['criteriaColumnNames'][1]],
-                'where_clause' => $uniqueCondition[0]
+                'where_clause' => $uniqueCondition[0],
+                'where_clause_sign' => Core::signSqlQuery($uniqueCondition[0])
             );
             $tmpData[$dataLabel] = ($dataLabel) ? $row[$dataLabel] : '';
             $data[] = $tmpData;
@@ -419,9 +422,13 @@ class TableSearchController extends TableController
      */
     public function getDataRowAction()
     {
+        if (! Core::checkSqlQuerySignature($_POST['where_clause'], $_POST['where_clause_sign'])) {
+            return;
+        }
+
         $extra_data = array();
-        $row_info_query = 'SELECT * FROM `' . $_POST['db'] . '`.`'
-            . $_POST['table'] . '` WHERE ' .  $_POST['where_clause'];
+        $row_info_query = 'SELECT * FROM ' . Util::backquote($_POST['db']) . '.'
+            . Util::backquote($_POST['table']) . ' WHERE ' .  $_POST['where_clause'];
         $result = $this->dbi->query(
             $row_info_query . ";",
             DatabaseInterface::CONNECT_USER,
@@ -1025,7 +1032,7 @@ class TableSearchController extends TableController
             return $where;
         } elseif ($geom_funcs[$geom_func]['params'] > 1) {
             // create gis data from the criteria input
-            $gis_data = Util::createGISData($criteriaValues);
+            $gis_data = Util::createGISData($criteriaValues, $this->dbi->getVersion());
             $where = $geom_func . '(' . Util::backquote($names)
                 . ', ' . $gis_data . ')';
             return $where;
@@ -1046,7 +1053,7 @@ class TableSearchController extends TableController
             && ! empty($criteriaValues)
         ) {
             // create gis data from the criteria input
-            $gis_data = Util::createGISData($criteriaValues);
+            $gis_data = Util::createGISData($criteriaValues, $this->dbi->getVersion());
             $where = $geom_function_applied . " " . $func_type . " " . $gis_data;
 
         } elseif (strlen($criteriaValues) > 0) {

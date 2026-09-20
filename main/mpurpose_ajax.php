@@ -278,7 +278,7 @@ $vUser=$_SESSION['LoginUser'];
 					}
 									
 			
-					  echo "<option selected value=''>-- Pilih Propinsi --</option>";
+					  echo "<option selected value=''>-- Pilih Provinsi --</option>";
 					  foreach ($data_propinsi as $propinsi) {
 						$selected = ($propinsi['province_id'] == $id_propinsi ? 'selected' : '');
 						echo "<option value='" . $propinsi['province_id'] . "'" . $selected . ">" . $propinsi['province_id'] . " | " . $propinsi['province'] . "</option>";
@@ -1766,7 +1766,7 @@ $vUser=$_SESSION['LoginUser'];
 						 } else {
 							$vOut['status'] = 'failed';
 							$vOut['data'] = '';
-							$vOut['message'] = "Penambahan area gagal, duplicate area in $vIDKorwil, silakan pilih Propinsi, Kab/Kota, Kecamatan lainnya!";
+							$vOut['message'] = "Penambahan area gagal, duplicate area in $vIDKorwil, silakan pilih Provinsi, Kab/Kota, Kecamatan lainnya!";
 							 
 						 }
 						 

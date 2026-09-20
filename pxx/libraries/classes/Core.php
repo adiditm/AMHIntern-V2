@@ -279,7 +279,7 @@ class Core
          * Avoid using Response class as config does not have to be loaded yet
          * (this can happen on early fatal error)
          */
-        if (!is_null($GLOBALS['dbi']) && isset($GLOBALS['PMA_Config']) && $GLOBALS['PMA_Config']->get('is_setup') === false && Response::getInstance()->isAjax()) {
+        if (isset($GLOBALS['dbi']) && !is_null($GLOBALS['dbi']) && isset($GLOBALS['PMA_Config']) && $GLOBALS['PMA_Config']->get('is_setup') === false && Response::getInstance()->isAjax()) {
             $response = Response::getInstance();
             $response->setRequestStatus(false);
             $response->addJSON('message', Message::error($error_message));
@@ -1287,6 +1287,66 @@ class Core
          */
         if (count($_REQUEST) > 1000) {
             self::fatalError(__('possible exploit'));
+        }
+    }
+
+    /**
+     * Sign the sql query using hmac using the session token
+     *
+     * @param string $sqlQuery The sql query
+     * @return string
+     */
+    public static function signSqlQuery($sqlQuery)
+    {
+        /** @var array $cfg */
+        global $cfg;
+        return hash_hmac('sha256', $sqlQuery, $_SESSION[' HMAC_secret '] . $cfg['blowfish_secret']);
+    }
+
+    /**
+     * Check that the sql query has a valid hmac signature
+     *
+     * @param string $sqlQuery  The sql query
+     * @param string $signature The Signature to check
+     * @return bool
+     */
+    public static function checkSqlQuerySignature($sqlQuery, $signature)
+    {
+        /** @var array $cfg */
+        global $cfg;
+        $hmac = hash_hmac('sha256', $sqlQuery, $_SESSION[' HMAC_secret '] . $cfg['blowfish_secret']);
+        return hash_equals($hmac, $signature);
+    }
+
+    /**
+     * @return void
+     */
+    public static function populateRequestWithEncryptedQueryParams()
+    {
+        if (
+            (! isset($_GET['eq']) || ! is_string($_GET['eq']))
+            && (! isset($_POST['eq']) || ! is_string($_POST['eq']))
+        ) {
+            unset($_GET['eq'], $_POST['eq'], $_REQUEST['eq']);
+            return;
+        }
+
+        $isFromPost = isset($_POST['eq']);
+        $decryptedQuery = Url::decryptQuery($isFromPost ? $_POST['eq'] : $_GET['eq']);
+        unset($_GET['eq'], $_POST['eq'], $_REQUEST['eq']);
+        if ($decryptedQuery === null) {
+            return;
+        }
+
+        $urlQueryParams = (array) json_decode($decryptedQuery);
+        foreach ($urlQueryParams as $urlQueryParamKey => $urlQueryParamValue) {
+            if ($isFromPost) {
+                $_POST[$urlQueryParamKey] = $urlQueryParamValue;
+            } else {
+                $_GET[$urlQueryParamKey] = $urlQueryParamValue;
+            }
+
+            $_REQUEST[$urlQueryParamKey] = $urlQueryParamValue;
         }
     }
 }

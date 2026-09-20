@@ -147,7 +147,7 @@ var PMA_commonActions = {
      */
     refreshMain: function (url, callback) {
         if (! url) {
-            url = $('#selflink').find('a').attr('href');
+            url = $('#selflink').find('a').attr('href') || window.location.pathname;
             url = url.substring(0, url.indexOf('?'));
         }
         url += PMA_commonParams.getUrlQuery();
@@ -290,7 +290,7 @@ PMA_DROP_IMPORT = {
                                 var filename = $this.parent('span').attr('data-filename');
                                 $('body').append('<div class="pma_drop_result"><h2>' +
                                 PMA_messages.dropImportImportResultHeader + ' - ' +
-                                filename + '<span class="close">x</span></h2>' + value.message + '</div>');
+                                escapeHtml(filename) + '<span class="close">x</span></h2>' + value.message + '</div>');
                                 $('.pma_drop_result').draggable();  // to make this dialog draggable
                             }
                         });

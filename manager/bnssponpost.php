@@ -390,51 +390,8 @@ function doReject(pIdSys,pIdTrx) {
             <td class="">&nbsp;</td>
             </tr>
             </tbody>
-        </table>    
-        </div>  
-            
-     <table width="90%">
-     <tr>
-      <td align="center">
-        
-       
-        <ul class="pagination">
-          <?
-   for ($i=0;$i<$vPageCount;$i++) {
-     $vOffset=$i*$vBatasBaris;
-     if ($i!=$vPage) {
-?>
-          <li class="active" ><a href="../manager/bnssponpost.php?uPage=<?=$i?>&uAwal=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")?>&uAkhir=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")?>" >
-          <?=$i+1?>
-          </a></li>
-          <?
-  } else {
-?>
-         <li style="cursor:pointer"> <a href="#" > <?=$i+1?></a></li>
-          <? } ?>
-          <?  } //while?>
-<br>
-       </ul></td>
-    </tr>
-    <tr> 
-      <td height="5" align="center" valign="middle"> <div align="right"></div>
-        <hr> </td>
-    </tr>
-    <tr> 
-      <td height="49" align="center" valign="middle"> <p><br>
-        </p>
-      <p>&nbsp;        </p></td>
-    </tr>
-    <?php
-   
-  if ($baris==$Akhiran)
-  {
-  ?>
-    <?php
-  }
-  ?>
-  </table>
-  
+        </table>
+        </div>
 </form>
      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css"/>
 

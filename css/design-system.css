@@ -1,0 +1,1539 @@
+/* AMH Intern — Design System (Phase 1: Login + Dashboard)
+   Tokens translated from AMHIntern-PWA/app/globals.css and tailwind.config.js.
+   Plain CSS, no build step — loaded directly via <link>. */
+
+/* Vendor CSS (Bootstrap/custom.min.css) sets html{font-size:10px} — a common
+   "62.5%" trick for easy rem math. Every rem value in this file was written
+   assuming the browser's normal 16px root, so left alone it silently renders
+   at 62.5% of the intended size everywhere (sidebar, buttons, dashboard text,
+   the login page — all of it). Reset it before anything else here loads. */
+html { font-size: 100%; }
+
+/* Safety net: no page should ever pan/scroll horizontally on a phone --
+   that's always a sign some element is wider than its container. This
+   clips at the viewport level regardless of the cause, while leaving
+   legitimate inner scroll containers (.table-responsive, the mobile
+   notification panel) free to scroll their own content as designed.
+   `clip`, not `hidden` -- confirmed live that `hidden` here breaks the
+   topbar's position:sticky (its own overflow:visible/auto gets promoted
+   to a real scroll container per spec once one axis is non-visible,
+   which then becomes the nearest ancestor sticky positions against
+   instead of the true viewport, and the two didn't agree on scroll
+   offset -- the topbar scrolled away entirely instead of sticking).
+   `clip` prevents overflow the same way without creating that new
+   scrolling context, so sticky keeps referencing the real viewport. */
+@media (max-width: 767px) {
+  html, body { overflow-x: clip; }
+}
+
+:root {
+  --amh-bg-gradient: radial-gradient(circle at 50% -10%, #0284c7 0%, #0369a1 35%, #0f172a 75%, #080d1a 100%);
+  --amh-amber-300: #fbbf24;
+  --amh-amber-500: #f59e0b;
+  --amh-amber-gradient: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
+  --amh-sky-400: #38bdf8;
+  --amh-text: #e2e8f0;
+  /* brightened from #94a3b8 -- used site-wide for secondary/muted text
+     (sidebar submenu links, disabled fields, card secondary labels,
+     placeholders, stat labels...); the old value read as too dark/low
+     contrast against the theme's backgrounds. Backgrounds are untouched
+     here -- this only affects text colour. */
+  --amh-text-dim: #cbd5e1;
+  --amh-radius-md: 0.75rem;
+  --amh-radius-lg: 1rem;
+  --amh-radius-xl: 1.5rem;
+  --amh-font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --amh-sidebar-width: 260px;
+}
+
+/* NOTE: no blanket `color` / `a` rules here on purpose. `amh-theme` sits on the
+   <body> of EVERY manager/ page (~180), most of which still render old
+   Gentelella/Bootstrap markup; a light body colour made their white panels
+   unreadable. Text colour is applied to the new chrome only (see below). */
+body.amh-theme {
+  background: var(--amh-bg-gradient) fixed;
+  font-family: var(--amh-font);
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+/* Light text for the new design-system surfaces only (login page panels,
+   sidebar, topbar, the two restyled dashboards' glass cards). */
+.amh-glass-panel,
+.amh-glass-card,
+.amh-glass-gold-card,
+.amh-glass-nav,
+.amh-sidebar,
+.amh-topbar { color: var(--amh-text); }
+
+.amh-sidebar a,
+.amh-topbar a { color: inherit; text-decoration: none; }
+
+/* ---------- Glass surfaces ---------- */
+
+.amh-glass-panel {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--amh-radius-lg);
+}
+/* main/loginform.php's "Jadwal Keberangkatan Terdekat" schedule table
+   (the only table inside a .amh-glass-panel) sets padding:0.35rem 0
+   inline on every <th>/<td> -- zero horizontal component, so adjacent
+   columns run straight into each other with no gap at all. */
+.amh-glass-panel table th:not(:last-child),
+.amh-glass-panel table td:not(:last-child) {
+  padding-right: 0.75rem !important;
+}
+
+.amh-glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 35px 0 rgba(0,0,0,0.25), inset 0 1px 0 0 rgba(255,255,255,0.2);
+  border-radius: var(--amh-radius-lg);
+}
+
+.amh-glass-gold-card {
+  background: linear-gradient(135deg, rgba(245,158,11,0.35) 0%, rgba(14,165,233,0.3) 50%, rgba(15,23,42,0.8) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(251,191,36,0.45);
+  box-shadow: 0 12px 40px rgba(245,158,11,0.25), inset 0 1px 1px 0 rgba(255,255,255,0.3);
+  border-radius: var(--amh-radius-xl);
+}
+
+.amh-glass-nav {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ---------- Buttons ---------- */
+
+.amh-btn-gold {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: var(--amh-amber-gradient);
+  color: #1e293b; font-weight: 700; font-size: 0.9rem;
+  padding: 0.75rem 1.25rem; border: none; border-radius: var(--amh-radius-lg);
+  box-shadow: 0 0 15px rgba(212,175,55,0.4);
+  cursor: pointer; transition: transform 0.2s ease;
+}
+.amh-btn-gold:hover { transform: scale(1.02); color: #1e293b; }
+.amh-btn-gold:active { transform: scale(0.98); }
+
+.amh-btn-outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: rgba(255,255,255,0.05);
+  color: var(--amh-text); font-weight: 600; font-size: 0.9rem;
+  padding: 0.75rem 1.25rem; border: 1px solid rgba(255,255,255,0.2); border-radius: var(--amh-radius-lg);
+  cursor: pointer; transition: background 0.2s ease;
+}
+.amh-btn-outline:hover { background: rgba(255,255,255,0.1); color: var(--amh-text); }
+
+/* ---------- Inputs ---------- */
+
+.amh-input-group { position: relative; margin-bottom: 0.85rem; }
+.amh-input-icon {
+  position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%);
+  color: var(--amh-text-dim); pointer-events: none;
+}
+.amh-input {
+  width: 100%; box-sizing: border-box;
+  padding: 0.85rem 1rem 0.85rem 2.6rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--amh-radius-lg);
+  color: #fff; font-family: var(--amh-font); font-size: 0.95rem;
+}
+.amh-input::placeholder { color: var(--amh-text-dim); }
+.amh-input:focus { outline: none; border-color: var(--amh-amber-500); box-shadow: 0 0 0 2px rgba(245,158,11,0.35); }
+
+.amh-radio-pill {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  cursor: pointer; font-size: 0.95rem; color: var(--amh-text);
+}
+.amh-radio-pill input { accent-color: var(--amh-amber-500); width: 1rem; height: 1rem; }
+
+/* ---------- Sidebar shell (used by framework/admin_*.blade.php) ---------- */
+
+.amh-shell { min-height: 100vh; }
+
+/* Grid: sidebar spans both rows in column 1; topbar (row 1) and page content
+   (row 2) stack vertically in column 2. A flex row put the topbar *beside*
+   the content as a narrow full-height column. */
+.amh-layout {
+  display: grid;
+  grid-template-columns: var(--amh-sidebar-width) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+/* anything else that lands in the layout (e.g. the footer emitted by
+   admin_footside.blade.php) stays in the right-hand column */
+.amh-layout > * { grid-column: 2; }
+.amh-topbar { grid-column: 2; grid-row: 1; }
+.right_col { grid-column: 2; grid-row: 2; }
+/* the page footer from admin_footside.blade.php's general_footer.blade.php
+   include: give it its own row so it stacks below the content instead of
+   overlapping it, and match the dark theme instead of Gentelella's white bar.
+   Some legacy pages close .right_col *after* including the footer instead of
+   before, so it ends up nested inside .right_col rather than a direct
+   .amh-layout child there -- the plain `footer` rule below catches that case
+   too (it can't take the grid placement, but the white bar is the real bug). */
+.amh-layout > footer {
+  grid-column: 2; grid-row: 3;
+  padding: 0.85rem 1.5rem;
+  color: var(--amh-text-dim);
+  font-size: 0.85rem;
+  background: transparent;
+}
+footer {
+  background: transparent !important;
+  color: var(--amh-text-dim);
+}
+.amh-layout > footer a { color: var(--amh-sky-400); }
+
+.amh-sidebar {
+  grid-column: 1; grid-row: 1 / -1;
+  width: var(--amh-sidebar-width); flex-shrink: 0;
+  display: flex; flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  position: sticky; top: 0; height: 100vh; z-index: 40;
+}
+
+/* Drag handle between the sidebar and content, desktop only — the sidebar
+   becomes an off-canvas drawer on mobile, where resizing makes no sense. */
+.amh-sidebar-resizer {
+  position: fixed; top: 0; bottom: 0;
+  left: var(--amh-sidebar-width);
+  width: 6px; margin-left: -3px;
+  cursor: col-resize; z-index: 41;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+.amh-sidebar-resizer:hover,
+.amh-sidebar-resizer.amh-dragging {
+  background: rgba(251,191,36,0.45);
+}
+.amh-sidebar-header { padding: 1.25rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.amh-sidebar-logo {
+  width: 40px; height: 40px; border-radius: 999px; background: #fff; padding: 4px;
+  box-shadow: 0 0 10px rgba(212,175,55,0.3);
+  /* the source image is the full "Aminah" wordmark (223x69px): pixel-
+     scanned it directly -- green "A" glyph spans columns 13-65, the
+     black cursive "minah" text starts immediately after at column 66,
+     no gap between them. object-fit:cover alone (scale = box/69 height)
+     shows source columns 0-69, just barely bleeding into the black
+     text. The extra transform:scale(1.08) (with transform-origin:left
+     so it zooms from the left edge, not the centre) narrows the visible
+     window to ~0-64, comfortably inside the green and stopping short of
+     the black -- confirmed via the same pixel scan against the
+     rendered crop math before shipping this value. */
+  object-fit: cover;
+  object-position: left center;
+  transform: scale(1.08);
+  transform-origin: left center;
+}
+.amh-sidebar-brand { font-weight: 700; color: var(--amh-amber-300); font-size: 1rem; }
+.amh-sidebar-profile { padding: 0 1.25rem 1rem; font-size: 0.85rem; color: var(--amh-text-dim); }
+.amh-sidebar-profile strong { display: block; color: #fff; font-size: 1rem; }
+.amh-sidebar-nav { flex: 1; overflow-y: auto; padding: 0.5rem 0.75rem; }
+.amh-sidebar-nav ul { list-style: none; margin: 0; padding: 0; }
+.amh-sidebar-nav > ul > li > a {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.72rem 0.87rem; border-radius: var(--amh-radius-md);
+  color: var(--amh-text-dim); font-size: 0.95rem; font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.amh-sidebar-nav > ul > li > a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.amh-sidebar-nav > ul > li.active > a {
+  background: linear-gradient(90deg, rgba(251,191,36,0.2), transparent);
+  color: var(--amh-amber-300);
+  border-left: 2px solid var(--amh-amber-300);
+}
+.amh-sidebar-nav .amh-submenu { padding-left: 1.75rem; }
+.amh-sidebar-nav .amh-submenu a {
+  display: block; padding: 0.5rem 0.5rem; font-size: 0.9rem; color: var(--amh-text-dim);
+}
+.amh-sidebar-nav .amh-submenu a:hover { color: #fff; }
+/* admin_sidebar.blade.php only ever marked the top-level parent <li>
+   active (e.g. "Master Data" highlighting when any of its submenu pages
+   is open) -- the specific submenu link itself (e.g. "User Login
+   Seller") never got any active-state class at all, so there was no way
+   to tell which exact page was open at a glance. */
+.amh-sidebar-nav .amh-submenu a.active {
+  background: linear-gradient(90deg, rgba(251,191,36,0.2), transparent);
+  color: var(--amh-amber-300);
+  border-left: 2px solid var(--amh-amber-300);
+  margin-left: -2px;
+  font-weight: 600;
+}
+.amh-sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+
+.amh-sidebar-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 39;
+  background: rgba(8,13,26,0.6); backdrop-filter: blur(2px);
+}
+
+.amh-sidebar-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--amh-radius-md);
+  background: rgba(15,23,42,0.7); color: var(--amh-amber-300);
+  border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+}
+
+/* ---------- Top bar ---------- */
+
+.amh-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.5rem; gap: 1rem;
+  position: sticky; top: 0; z-index: 30;
+}
+.amh-topbar-user { display: flex; align-items: center; gap: 0.75rem; position: relative; }
+.amh-topbar-user > button { background: none; border: none; color: #fff; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-family: var(--amh-font); }
+.amh-topbar-dropdown {
+  display: none; position: absolute; right: 0; top: calc(100% + 0.5rem);
+  min-width: 260px; padding: 0.75rem; z-index: 30;
+}
+.amh-topbar-dropdown.amh-open { display: block; }
+.amh-topbar-dropdown a, .amh-topbar-dropdown div { display: block; padding: 0.5rem 0.6rem; font-size: 0.92rem; border-radius: var(--amh-radius-md); }
+.amh-topbar-dropdown a:hover { background: rgba(255,255,255,0.08); }
+.amh-topbar-bell {
+  /* it's a <button> with no explicit background/border reset, so it was
+     falling back to the browser's native button chrome -- a light gray
+     box behind the icon, on every page site-wide (desktop browsers show
+     this default much more visibly than mobile does, which is why it
+     went unnoticed until now). */
+  background: none; border: none;
+  position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--amh-radius-md); cursor: pointer;
+}
+/* Notification stack (css/lobibox.css, vendor) now starts hidden and is
+   opened via the bell -- admin_topnav.blade.php injects this button as the
+   first child of the toast wrapper once it exists. */
+.amh-notif-closeall {
+  /* sticky, not just first-child -- the wrapper itself scrolls (overflow-y:
+     auto), so a plain first child scrolls away with the rest of the list */
+  position: sticky; top: 0; z-index: 2;
+  display: block; width: 100%; box-sizing: border-box;
+  margin-bottom: 0.5rem; padding: 0.4rem 0.6rem;
+  font-size: 0.75rem; font-weight: 700; color: #0f172a;
+  background: var(--amh-amber-300); border: none; border-radius: var(--amh-radius-md);
+  cursor: pointer; text-align: center;
+}
+.amh-notif-closeall:hover { filter: brightness(1.08); }
+/* Desktop notification panel: without a cap the toast stack (opened via
+   the bell) just sprawls uncapped down the whole right edge with no way
+   to see or reach the "Tutup Semua" button. The <=991px media query below
+   overrides this with mobile-specific width/position; both use !important
+   so this must stay earlier in the file for the mobile rule to win there. */
+.lobibox-notify-wrapper,
+.lobibox-notify-wrapper.top,
+.lobibox-notify-wrapper.right {
+  position: fixed !important;
+  top: 4.5rem !important;
+  right: 1rem !important;
+  left: auto !important;
+  bottom: auto !important;
+  width: 320px !important;
+  max-width: calc(100vw - 2rem) !important;
+  max-height: 70vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 40 !important;
+}
+/* Lobibox sets an inline max-height:32px + overflow:hidden on the message
+   text (tuned for its original 400px-wide single-line layout) -- inside
+   our narrower panel the text wraps onto more lines than that fits, so
+   everything past the first line or two (including the "Klik di sini"
+   link) was being clipped off, not just visually truncated. */
+.lobibox-notify-msg {
+  max-height: none !important;
+  overflow: visible !important;
+}
+/* Lobibox also sets an inline width:400px on each toast itself (its
+   default single-column layout) -- inside our 320px desktop panel that
+   overflowed past the right edge and got clipped by the wrapper's
+   overflow-x:hidden, cutting off the tail of the message ("...untuk m").
+   The <=991px rule below already covers mobile with width:100%; this
+   applies the same fix on desktop. */
+.lobibox-notify {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.amh-topbar-bell .amh-dot {
+  /* hidden by default -- JS (admin_topnav.blade.php) shows this only while
+     there's at least one notification, since the stack itself now starts
+     hidden and is opened on demand via the bell instead of showing itself
+     automatically. */
+  display: none;
+  position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 999px;
+  background: var(--amh-amber-300); box-shadow: 0 0 0 3px rgba(15,23,42,0.9);
+}
+
+/* content area shared by every manager/ page (touched or not).
+   background/margin are reset defensively: old Gentelella custom.min.css styles
+   .right_col with background:#F7F7F7 and a margin-left gutter. */
+.right_col { padding: 1.5rem; flex: 1; min-width: 0; background: transparent; margin: 0; }
+
+/* admin_headside.blade.php injects <style>.table-responsive{max-width:340px}
+   directly in <head> when PHP's Mobile_Detect flags the request as a real
+   mobile device -- a leftover from before this redesign, predating (and
+   fighting) the JS full-bleed/card-view system below. It caps every
+   phpMyEdit table/form container to a fixed 340px regardless of the
+   phone's actual screen width, which is the real cause behind containers
+   never reaching the edge or looking centered/"rapi" on mobile. */
+.right_col .table-responsive {
+  max-width: none !important;
+}
+
+/* ---------- Compatibility: untouched manager/ pages ---------- */
+/* ~178 pages still render old Gentelella/Bootstrap markup inside .right_col.
+   This used to restore Gentelella's original body colour (#73879C, a muted
+   grey-blue) so old content stayed readable against the dark theme -- but
+   that's the exact colour every table/panel/form's plain text falls back
+   to site-wide, and it reads as too dark/low-contrast. Brightened to the
+   theme's main text colour instead. The two restyled dashboards set their
+   own colours on .amh-* elements, so they are unaffected by these rules. */
+.right_col { color: var(--amh-text); }
+.right_col .x_panel,
+.right_col .panel,
+.right_col table,
+.right_col form {
+  color: var(--amh-text);
+}
+.right_col a {
+  /* was #337ab7 (Gentelella's original link blue) on just .x_panel/
+     .panel/table a -- narrower than it needed to be, so a bare <a> that
+     wasn't inside any of those three (e.g. a plain confirmation-checkbox
+     label link) still fell back to the browser's raw, harshly saturated
+     default link blue. Broadened to every link in .right_col. Matches
+     the sky-blue already used for glass-panel links just below. */
+  color: var(--amh-sky-400);
+  text-decoration: underline;
+}
+/* ...but the new glass surfaces on the restyled dashboards keep light text */
+.right_col .amh-glass-panel table,
+.right_col .amh-glass-panel form { color: inherit; }
+.right_col .amh-glass-panel table a { color: var(--amh-sky-400); }
+
+/* Bootstrap .panel (card) containers default to a solid white background
+   with a near-black heading bar -- the line above only fixed the text
+   colour, not the box itself, which is why forms built from .panel (e.g.
+   regtab.php's "Form Tabungan Jamaah") still show as a white card against
+   the dark theme. */
+.right_col .panel {
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: var(--amh-radius-md);
+}
+.right_col .panel-heading {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+.right_col .panel-title {
+  color: var(--amh-amber-300) !important;
+}
+/* The icon box glued to the left of each input (person/calendar/email
+   icons etc.) -- Bootstrap default is a light-gray #eee square. */
+.right_col .input-group-addon {
+  background: rgba(15, 23, 42, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: var(--amh-text-dim) !important;
+}
+
+/* Hand-built catalogue/listing pages (e.g. memstock/umroh.php's tour
+   package list, memstock/tourdet.php's detail view) set inline
+   style="color:#000" on titles/links and style="color:#00F" on other
+   titles/"Selengkapnya >>" links -- pure black is nearly invisible and
+   pure saturated blue is harsh against the dark theme, the same pattern
+   fixed elsewhere via classes but these have no class at all to hook
+   into, only the inline colour itself. Covers both <a> and <strong>
+   since both are used for this across the two pages found so far. */
+.right_col a[style*="color:#000"],
+.right_col a[style*="color: #000"],
+.right_col strong[style*="color:#000"],
+.right_col strong[style*="color: #000"] {
+  color: #fff !important;
+}
+.right_col a[style*="color:#00F"],
+.right_col a[style*="color: #00F"],
+.right_col a[style*="color:#00f"],
+.right_col a[style*="color: #00f"],
+.right_col strong[style*="color:#00F"],
+.right_col strong[style*="color: #00F"],
+.right_col strong[style*="color:#00f"],
+.right_col strong[style*="color: #00f"] {
+  color: var(--amh-sky-400) !important;
+}
+/* memstock/tourdet.php's package detail wrapper (and likely the same
+   template used for Haji/Tour Domestik/Tour Internasional detail pages)
+   sets inline style="background-color:#FF9" -- a pastel yellow filling
+   the entire content area, with the rest of the file's text colours
+   (assuming a dark background) reading as barely-visible pale yellow on
+   top of it. */
+.right_col .isiTabs {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+
+/* Several hand-built filter forms (manager/aktif.php, manager/aktiftab.php
+   -- both "Administrasi Jamaah/Tabungan" and "Kontak Tidak Serumah" reuse
+   aktif.php) wrap their whole filter <table> in <div class="table-
+   responsive col-lg-6">, which gives it a bordered box with its own
+   horizontal scrollbar -- looks like a separate framed widget instead of
+   just flowing as part of the page. The real data table on the same
+   pages uses a bare .table-responsive with no col-lg-* alongside it, so
+   this combination is a safe, specific hook: unwrap the frame without
+   touching real wide-table scroll wrappers elsewhere. Reference/desired
+   look is manager/rpt_payhistory.php's filter, which was never framed
+   like this to begin with. */
+.right_col .table-responsive[class*="col-lg-"] {
+  border: none !important;
+  overflow: visible !important;
+  min-height: 0 !important;
+}
+
+/* DataTables-style pages (Excel/Print buttons, e.g. manager/umroh.php's
+   product listing and others using the same plugin) render those buttons
+   with the browser's plain default white button chrome -- no theme class
+   at all to hook into, just the plugin's own generic .dt-button. */
+.right_col .dt-button,
+.right_col button.dt-button,
+.right_col a.dt-button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: var(--amh-text) !important;
+  border-radius: var(--amh-radius-md);
+}
+.right_col .dt-button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Filter action-button rows (Submit/Reset, Search/Reset etc.) sometimes
+   sit inside a narrow Bootstrap column (col-lg-2 and similar) sized for
+   a single input, not two buttons side by side -- they wrap onto
+   separate lines instead of sitting in one row on desktop. Let the
+   column grow to fit its buttons instead of forcing them to wrap. */
+.right_col .row > [class*="col-"]:has(> .btn + .btn) {
+  width: auto !important;
+  max-width: none !important;
+  white-space: nowrap;
+}
+
+/* Same problem, different markup: some filter rows put Submit and Clear
+   in their OWN separate col-lg-1 columns instead of two buttons in one
+   column (bnsktp.php and the 7 other Pembonusan filter pages, confirmed
+   live). col-lg-* has no width set below the lg breakpoint, so it
+   defaults to 100% there -- each column, and so each button, stacked
+   onto its own full-width line on mobile even though desktop (where
+   col-lg-1's fixed width still applies) was already correct. Scoped to
+   the col-lg-1/col-lg-2 breakpoint so desktop is untouched. */
+@media (max-width: 991px) {
+  .right_col .row > [class*="col-lg-"]:has(> .btn:only-child) {
+    width: auto !important;
+    max-width: none !important;
+    display: inline-block !important;
+    vertical-align: top;
+    margin-right: 0.5rem;
+  }
+}
+
+/* General safety net for pastel/bright yellow backgrounds not yet
+   individually audited on some other page -- covers the specific hex
+   codes actually found so far (#FF9 pastel, #FF0 pure) wherever they
+   show up, on any element, via either an inline style or a bgcolor
+   attribute, case-insensitively. Deliberately excludes tr[bgcolor="#FF0"]
+   (see the flagged-row rule elsewhere in this file, which keeps that
+   specific case as an amber "needs attention" highlight rather than
+   flattening it to plain dark background like this generic net does). */
+.right_col [style*="background-color:#FF9" i],
+.right_col [style*="background-color: #FF9" i],
+.right_col [style*="background:#FF9" i],
+.right_col [style*="background: #FF9" i],
+.right_col [bgcolor="#FF9" i] {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+.right_col :not(tr)[style*="background-color:#FF0" i],
+.right_col :not(tr)[style*="background-color: #FF0" i],
+.right_col :not(tr)[style*="background:#FF0" i],
+.right_col :not(tr)[style*="background: #FF0" i],
+.right_col :not(tr)[bgcolor="#FF0" i] {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+
+/* memstock/tourdet.php's "Detail" tab bar (Bootstrap .nav-tabs, white by
+   default) -- there's only one real tab; the second is marked class="hide"
+   in the markup, so this never did anything clickable. Removed rather
+   than reskinned since it's genuinely non-functional, not just
+   unstyled -- the "Detail" tab-pane below is already permanently
+   .active regardless of this bar's presence. Scoped to the specific
+   .panel.with-nav-tabs wrapper this template uses, not .nav-tabs
+   generally, in case some other untouched page has a real multi-tab
+   .nav-tabs that still needs to work. */
+.right_col .panel.with-nav-tabs > .panel-heading {
+  display: none;
+}
+
+/* ---------- Legacy forms & tables (phpMyEdit + hand-built Bootstrap 3) ---------- */
+/* Most of the ~178 untouched pages are either generated by phpMyEdit (list
+   tables: .pme-main/.pme-header/.pme-row-N/.pme-cell-N; add/change forms:
+   .pme-key/.pme-value; actions: .pme-navigation, .btn.pme-*) or hand-built
+   with plain Bootstrap 3 form/table markup. These rules key off those shared,
+   library-level classes/elements so one pass covers many pages at once,
+   without editing each page's PHP. */
+
+.right_col table.pme-main,
+.right_col table.table {
+  /* some hand-built tables (aktiftab.php) carry a literal inline
+     style="background-color:white" directly on the <table> -- only
+     !important beats that regardless of selector specificity. */
+  background: rgba(15, 23, 42, 0.35) !important;
+  border-radius: var(--amh-radius-md);
+  overflow: hidden;
+}
+/* Bootstrap's .table-striped alternates a near-white background on every
+   other row (via nth-child), which sits *underneath* our inputs/text — white
+   text on that stripe is invisible. Kill the stripe so every row shares the
+   same dark background this whole block assumes. */
+.right_col table.table-striped > tbody > tr:nth-of-type(odd):not([bgcolor]),
+.right_col table.table-striped > tbody > tr:nth-of-type(even):not([bgcolor]) {
+  background-color: transparent !important;
+}
+.right_col .pme-header,
+.right_col table.table thead th {
+  background: rgba(15, 23, 42, 0.65) !important;
+  color: var(--amh-text) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+  font-weight: 700;
+}
+.right_col .pme-header a { color: var(--amh-amber-300) !important; text-decoration: none; }
+.right_col [class^="pme-row-"],
+.right_col table.table tbody tr {
+  transition: background 0.12s ease;
+}
+.right_col [class^="pme-row-"]:hover,
+.right_col table.table tbody tr:hover {
+  background: rgba(56,189,248,0.08) !important;
+}
+.right_col [class^="pme-cell-"],
+.right_col table.table td {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* aktiftab.php's rows carry a literal HTML bgcolor attribute per row --
+   #FFF (plain white; this is the actual source of "why is this still
+   white" -- it's not a leftover Bootstrap default, it's baked into the
+   markup) for the normal state and #FF0 (pure saturated yellow) for
+   flagged/pending entries. bgcolor has very low cascade priority already,
+   but !important guards against any other rule (e.g. a row hover state)
+   winning the tie regardless. */
+.right_col tr[bgcolor="#FFF"],
+.right_col tr[bgcolor="#fff"],
+.right_col tr[bgcolor="white"] {
+  background: rgba(15, 23, 42, 0.4) !important;
+}
+.right_col tr[bgcolor="#FFF"] td,
+.right_col tr[bgcolor="#fff"] td,
+.right_col tr[bgcolor="white"] td {
+  color: #fff !important;
+}
+/* Flagged rows keep the "needs attention" meaning as a bright amber
+   instead of pure yellow, with explicit dark text for contrast against
+   it (the rest of this file assumes light text on a dark background,
+   which reads poorly on a light-amber one). Needs to be solid/high-
+   opacity, not a soft tint -- blended too far into the dark navy row
+   background underneath and read as a dark muddy gold instead of a
+   clear highlight. */
+.right_col tr[bgcolor="#FF0"],
+.right_col tr[bgcolor="#ff0"],
+.right_col tr[bgcolor="yellow"] {
+  background: #fbbf24 !important;
+}
+.right_col tr[bgcolor="#FF0"] td,
+.right_col tr[bgcolor="#ff0"] td,
+.right_col tr[bgcolor="yellow"] td {
+  color: #1e293b !important;
+}
+
+/* manager/appvtrans.php marks cancelled-transfer rows bgcolor="#666666"
+   (medium grey) vs. the normal alternating #FFFFF3/#CCCCFF stripe --
+   all three ended up reading as roughly the same washed-out pale colour
+   once themed, so "Cancelled" wasn't visually distinct. Explicit
+   request: cancelled should just be black. Normal alternating rows get
+   a subtle two-tone dark stripe instead of literal white/light-blue. */
+.right_col tr[bgcolor="#666666"] {
+  background: #000 !important;
+}
+.right_col tr[bgcolor="#FFFFF3"],
+.right_col tr[bgcolor="#ffffF3"] {
+  background: rgba(15, 23, 42, 0.3) !important;
+}
+.right_col tr[bgcolor="#CCCCFF"],
+.right_col tr[bgcolor="#ccccff"] {
+  background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Several hand-built pages (appvtrans.php confirmed, likely others using
+   the same old full-page-table layout convention) wrap their entire page
+   content in a <table width="100%"> directly inside .right_col.
+   table-layout defaults to auto, which treats width="100%" as a
+   preference, not a hard cap -- if the content (e.g. a wide data table
+   inside a nested .table-responsive) can't shrink below some intrinsic
+   width, the *outer* table just grows past 100% to fit it instead of
+   activating the inner table's own horizontal scroll. This was the real
+   cause of the Action column (Process/Cancel buttons) reading as cut
+   off with no way to reach it: the inner .table-responsive's scrollWidth
+   equaled its clientWidth (both already however wide the content forced
+   them to be), so nothing about it looked like it needed to scroll --
+   the actual overflow was happening one level up, silently, with the
+   page-level horizontal-scroll safety net then hiding the excess
+   entirely rather than the table's own scrollbar being reachable.
+   table-layout:fixed makes the outer table respect its declared width
+   for real, which correctly pushes the overflow back down into the
+   inner .table-responsive's own (real, working) horizontal scroll. */
+.right_col > table[width="100%"] {
+  table-layout: fixed;
+}
+
+/* Add/Change form rows: label cell + value cell. phpMyEdit suffixes these
+   with a per-column index (pme-key-0, pme-key-1, ...) -- there is no bare
+   .pme-key/.pme-value class, so the exact-class rules that used to be
+   here never actually matched anything live. */
+.right_col [class^="pme-key-"] {
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.6rem 0.75rem;
+}
+.right_col [class^="pme-value-"] {
+  padding: 0.5rem 0.75rem;
+}
+/* "Page: X of Y  Records: Z" pagination stats text */
+.right_col .pme-stats {
+  color: #fff;
+}
+
+/* Buttons: round the corners and drop the flat Bootstrap-3 look to match
+   the new chrome. Some legacy pages hardcode style="color:black" directly
+   on the button element (regtab.php's Submit button does) -- only
+   !important beats that; --amh-text is already near-white so this
+   doesn't visibly change .btn-default's own colour below. */
+.right_col .btn {
+  border-radius: var(--amh-radius-md);
+  font-weight: 600;
+  box-shadow: none;
+  color: #fff !important;
+}
+/* .btn-success (Bootstrap's default green) shows up on plenty of custom,
+   non-phpMyEdit pages too (aktiftab.php's "Cari"/"Detail / Verifikasi
+   Data"/"History Pembayaran" etc. are plain .btn.btn-success, no .pme-*
+   class at all) -- same gold used for the phpMyEdit action buttons below,
+   for one consistent accent colour instead of Bootstrap's green. */
+.right_col .btn-success {
+  background: var(--amh-amber-gradient) !important;
+  border: none !important;
+  color: #1e293b !important;
+}
+.right_col .btn-success:hover { filter: brightness(1.05); }
+.right_col .btn-default { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: var(--amh-text) !important; }
+.right_col .btn-default:hover { background: rgba(255,255,255,0.15); color: #fff !important; }
+
+/* phpMyEdit's own action buttons (add/change/delete/save/cancel/paging)
+   all render as plain .btn-success (green) -- switch them to the same
+   gold used on the login page's primary button for a consistent accent
+   colour instead of Bootstrap's default green, and give the short
+   paging symbols (<<, <, >, >>) the same minimum width as the longer
+   text buttons so the row doesn't look randomly uneven. */
+.right_col .pme-add,
+.right_col .pme-change,
+.right_col .pme-delete,
+.right_col .pme-save,
+.right_col .pme-more,
+.right_col .pme-search,
+.right_col .pme-reload,
+.right_col .pme-first,
+.right_col .pme-prev,
+.right_col .pme-next,
+.right_col .pme-last {
+  background: var(--amh-amber-gradient) !important;
+  border: none !important;
+  color: #1e293b !important;
+  min-width: 44px;
+}
+.right_col .pme-add:hover,
+.right_col .pme-change:hover,
+.right_col .pme-delete:hover,
+.right_col .pme-save:hover,
+.right_col .pme-more:hover,
+.right_col .pme-search:hover,
+.right_col .pme-reload:hover,
+.right_col .pme-first:hover,
+.right_col .pme-prev:hover,
+.right_col .pme-next:hover,
+.right_col .pme-last:hover {
+  filter: brightness(1.05);
+}
+
+/* .pme-search (phpMyEdit's show/hide-filter-row toggle, name="PME_sys_sw")
+   renders as a bare <input type="submit" value="v"> -- in the original
+   theme this was a Webdings-style icon font glyph (a down/up chevron for
+   collapsed/expanded state), but with no icon font loaded here it just
+   shows the literal letter "v"/"^", reading as an unexplained gold badge
+   with no indication of what it does (confirmed confusing -- flagged by
+   the user without knowing which page it was on, because this single
+   phpMyEdit-generated button appears identically on every list page
+   site-wide, not just one). Confirmed live: phpMyEdit swaps BOTH the
+   class (pme-search -> pme-hide) AND the value ("v" -> "^") when toggled
+   open, not just the value -- .pme-hide isn't in the shared gold-button
+   class list above, it happens to inherit the same gradient only via the
+   plain .btn-success rule elsewhere, so it still needs covering here too
+   or the open state falls back to showing a bare "^". <input> is a
+   replaced element and can't take ::before/::after content, so hide the
+   literal text and swap in an actual chevron icon via background-image
+   instead -- same fix, any page using phpMyEdit lists. */
+.right_col .pme-search,
+.right_col .pme-hide {
+  font-size: 0;
+  /* font-size:0 collapses this input's line-height to 0 too, which with
+     no explicit height left only its 5px top+bottom padding (10px total)
+     -- much shorter than every sibling .pme-* button (28px, set by their
+     normal-size text). Pin an explicit height to match. */
+  height: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+}
+.right_col .pme-search[value="^"],
+.right_col .pme-hide[value="^"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'/%3E%3C/svg%3E") !important;
+}
+
+/* Field labels: Bootstrap's own base CSS sets `label { color: #333 }`
+   directly, which -- being a rule that directly targets the element,
+   not just an inherited value -- beats the .right_col ancestor colour
+   regardless of specificity. Some hand-built forms also use a bare,
+   unclassed <span style="font-weight:bold"> instead of a real <label>
+   for the same purpose (regtab.php's "Jenis Pemberangkatan*" etc.,
+   inside a .divtr row wrapper) -- scoped narrowly to that structural
+   pattern rather than every <span>, since spans are used too widely
+   elsewhere (badges, coloured status text) to safely force one colour. */
+.right_col label {
+  color: #fff !important;
+}
+.right_col .divtr > span {
+  color: #fff !important;
+}
+
+/* bnsktp.php and 7 other Pembonusan filter pages hardcode
+   style="color:black" directly on the <form> tag wrapping the whole
+   filter -- .form-control already forces white on the actual inputs
+   (see above), but the bare <b>Mulai</b>/<b>Sampai</b>/<b>Korwil /
+   Subkorwil</b> filter labels have no color of their own, so they
+   inherit the form's black instead of falling back to .right_col's
+   ambient light colour. Reset colour on the element carrying the
+   inline style itself -- everything under it that doesn't set its own
+   colour (the bare <b> tags) then inherits this instead. */
+.right_col [style*="color:black" i],
+.right_col [style*="color: black" i] {
+  color: var(--amh-text) !important;
+}
+
+/* Definition lists (label: value pairs, e.g. a program's discount terms) --
+   had no colour rule at all, so <dt>/<dd> fell back to the browser/
+   Bootstrap default near-black text. */
+.right_col dl,
+.right_col dt,
+.right_col dd {
+  color: #fff;
+}
+
+/* Plain (non-.form-control) inputs/selects that PME and older hand-built
+   forms rely on for styling via the bare element, not a class. Some
+   hand-built inputs (manager/appvtrans.php's date filters, confirmed)
+   omit the type attribute entirely -- browsers still treat that as text
+   input, but a CSS attribute selector only matches an attribute that's
+   actually present, so input[type="text"] alone never caught these,
+   leaving them as tiny unstyled native inputs that didn't fit the
+   layout (this is what "filter tanggal kepotong di mobile" traced to). */
+.right_col input[type="text"],
+.right_col input:not([type]),
+.right_col input[type="password"],
+.right_col input[type="number"],
+.right_col input[type="email"],
+.right_col input[type="date"],
+.right_col select,
+.right_col textarea,
+.right_col .form-control {
+  /* A light white-tint background (the original value here) barely reads
+     against the page's own bright sky-blue-to-navy radial gradient body --
+     on the brighter top part of the gradient especially, fields nearly
+     vanished into it. A dark navy tint (matching .amh-glass-panel's family)
+     stays visibly distinct against the gradient at any scroll position. */
+  background: rgba(15, 23, 42, 0.45) !important;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--amh-radius-md);
+  /* some legacy forms set an inline style="color:black" directly in the
+     markup (regtab.php's "Form Tabungan Jamaah" does) -- only !important
+     in a stylesheet can beat a plain inline style. */
+  color: #fff !important;
+  padding: 0.45rem 0.65rem;
+}
+.right_col input[type="text"]::placeholder,
+.right_col input[type="password"]::placeholder,
+.right_col input[type="number"]::placeholder,
+.right_col input[type="email"]::placeholder,
+.right_col textarea::placeholder,
+.right_col .form-control::placeholder {
+  color: var(--amh-text-dim);
+}
+.right_col select option { color: #1e293b; }
+
+/* Read-only/disabled fields (e.g. ID columns PME won't let you edit) —
+   Bootstrap 3 gives these a light-gray #eee background by default, which is
+   the same invisible-white-text-on-light problem as the striping above. */
+.right_col input:disabled,
+.right_col input[readonly],
+.right_col select:disabled,
+.right_col textarea:disabled,
+.right_col textarea[readonly],
+.right_col .form-control:disabled,
+.right_col .form-control[readonly] {
+  /* dimmer than the active navy tint above, not a lighter one -- a
+     disabled field should look more recessed, not brighter */
+  background: rgba(15, 23, 42, 0.25) !important;
+  color: var(--amh-text-dim) !important;
+  cursor: not-allowed;
+}
+.right_col input[type="text"]:focus,
+.right_col input[type="password"]:focus,
+.right_col input[type="number"]:focus,
+.right_col input[type="email"]:focus,
+.right_col input[type="date"]:focus,
+.right_col select:focus,
+.right_col textarea:focus,
+.right_col .form-control:focus {
+  outline: none;
+  border-color: var(--amh-amber-500);
+  box-shadow: 0 0 0 2px rgba(245,158,11,0.25);
+}
+
+/* Several "Date : ... to ..." filter bars (appvpay.php, approvesell.php,
+   rpt_bnsspon.php, statustrans.php, and the 3 bns*post.php pages -- all
+   copies of the same template, confirmed via source grep) hardcode
+   style="width:100px" directly on the date <input>, which at this
+   theme's font-size clips a yyyy-mm-dd value ("2026-06-0|"). Widen with
+   !important, since only that beats a plain inline style. */
+.right_col input[style*="width:100px"] {
+  width: 140px !important;
+}
+
+/* appvtrans.php's #dc/#dc1 date inputs carry no width styling at all
+   (no class="form-control", no inline width) -- they fall back to the
+   browser's native sizing for size="20", which is much wider than a
+   10-char yyyy-mm-dd value needs and was still causing mobile wrap even
+   after the flex-wrap fix below. Same #dc/#dc1 ids are reused on
+   appvpay.php/approvesell.php/rpt_bnsspon.php/statustrans.php too,
+   where the width:100px rule above already lands them at 140px -- pin
+   the same value here for consistency across all of them. */
+.right_col input#dc,
+.right_col input#dc1 {
+  width: 140px !important;
+}
+
+/* appvtrans.php's "Mulai Tanggal : [date] s/d [date] [Lihat]" filter is
+   plain inline text flow (<strong>/<input>/&nbsp; one after another, no
+   wrapping container) -- the browser wraps it wherever it runs out of
+   width, landing "s/d" and the second date on their own oddly-placed
+   line on mobile ("kurang rapi"). Wrapped the cluster in a bare <div> in
+   the PHP so it has something to flex; scoped here by :has() on that
+   div's known children rather than a new class, consistent with this
+   file's existing convention.
+   Also matches appvpay.php/approvesell.php/rpt_bnsspon.php/statustrans.php's
+   own "Date : ... to ... Refresh" wrapper (same #dc id, already a real
+   <div>, no PHP edit needed there) -- but that div carries an inline
+   style="display:inline", which without !important always wins over a
+   plain stylesheet rule regardless of specificity, so this rule was
+   silently doing nothing on those pages (confirmed live: computed
+   display stayed "inline") until !important was added. Without the
+   flex/gap here, display:inline elements that wrap onto a new visual
+   line sit flush against the line above with zero gap ("mepet banget"
+   -- the Refresh button landing right under the date row). */
+.right_col div:has(> #dc) {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.85rem;
+  row-gap: 0.75rem;
+}
+/* The "Date :" / "to" <strong> labels sat flush against their
+   neighbouring input with only the flex gap between them, reading as
+   cramped even on desktop where everything already fits on one line
+   (confirmed live: 8px gap, user still flagged it "kurang rapi") --
+   give the labels themselves a little breathing room too. */
+.right_col div:has(> #dc) > strong {
+  padding: 0 0.15rem;
+}
+/* User explicitly asked for this row to stay on ONE line on mobile,
+   not wrap. Measured live at 375px: "Date :" (51px) + input + "to"
+   (22px) + input + Refresh (76px) cannot all fit full-size within the
+   ~355px wrapper -- can't shrink the 16px input font instead, that's
+   forced everywhere on mobile specifically to stop iOS Safari
+   auto-zooming on input focus. Dropping the "Date :"/"Tgl Posting :"
+   label (the first <strong>) is the only cut that doesn't touch the
+   actual date values or the action button; the two yyyy-mm-dd boxes
+   either side of "to" make the field self-evident without it.
+   Input width needed a real live measurement, not an estimate --
+   130px looked right on paper (canvas-measured text + padding) but
+   still clipped "...06-02" by a few px in practice (confirmed via
+   input.scrollWidth > clientWidth); 130px is the smallest value that
+   measured scrollWidth == clientWidth (no clipping) with margin for
+   font-rendering variance. Gap trimmed to 0.3rem specifically because
+   130px inputs + full gap overflowed the wrapper by ~3px (confirmed
+   via wrapper.scrollWidth > its own width) -- reclaimed exactly that
+   from the gap rather than shrinking the dates again. */
+@media (max-width: 480px) {
+  .right_col div:has(> #dc) > strong:first-child {
+    display: none;
+  }
+  .right_col div:has(> #dc) {
+    gap: 0.3rem !important;
+    flex-wrap: nowrap !important;
+  }
+  .right_col input#dc,
+  .right_col input#dc1 {
+    width: 130px !important;
+  }
+  .right_col div:has(> #dc) input[type="submit"],
+  .right_col div:has(> #dc) input[type="button"] {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
+/* Old hand-built filter forms are raw <table cellpadding="2"> layouts --
+   label td | ":" td | input td per row (e.g. appvtrans.php's "Member ID" /
+   "ID Transfer" filter) -- with no spacing between rows, so they stacked
+   directly against each other ("terlalu mepet"). Scoped to tables WITHOUT
+   Bootstrap's .table class so real data tables (which already have their
+   own row height/padding) are untouched. */
+.right_col table:not(.table) td:has(> input),
+.right_col table:not(.table) td:has(> select),
+.right_col table:not(.table) td:has(> label) {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Legacy pages hardcode wildly inconsistent inline font sizes (10px, 11px,
+   12px, mixed Verdana/Arial) on almost every table cell/label -- the actual
+   root of "ukuran font tidak konsisten" across pages. !important is
+   required because inline style="font-size:..." otherwise always wins over
+   any stylesheet rule regardless of selector specificity. Font-size only
+   (not font-family), so icon glyph rendering (font-awesome <i> tags,
+   matched by font-family) is unaffected. */
+.right_col td,
+.right_col th,
+.right_col p,
+.right_col label,
+.right_col [style*="font-size" i] {
+  font-size: 0.85rem !important;
+}
+
+/* table-responsive already gives horizontal scroll on narrow screens (both
+   phpMyEdit and hand-built pages wrap their tables in it) — just make the
+   scroll itself comfortable to use with touch and visually obvious. */
+.right_col .table-responsive {
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--amh-radius-md);
+  /* Bootstrap's default .table-responsive border is a light grey (#ddd) --
+     reads as a stray white outline box against the dark theme (aktiftab.php's
+     filter panel, wrapped in .table-responsive despite not being a table). */
+  border-color: rgba(255, 255, 255, 0.12);
+}
+@media (max-width: 991px) {
+  /* Full-bleed: pull the scrollable table out to the screen edges instead
+     of sitting inside .right_col's padding — on a phone that padding was
+     eating width the table badly needs, showing fewer columns before the
+     user had to start scrolling. The actual negative margin is computed
+     and applied inline by JS (framework/admin_topnav.blade.php) because
+     .right_col's padding isn't a fixed value we can negate in pure CSS —
+     some individual pages override it inline (observed: 10px on one page,
+     vs. the 1rem/0.85rem set elsewhere in this file). This is just the
+     fallback/visual polish; the width/margin come from JS. */
+  .right_col .table-responsive {
+    box-shadow: inset -12px 0 8px -8px rgba(0,0,0,0.35);
+    border-radius: 0;
+  }
+  .right_col table.pme-main,
+  .right_col table.table {
+    border-radius: 0;
+  }
+}
+@media (max-width: 767px) {
+  /* Every phpMyEdit list table should already be converted to
+     non-scrolling cards by cardifyListTables() at this width, and every
+     Add/Change form now stacks label-above-field -- neither legitimately
+     needs horizontal drag/scroll any more, so this cuts off Bootstrap's
+     own default overflow-x:auto for those specifically. Scoped to
+     :has(table.amh-card-table) rather than every .table-responsive --
+     some pages use a completely different table library (DataTables,
+     with its own Excel/Print/search toolbar) that cardifyListTables()
+     doesn't touch at all, and those still genuinely need to scroll to
+     reach columns past the edge; blanket-hiding overflow there just
+     clipped real data with no way to reach it. */
+  .right_col .table-responsive:has(table.amh-card-table) {
+    overflow-x: hidden !important;
+  }
+}
+
+/* ---------- Card view for phpMyEdit list tables (mobile) ---------- */
+/* A wide multi-column table will never comfortably fit a phone screen no
+   matter how much outer padding is trimmed. framework/admin_topnav.blade.php
+   restructures each .pme-row-N into a card: the first few columns stay
+   visible, the rest sit behind a "+ Detail" toggle labeled from the
+   table's own header text. This only *re-classes* existing cells (adds
+   amh-card-primary/amh-card-secondary/a toggle button) — it doesn't touch
+   the underlying PHP or the data itself.
+   Desktop must never see this: the JS only adds .amh-card-table at
+   <=767px, so .amh-card-primary/.amh-card-secondary are inert there
+   already (unstyled outside this media query) — but the appended toggle
+   button <td> has no width/media guard of its own and would otherwise
+   show up as a stray extra column on every list table at any width. Hide
+   it unconditionally; the !important media-query rule below is what
+   brings it back, and only when .amh-card-table is actually present. */
+.right_col .amh-card-toggle-cell {
+  display: none;
+}
+@media (max-width: 767px) {
+  .right_col table.amh-card-table,
+  .right_col table.amh-card-table > tbody {
+    display: block;
+    width: 100%;
+  }
+  .right_col table.amh-card-table tr.pme-header {
+    display: none;
+  }
+  .right_col table.amh-card-table tr[class^="pme-row-"] {
+    display: block;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--amh-radius-md);
+    margin-bottom: 0.6rem;
+    padding: 0.6rem 0.75rem;
+  }
+  .right_col table.amh-card-table tr[class^="pme-row-"] > td {
+    display: block;
+    border: none !important;
+    padding: 0.15rem 0 !important;
+    font-size: 0.82rem;
+    /* the original wide-scrolling table relies on nowrap so columns stay
+       compact; a card needs the opposite — confirmed live: without this,
+       a long description field's text (after phpMyEdit's own <br> breaks
+       ran out) refused to wrap and spilled past the card's right edge. */
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+  .right_col table.amh-card-table td[class^="pme-navigation-"] {
+    display: inline-block;
+    margin-bottom: 0.3rem;
+  }
+  .right_col table.amh-card-table .amh-card-primary {
+    font-weight: 700;
+    color: #fff;
+  }
+  /* A bare "PUSM" or "3000000" with no indication of which column it
+     came from isn't actually readable, just visually tidy -- label the
+     always-visible fields the same way the "+ Detail" ones already are. */
+  .right_col table.amh-card-table .amh-card-primary::before {
+    content: attr(data-label) ": ";
+    color: var(--amh-text-dim);
+    font-weight: 600;
+  }
+  /* !important required: the generic `> td { display: block !important }`
+     rule above already claims !important, which would otherwise always
+     beat a plain (non-important) display:none here regardless of source
+     order or selector specificity -- confirmed live, secondary fields
+     rendered permanently visible without this. */
+  .right_col table.amh-card-table .amh-card-secondary {
+    display: none !important;
+  }
+  .right_col table.amh-card-table tr.amh-card-expanded .amh-card-secondary {
+    display: block !important;
+  }
+  .right_col table.amh-card-table .amh-card-secondary::before {
+    content: attr(data-label) ": ";
+    color: var(--amh-text-dim);
+    font-weight: 600;
+  }
+  .right_col table.amh-card-table .amh-card-toggle-cell {
+    padding-top: 0.4rem !important;
+  }
+  .right_col table.amh-card-table .amh-card-toggle {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--amh-amber-300);
+    border-radius: var(--amh-radius-md);
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  /* the card table no longer needs the horizontal-scroll chrome */
+  .right_col .table-responsive:has(table.amh-card-table) {
+    overflow: visible;
+    box-shadow: none;
+    border: none;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Add/Change forms (phpMyEdit's .pme-key-N/.pme-value-N pairs) are a
+     2-column table on desktop — cramped on a phone. Stack label above
+     field instead. Scoped to rows that actually contain a key/value pair
+     so list-view tables (.pme-cell-N) keep their normal horizontal-scroll
+     behaviour. (These selectors used to target the bare, non-existent
+     .pme-key/.pme-value classes -- phpMyEdit always suffixes them with a
+     per-column index, so this whole block silently never matched
+     anything live until fixed. Also dropped the table.pme-main qualifier
+     this used to have -- Add/Change forms' own <table> never actually
+     carries that class: a separate PHP template bug renders its class
+     attribute as "table table-striped  table-hover table-border  >" with
+     a stray ">" included. pme-key-N cells only ever appear in this exact
+     context though, so the qualifier was never load-bearing anyway.) */
+  .right_col tr:has([class^="pme-key-"]) {
+    display: flex;
+    flex-direction: column;
+  }
+  .right_col [class^="pme-key-"] {
+    padding-bottom: 0.25rem;
+  }
+  .right_col [class^="pme-key-"],
+  .right_col [class^="pme-value-"] {
+    display: block;
+    width: 100% !important;
+  }
+  /* Bootstrap's own responsive grid divs inside a value cell (col-md-6
+     col-sm-12 col-xs-4 etc.) add a second, independent width constraint
+     on top of the cell itself -- col-xs-4 in particular squeezed a field
+     down to a third of the already-narrow row width. Full width on
+     mobile regardless of what the xs/sm column count says. */
+  .right_col [class^="pme-value-"] [class*="col-xs-"],
+  .right_col [class^="pme-value-"] [class*="col-sm-"] {
+    width: 100% !important;
+  }
+
+  /* Bootstrap's .container/.row/.col-md-* grid (used by hand-built forms
+     like regtab.php's Bio Data / Program panels) relies on a
+     container-padding + row-negative-margin + col-padding chain that only
+     cancels out cleanly at the breakpoint each class was written for.
+     Below that, .container ends up with no padding while .row still
+     carries its -10px margins, so the panel inside renders with a ~10px
+     left inset but a much bigger right inset -- reads as "shoved left"
+     instead of centered. Flatten the whole chain to plain full-width
+     stacked blocks with no padding/margin of their own; .right_col's own
+     padding is what actually centers the panel. */
+  .right_col .container,
+  .right_col .row {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .right_col [class*="col-md-"],
+  .right_col [class*="col-lg-"] {
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    float: none !important;
+  }
+
+  /* Bigger touch targets for buttons and form fields */
+  .right_col .btn {
+    min-height: 44px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .right_col input[type="text"],
+  .right_col input:not([type]),
+  .right_col input[type="password"],
+  .right_col input[type="number"],
+  .right_col input[type="email"],
+  .right_col input[type="date"],
+  .right_col select,
+  .right_col textarea,
+  .right_col .form-control {
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS Safari auto-zoom on focus */
+  }
+
+  /* Action/navigation button rows (Save/Apply/Cancel, Add/Change/Delete,
+     pagination: up to 7 buttons -- <<, <, Add, Change, Delete, >, >>) stay
+     on one line instead of wrapping (wrapping pushed the last button, >>,
+     onto its own row). flex:0 1 auto shrinks each button from its own
+     content size rather than dividing the row equally -- equal division
+     was clipping "Delete"/"Change" (needed ~45-53px) down to the same
+     34px a bare "<" got, cutting text off inside the <input>. */
+  .right_col .pme-navigation,
+  .right_col .pme-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+  }
+  .right_col .pme-navigation .btn,
+  .right_col .pme-buttons .btn {
+    margin: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+}
+
+/* Master Data > Admin Privilege (masterdata/menupriv.php): a completely
+   custom, hand-built page -- not phpMyEdit -- using a plain HTML
+   <table width="85%" align="center"> with three <td width="35%/26%/39%">
+   columns (left checklist, user picker, right checklist) and zero
+   responsive handling of its own. That width="85%"+align="center" combo
+   is distinctive enough to scope this safely without a class to hook
+   into. Each checklist row's text cell also carries a literal HTML
+   nowrap attribute, which forced menu names to overflow the screen
+   instead of wrapping even after the column itself stacks full-width. */
+/* Desktop: table-layout defaults to auto, which treats the 35/26/39%
+   width attributes as loose hints and resizes columns to fit content
+   instead -- the left checklist's long labels were pulling width away
+   from the right checklist, squeezing it down to ~20% and wrapping its
+   text badly. table-layout:fixed makes the browser respect the
+   specified percentages exactly regardless of content; content that
+   doesn't fit its now-fixed column scrolls horizontally within that
+   column instead of stealing space from its siblings. */
+.right_col table[width="85%"] {
+  table-layout: fixed;
+}
+.right_col table[width="85%"] td {
+  overflow-x: auto;
+}
+/* Left checklist column only ("Belum Mempunyai Privilege ke Menu"):
+   each row's own inner cell carries the nowrap attribute mentioned
+   above, so a long label doesn't wrap -- it just gets cut off at the
+   column's now-fixed 35% width (or scrolls, since the rule just above
+   gives every td overflow-x:auto). Wrap instead here specifically, so
+   the row grows taller and nothing needs horizontal scrolling. Scoped
+   to the *first* outer column via :first-child so the right checklist
+   (confirmed already correct, keeps its horizontal-scroll behaviour)
+   is untouched. */
+.right_col table[width="85%"] > tbody > tr > td:first-child [nowrap] {
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+@media (max-width: 767px) {
+  .right_col table[width="85%"] {
+    width: 100% !important;
+  }
+  .right_col table[width="85%"] > tbody > tr {
+    display: flex;
+    flex-direction: column;
+  }
+  .right_col table[width="85%"] > tbody > tr > td {
+    display: block;
+    width: 100% !important;
+  }
+  .right_col table[width="85%"] td[nowrap] {
+    white-space: normal !important;
+  }
+}
+/* "User :" label on the same page carries an inline style="color:#000" --
+   nearly invisible against the dark theme. Not mobile-specific, so this
+   applies at any width. */
+.right_col table[width="85%"] span[style] {
+  color: #fff !important;
+}
+/* Each menu row also uses old <font color="..."> tags in pure, fully
+   saturated red/green/blue -- harsh and low-contrast against the dark
+   gradient background. Softened to the same colour family already used
+   for status/category accents elsewhere in the redesign. */
+.right_col table[width="85%"] font[color="#0f0"] { color: #34d399 !important; }
+.right_col table[width="85%"] font[color="#00f"] { color: #38bdf8 !important; }
+.right_col table[width="85%"] font[color="#f00"] { color: #f87171 !important; }
+
+/* ---------- Stat cards (dashboard) ---------- */
+
+.amh-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-top: 1rem; }
+.amh-stat-card { padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 100px; }
+.amh-stat-icon { width: 36px; height: 36px; border-radius: var(--amh-radius-md); display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 0.75rem; }
+.amh-stat-value { font-size: 1.5rem; font-weight: 800; color: #fff; }
+.amh-stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--amh-text-dim); margin-top: 0.15rem; }
+
+.amh-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 999px;
+}
+
+/* ---------- Responsive: sidebar becomes an off-canvas drawer ---------- */
+
+@media (max-width: 991px) {
+  /* single column: the sidebar becomes an off-canvas drawer (out of flow) */
+  .amh-layout { grid-template-columns: minmax(0, 1fr); }
+  .amh-layout > * { grid-column: 1; }
+  .amh-sidebar { grid-column: 1; grid-row: auto; }
+  .amh-topbar { grid-column: 1; grid-row: auto; }
+  .right_col { grid-column: 1; grid-row: auto; }
+  /* .amh-layout > footer {grid-column:2} is unconditional (desktop-only
+     intent) and more specific than the `> *` catch-all two lines up, so it
+     kept winning here too — the grid was building an implicit 2nd column
+     just to hold the footer, which is why .amh-layout never actually
+     collapsed to one column at any width below 991px. This is the root
+     cause behind the topbar/notification/everything-too-wide symptoms. */
+  .amh-layout > footer { grid-column: 1; grid-row: auto; }
+
+  .amh-sidebar {
+    position: fixed; left: 0; top: 0; z-index: 45;
+    transform: translateX(-100%); transition: transform 0.25s ease;
+  }
+  .amh-sidebar.amh-open { transform: translateX(0); }
+  .amh-sidebar-toggle { display: inline-flex; }
+  .amh-sidebar-backdrop.amh-open { display: block; }
+  .amh-sidebar-resizer { display: none; }
+  .right_col { padding: 1rem; }
+  .amh-sidebar-nav > ul > li > a { font-weight: 800; }
+
+  /* Lobibox (vendor, css/lobibox.css) notification toasts default to
+     top:0/right:0 and stack with no cap — on a phone screen a handful of
+     pending-transaction toasts fill the entire viewport. Cap the stack to a
+     scrollable panel below the topbar instead of letting it own the screen.
+     !important throughout: Lobibox positions/sizes toasts via inline style
+     attributes set from JS, which otherwise beat a plain stylesheet rule
+     regardless of selector specificity or source order. */
+  .lobibox-notify-wrapper,
+  .lobibox-notify-wrapper.top,
+  .lobibox-notify-wrapper.right {
+    position: fixed !important;
+    top: 6.5rem !important;
+    /* anchored to both edges with width:auto and zero margin so the
+       panel runs truly edge-to-edge, not just near it */
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: 45vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    /* lobibox.css sets z-index:5000, which sits above the sidebar (z-index
+       40) and its off-canvas drawer — the notification stack was covering
+       the menu whenever it was opened on mobile. Sidebar wins instead. */
+    z-index: 20 !important;
+  }
+  .lobibox-notify {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.35 !important;
+    padding: 0.5rem 0.6rem !important;
+    margin: 0 0 0.35rem 0 !important;
+    border: none !important;
+    border-radius: var(--amh-radius-md) !important;
+    box-sizing: border-box !important;
+    opacity: 0.94 !important;
+  }
+  .lobibox-notify:last-child { margin-bottom: 0 !important; }
+}
+
+/* ---------- Mobile typography & spacing pass ---------- */
+/* Everything above uses one set of rem sizes for both desktop and phone.
+   At 375-430px wide that reads oversized relative to the available room —
+   dial font sizes, card padding, and gaps down specifically for phones. */
+@media (max-width: 480px) {
+  .amh-topbar {
+    padding: 0.7rem 0.75rem;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+  }
+  /* the red "TRAINING SITE" dev-environment marker is plain text with an
+     inline style, no class — target it structurally instead. Confirmed live
+     (injected + measured in the actual page, not guessed): flex items get
+     an automatic min-width:auto that becomes 0 the instant overflow isn't
+     "visible", so with the default flex-shrink:1 the flexbox algorithm was
+     sacrificing this element to 0 width entirely -- not truncating it, but
+     deleting it. flex-shrink:0 + a definite (not max-)width is what
+     actually holds a size against that. */
+  .amh-topbar > span {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 64px;
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .amh-topbar-user > button {
+    font-size: 0.85rem;
+    gap: 0.3rem;
+  }
+  .amh-topbar-user > button span:not(.fa) {
+    font-size: 0.85rem;
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .amh-topbar-bell,
+  .amh-sidebar-toggle {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+  }
+  .amh-sidebar-toggle { padding: 0; }
+
+  .right_col { padding: 0.85rem; }
+  .right_col h1 { font-size: 1.15rem !important; margin-bottom: 0.75rem !important; }
+
+  .amh-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .amh-stat-card { padding: 0.75rem; min-height: 80px; }
+  .amh-stat-icon { width: 28px; height: 28px; font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .amh-stat-value { font-size: 1.15rem; }
+  .amh-stat-label { font-size: 0.62rem; }
+
+  .amh-glass-gold-card,
+  .amh-glass-panel { padding: 1rem !important; }
+  .amh-glass-gold-card h2 { font-size: 1.1rem !important; }
+
+  .amh-sidebar-nav > ul > li > a { font-size: 0.88rem; padding: 0.62rem 0.75rem; }
+  .amh-sidebar-nav .amh-submenu a { font-size: 0.8rem; }
+  .amh-sidebar-profile { font-size: 0.78rem; }
+  .amh-sidebar-profile strong { font-size: 0.9rem; }
+
+  /* Legacy pages: tighten phpMyEdit/Bootstrap text too. !important needed
+     here so these still win against the global .right_col td/th font-size
+     rule above (also !important, but with lower specificity -- ties on
+     !important go to source order, and these are declared later, but only
+     as long as both sides carry !important). */
+  .right_col .pme-header,
+  .right_col table.table thead th { font-size: 0.78rem !important; }
+  .right_col [class^="pme-cell-"],
+  .right_col table.table td { font-size: 0.8rem !important; }
+  .right_col [class^="pme-key-"] { font-size: 0.8rem !important; }
+  .right_col .btn { font-size: 0.82rem; padding-left: 0.85rem; padding-right: 0.85rem; }
+}

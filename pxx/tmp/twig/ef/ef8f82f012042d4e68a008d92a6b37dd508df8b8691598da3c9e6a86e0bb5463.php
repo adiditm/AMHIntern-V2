@@ -62,6 +62,6 @@ class __TwigTemplate_70ad611407825617dc82f69cda38e0ec10ea4d1899eab7fca569a793462
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "display/results/null_display.twig", "/home/amhw8583/public_html/intern/pxx/templates/display/results/null_display.twig");
+        return new Twig_Source("", "display/results/null_display.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/display/results/null_display.twig");
     }
 }

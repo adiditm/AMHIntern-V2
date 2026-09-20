@@ -1,7 +1,8 @@
 
 <div class="col-lg-12">
-  <? if ($vCurrent=='mdm_pebisnis') { ?>      
-          <? if (true || $oSystem->checkPriv($vUser,"mdm_listprof_genealogi")) { ?> <input alt="Detail / Verifikasi Data" name="btDetail<?=$vSeq?>" type="button" class="btn btn-success btn-sm" id="btDetail<?=$vSeq?>" onClick="return MM_goToURL('parent','../manager/profile.php?current=<?=$vCurrent?>&op=<?=$vSpy?>'+CryptoJS.MD5(getValue().trim())+'&uMemberId='+getValue());return document.MM_returnValue" value="Detail / Verifikasi Data &raquo;" onMouseovers="showhint('Lihat detail /  Edit Member '+getValue(), this, event, '220px')" style="margin-top:5px" >  <? }  ?>  
+  <? if ($vCurrent=='mdm_pebisnis') { ?>
+          <p style="margin-bottom:0.5em">Pilih jamaah di tabel bawah terlebih dahulu, lalu klik salah satu tombol berikut:</p>
+          <? if (true || $oSystem->checkPriv($vUser,"mdm_listprof_genealogi")) { ?> <input alt="Detail / Verifikasi Data" name="btDetail<?=$vSeq?>" type="button" class="btn btn-success btn-sm" id="btDetail<?=$vSeq?>" onClick="return MM_goToURL('parent','../manager/profile.php?current=<?=$vCurrent?>&op=<?=$vSpy?>'+CryptoJS.MD5(getValue().trim())+'&uMemberId='+getValue());return document.MM_returnValue" value="Detail / Verifikasi Data &raquo;" onMouseovers="showhint('Lihat detail /  Edit Member '+getValue(), this, event, '220px')" style="margin-top:5px" >  <? }  ?>
 		  
 <? if (false) { ?><input name="btWallet<?=$vSeq?>" type="button" class="btn btn-success btn-sm" id="btWallet<?=$vSeq?>" onClick="return MM_goToURL('parent','../memstock/reorderfund.php?current=<?=$vCurrent?>&op=<?=$vSpy?>'+CryptoJS.MD5(getValue().trim())+'&uMemberId='+getValue());return document.MM_returnValue" value="Entri Pembayaran &raquo;" onMouseovers="showhint('Nex-Wallet '+getValue(), this, event, '210px')" style="margin-top:5px" /> <? }
 

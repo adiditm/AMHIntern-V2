@@ -199,20 +199,20 @@ class Tracking
             $html .= Url::getCommon($url_params + [
                 'version' => $version['version'],
                 'submit_delete_version' => true,
-            ], '');
+            ], '', false);
             $html .= '">' . $delete . '</a></td>';
             $html .= '<td><a href="tbl_tracking.php" data-post="';
             $html .= Url::getCommon($url_params + [
                 'report' => 'true',
                 'version' => $version['version'],
-            ], '');
+            ], '', false);
             $html .= '">' . $report . '</a>';
             $html .= '&nbsp;&nbsp;';
             $html .= '<a href="tbl_tracking.php" data-post="';
             $html .= Url::getCommon($url_params + [
                 'snapshot' => 'true',
                 'version' => $version['version'],
-            ], '');
+            ], '', false);
             $html .= '">' . $structure . '</a>';
             $html .= '</td>';
             $html .= '</tr>';
@@ -259,7 +259,7 @@ class Tracking
     public static function getTableLastVersionNumber($sql_result)
     {
         $maxversion = $GLOBALS['dbi']->fetchArray($sql_result);
-        return intval($maxversion['version']);
+        return intval(is_array($maxversion) ? $maxversion['version'] : null);
     }
 
     /**

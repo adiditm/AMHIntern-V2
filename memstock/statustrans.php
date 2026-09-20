@@ -421,15 +421,26 @@ function doMarkReceived(pIdTrx) {
 
           <div style="display:inline" align="left">
           <strong>Date : </strong>
-          <input style="width:100px;display:inline" class="form-control" name="dc" id="dc" size="11" value="<?=$vAwal?>">&nbsp; <strong>
-			  to</strong>
-          <input style="width:100px;display:inline" class="form-control" name="dc1" id="dc1" size="11" value="<?=$vAkhir?>"> &nbsp;&nbsp;
+          <input style="width:100px;display:inline" class="form-control" name="dc" id="dc" size="11" value="<?=$vAwal?>"><strong>to</strong>
+          <input style="width:100px;display:inline" class="form-control" name="dc1" id="dc1" size="11" value="<?=$vAkhir?>">
           <input style="display:inline" name="Submit22" type="submit" class="btn btn-success" value="Refresh">
           
           </div>
           <br /><br />
 <br />
 
+
+    <p align="center" style="margin-top:1em">
+<strong>Page :</strong>
+<select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
+              <?
+   for ($i=0;$i<$vPageCount;$i++) {
+     $vPageUrl="statustrans.php?uPage=".$i."&uAwal=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")."&uAkhir=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-");
+?>
+              <option value="<?=$vPageUrl?>" <? if ($i==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
+              <?  } //while?>
+</select>
+</p>
 
     <div class="table-responsive">
         <table width="90%" border="0" class="table table-striped">
@@ -646,47 +657,17 @@ function doMarkReceived(pIdTrx) {
         </table>    
         </div>  
             
-     <table width="90%">
-     <tr>
-      <td align="center">
-        
-        <p>
-          <?
+    <p align="center" style="margin-top:1em">
+<strong>Page :</strong>
+<select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
+              <?
    for ($i=0;$i<$vPageCount;$i++) {
-     $vOffset=$i*$vBatasBaris;
-     if ($i!=$vPage) {
+     $vPageUrl="statustrans.php?uPage=".$i."&uAwal=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")."&uAkhir=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-");
 ?>
-          <a href="../memstock/historypo.php?uPage=<?=$i?>&amp;uAwal=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")?>&amp;uAkhir=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")?>" >
-          <?=$i+1?>
-          </a>
-          <?
-  } else {
-?>
-          <?=$i+1?>
-          <? } ?>
-          <?  } //while?>
-<br>
-        </p></td>
-    </tr>
-    <tr> 
-      <td height="5" align="center" valign="middle"> <div align="right"></div>
-        <hr> </td>
-    </tr>
-    <tr> 
-      <td height="49" align="center" valign="middle"> <p><br>
-        </p>
-      <p>&nbsp;        </p></td>
-    </tr>
-    <?php
-   
-  if ($baris==$Akhiran)
-  {
-  ?>
-    <?php
-  }
-  ?>
-  </table>
-  
+              <option value="<?=$vPageUrl?>" <? if ($i==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
+              <?  } //while?>
+</select>
+</p>
 </form>
 
 

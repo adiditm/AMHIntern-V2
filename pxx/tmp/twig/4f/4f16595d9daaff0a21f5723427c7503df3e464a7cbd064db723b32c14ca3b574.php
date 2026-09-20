@@ -180,6 +180,6 @@ class __TwigTemplate_f01e3462bb2e1b06b03526d9273efe2a9a97b2fbfce62577766c32d23e3
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "database/structure/check_all_tables.twig", "/home/amhw8583/public_html/intern/pxx/templates/database/structure/check_all_tables.twig");
+        return new Twig_Source("", "database/structure/check_all_tables.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/database/structure/check_all_tables.twig");
     }
 }

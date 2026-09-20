@@ -38,12 +38,26 @@ class LanguageManager
             'af|afrikaans',
             '',
         ),
+        'am' => array(
+            'am',
+            'Amharic',
+            'አማርኛ',
+            'am|amharic',
+            '',
+        ),
         'ar' => array(
             'ar',
             'Arabic',
             '&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;',
             'ar|arabic',
             'ar_AE',
+        ),
+        'ar_ly' => array(
+            'ar_LY',
+            'Arabic (Libya)',
+            'ليبي',
+            'ar[_-]ly|arabic (libya)|libian arabic',
+            'ar_LY',
         ),
         'az' => array(
             'az',
@@ -71,6 +85,13 @@ class LanguageManager
             'Belarusian (latin)',
             'Bie&#0322;aruskaja',
             'be[-_]lat|be@latin|belarusian latin',
+            '',
+        ),
+        'ber' => array(
+            'ber',
+            'Berber',
+            'Tamaziɣt',
+            'ber|berber',
             '',
         ),
         'bg' => array(
@@ -444,6 +465,13 @@ class LanguageManager
             'nb|norwegian',
             'nb_NO',
         ),
+        'nn' => array(
+            'nn',
+            'Norwegian Nynorsk',
+            'Nynorsk',
+            'nn|nynorsk',
+            'nn_NO',
+        ),
         'nl' => array(
             'nl',
             'Dutch',
@@ -478,6 +506,13 @@ class LanguageManager
             'Portugu&ecirc;s',
             'pt|portuguese',
             'pt_PT',
+        ),
+        'rcf' => array(
+            'rcf',
+            'R&eacute;union Creole',
+            'Kr&eacute;ol',
+            'rcf|creole (reunion)',
+            '',
         ),
         'ro' => array(
             'ro',
@@ -516,7 +551,7 @@ class LanguageManager
         ),
         'sq' => array(
             'sq',
-            'Slbanian',
+            'Albanian',
             'Shqip',
             'sq|albanian',
             'sq_AL',
@@ -582,6 +617,13 @@ class LanguageManager
             'Tatarish',
             'Tatar&ccedil;a',
             'tt|tatarish',
+            '',
+        ),
+        'tzm' => array(
+            'tzm',
+            'Central Atlas Tamazight',
+            'Tamaziɣt',
+            'tzm|central atlas tamazight',
             '',
         ),
         'ug' => array(
@@ -719,11 +761,11 @@ class LanguageManager
     {
         if (! $this->_available_locales) {
 
-            if (empty($GLOBALS['cfg']['FilterLanguages'])) {
+            if (! isset($GLOBALS['PMA_Config']) || empty($GLOBALS['PMA_Config']->get('FilterLanguages'))) {
                 $this->_available_locales = $this->listLocaleDir();
             } else {
                 $this->_available_locales = preg_grep(
-                    '@' . $GLOBALS['cfg']['FilterLanguages'] . '@',
+                    '@' . $GLOBALS['PMA_Config']->get('FilterLanguages') . '@',
                     $this->listLocaleDir()
                 );
             }
@@ -857,8 +899,8 @@ class LanguageManager
         }
 
         // check previous set language
-        if (! empty($_COOKIE['pma_lang'])) {
-            $lang = $this->getLanguage($_COOKIE['pma_lang']);
+        if (! empty($GLOBALS['PMA_Config']->getCookie('pma_lang'))) {
+            $lang = $this->getLanguage($GLOBALS['PMA_Config']->getCookie('pma_lang'));
             if ($lang !== false) {
                 return $lang;
             }

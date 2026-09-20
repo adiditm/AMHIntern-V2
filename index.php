@@ -8,7 +8,7 @@ session_start();
       if ($_SESSION['Priv']=='administrator')
 	  	header("Location: manager/indexadmin.php");
 	  else
-	  	header("Location: memstock/indexmem.php");
+	  	header("Location: manager/indexnonadmin.php");
 
 	} else header("Location: main/loginform.php");
     

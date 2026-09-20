@@ -73,6 +73,6 @@ class __TwigTemplate_8ac467c7cbba037f5672092574b0b4c09f61b2470fd8fb7044503a1fdcd
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "navigation/logo.twig", "/home/amhw8583/public_html/intern/pxx/templates/navigation/logo.twig");
+        return new Twig_Source("", "navigation/logo.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/navigation/logo.twig");
     }
 }

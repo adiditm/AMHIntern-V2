@@ -55,6 +55,6 @@ if (typeof configScriptLoaded !== \"undefined\" && configInlineParams) loadInlin
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "javascript/display.twig", "/home/amhw8583/public_html/intern/pxx/templates/javascript/display.twig");
+        return new Twig_Source("", "javascript/display.twig", "/home/amhtechno/public_html/v2.amhtechno.com/pxx/templates/javascript/display.twig");
     }
 }

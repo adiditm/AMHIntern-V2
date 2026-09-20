@@ -134,7 +134,8 @@
 <div id="structure-action-links">
     {% if tbl_is_view and not db_is_system_schema %}
         {{ Util_linkOrButton(
-            edit_view_url,
+            'view_create.php',
+            {'db': db, 'table': table},
             Util_getIcon('b_edit', 'Edit view'|trans, true)
         ) }}
     {% endif %}
@@ -143,7 +144,9 @@
         'tbl_is_view': tbl_is_view,
         'db_is_system_schema': db_is_system_schema,
         'table': table,
-        'is_active': is_active
+        'is_active': is_active,
+        'mysql_int_version': mysql_int_version,
+        'is_mariadb': is_mariadb
     } only %}
 </div>
 {% if not tbl_is_view and not db_is_system_schema %}
@@ -191,7 +194,6 @@
         {{ Util_getDivForSliderEffect('partitions', 'Partitions'|trans) }}
 
         {% set remove_sql = 'ALTER TABLE ' ~ Util_backquote(table) ~ ' REMOVE PARTITIONING' %}
-        {% set remove_url = 'sql.php' ~ url_query ~ '&sql_query=' ~ remove_sql|url_encode %}
 
         {% include 'table/structure/display_partitions.twig' with {
             'db': db,
@@ -206,7 +208,7 @@
             'sub_partition_expression': has_sub_partitions ? first_sub_partition.getExpression(),
             'action_icons': action_icons,
             'range_or_list': range_or_list,
-            'remove_url': remove_url
+            'remove_url_params': url_params|merge({'sql_query': remove_sql})
         } only %}
     {% else %}
         {% include 'table/structure/display_partitions.twig' with {

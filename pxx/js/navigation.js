@@ -158,7 +158,7 @@ function loadChildNodes (isNode, $expandElem, callback) {
     }
 
     var url = $('#pma_navigation').find('a.navigation_url').attr('href');
-    $.get(url, params, function (data) {
+    $.post(url, params, function (data) {
         if (typeof data !== 'undefined' && data.success === true) {
             $destination.find('div.list_container').remove(); // FIXME: Hack, there shouldn't be a list container there
             if (isNode) {
@@ -309,19 +309,20 @@ $(function () {
      */
     $(document).on('click', '#pma_navigation_reload', function (event) {
         event.preventDefault();
-        // reload icon object
-        var $icon = $(this).find('img');
-        // source of the hidden throbber icon
-        var icon_throbber_src = $('#pma_navigation').find('.throbber').attr('src');
-        // source of the reload icon
-        var icon_reload_src = $icon.attr('src');
-        // replace the source of the reload icon with the one for throbber
-        $icon.attr('src', icon_throbber_src);
-        PMA_reloadNavigation();
-        // after one second, put back the reload icon
-        setTimeout(function () {
-            $icon.attr('src', icon_reload_src);
-        }, 1000);
+
+        // Find the loading symbol and show it
+        var $icon_throbber_src = $('#pma_navigation').find('.throbber');
+        $icon_throbber_src.show();
+        // TODO Why is a loading symbol both hidden, and invisible?
+        $icon_throbber_src.css('visibility', '');
+
+        // Callback to be used to hide the loading symbol when done reloading
+        function hideNav () {
+            $icon_throbber_src.hide();
+        }
+
+        // Reload the navigation
+        PMA_reloadNavigation(hideNav);
     });
 
     $(document).on('change', '#navi_db_select',  function (event) {
@@ -1035,14 +1036,12 @@ function PMA_selectCurrentDb () {
 function PMA_navigationTreePagination ($this) {
     var $msgbox = PMA_ajaxShowMessage();
     var isDbSelector = $this.closest('div.pageselector').is('.dbselector');
-    var url;
-    var params;
+    var url = 'navigation.php';
+    var params = 'ajax_request=true';
     if ($this[0].tagName === 'A') {
-        url = $this.attr('href');
-        params = 'ajax_request=true';
+        params += PMA_commonParams.get('arg_separator') + $this.getPostData();
     } else { // tagName === 'SELECT'
-        url = 'navigation.php';
-        params = $this.closest('form').serialize() + PMA_commonParams.get('arg_separator') + 'ajax_request=true';
+        params += PMA_commonParams.get('arg_separator') + $this.closest('form').serialize();
     }
     var searchClause = PMA_fastFilter.getSearchClause();
     if (searchClause) {
@@ -1127,7 +1126,27 @@ var ResizeHandler = function () {
         var windowWidth = $(window).width();
         $('#pma_navigation').width(pos);
         $('body').css('margin-' + this.left, pos + 'px');
-        $('#floating_menubar, #pma_console')
+        // Issue #15127 : Adding fixed positioning to menubar
+        // Issue #15570 : Panels on homescreen go underneath of floating menubar
+        $('#floating_menubar')
+            .css('margin-' + this.left, $('#pma_navigation').width() + $('#pma_navigation_resizer').width())
+            .css(this.left, 0)
+            .css({
+                'position': 'fixed',
+                'top': 0,
+                'width': '100%',
+                'z-index': 99
+            })
+            .append($('#serverinfo'))
+            .append($('#topmenucontainer'));
+        // Allow the DOM to render, then adjust the padding on the body
+        setTimeout(function () {
+            $('body').css(
+                'padding-top',
+                $('#floating_menubar').outerHeight(true)
+            );
+        }, 2);
+        $('#pma_console')
             .css('margin-' + this.left, (pos + resizer_width) + 'px');
         $resizer.css(this.left, pos + 'px');
         if (pos === 0) {

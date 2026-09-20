@@ -168,15 +168,29 @@ function doReject(pIdSys,pIdTrx) {
 
           <div style="display:inline" align="left">
           <strong>Date : </strong>
-          <input style="width:100px;display:inline" class="form-control" name="dc" id="dc" size="11" value="<?=$vAwal?>">&nbsp; <strong>
-			  to</strong>
-          <input style="width:100px;display:inline" class="form-control" name="dc1" id="dc1" size="11" value="<?=$vAkhir?>"> &nbsp;&nbsp;
+          <input style="width:100px;display:inline" class="form-control" name="dc" id="dc" size="11" value="<?=$vAwal?>"><strong>to</strong>
+          <input style="width:100px;display:inline" class="form-control" name="dc1" id="dc1" size="11" value="<?=$vAkhir?>">
           <input style="display:inline" name="Submit22" type="submit" class="btn btn-success" value="Refresh">
-          
+
           </div>
           <br /><br />
 <br />
 
+     <table width="90%">
+     <tr>
+      <td align="center">
+        <strong>Page :</strong>
+        <select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
+          <?
+   for ($i=0;$i<$vPageCount;$i++) {
+     $vPageUrl="appvpay.php?uPage=".$i."&uAwal=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")."&uAkhir=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")."&current=mdm_admin&menu=mdm_admin_appvpay";
+?>
+          <option value="<?=$vPageUrl?>" <? if ($i==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
+          <?  } //while?>
+        </select>
+      </td>
+    </tr>
+    </table>
 
     <div class="table-responsive">
         <table width="90%" border="0" class="table table-striped">
@@ -272,25 +286,16 @@ function doReject(pIdSys,pIdTrx) {
      <table width="90%">
      <tr>
       <td align="center">
-        
-       
-        <ul class="pagination">
+        <strong>Page :</strong>
+        <select class="form-control" style="width:80px;display:inline-block;" onchange="if(this.value) window.location.href=this.value;">
           <?
    for ($i=0;$i<$vPageCount;$i++) {
-     $vOffset=$i*$vBatasBaris;
-     if ($i!=$vPage) {
+     $vPageUrl="appvpay.php?uPage=".$i."&uAwal=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")."&uAkhir=".$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")."&current=mdm_admin&menu=mdm_admin_appvpay";
 ?>
-          <li class="active" ><a href="../manager/approvepoint.php?uPage=<?=$i?>&uAwal=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAwal,"-"),"-")?>&uAkhir=<?=$oPhpdate->DMY2YMD($oPhpdate->YMD2DMY($vAkhir,"-"),"-")?>" >
-          <?=$i+1?>
-          </a></li>
-          <?
-  } else {
-?>
-         <li style="cursor:pointer"> <a href="#" > <?=$i+1?></a></li>
-          <? } ?>
+          <option value="<?=$vPageUrl?>" <? if ($i==$vPage) echo "selected"; ?>>-<?=$i+1?>-</option>
           <?  } //while?>
-<br>
-       </ul></td>
+        </select>
+      </td>
     </tr>
     <tr> 
       <td height="5" align="center" valign="middle"> <div align="right"></div>

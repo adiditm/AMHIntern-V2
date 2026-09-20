@@ -1,10 +1,20 @@
 <?php
+    if (file_exists(__DIR__ . '/config.secret.php')) {
+        include_once __DIR__ . '/config.secret.php';
+    }
+    if (!defined('GEMINI_EMBEDDING_API_KEY')) {
+        define('GEMINI_EMBEDDING_API_KEY', '');
+    }
+    if (!defined('GROQ_API_KEY')) {
+        define('GROQ_API_KEY', '');
+    }
+
     $vHost=$_SERVER['HTTP_HOST'];
  //$vRoot=getcwd().'/';
  if (preg_match("/trial.amhtechno/i",$vHost))
- 		$vRoot='/home/amhtechno/public_html/v2.amhtechno.com/';
+ 		$vRoot='/home/amhtechno/public_html/intern.amhtechno.com/';
  else		
- 		$vRoot='/home/amhtechno/public_html/v2.amhtechno.com/';
+ 		$vRoot='/home/amhtechno/public_html/intern.amhtechno.com/';
 		//$vRoot='/home/coidotoko/public_html/xsystem/';
  
 
@@ -46,18 +56,12 @@
          $vMarkDev="";
   }
 
-
-
-  
-
   class DB_AMHTechno extends DB_MySQL {
 	var $Host     = "localhost";
 	var $Database = "amhtechn_amhtechno";
 	var $User     = "amhtechn_amhtech";
 	var $Password = "Aminah?Techno+2019";
   }
-
-
 
 	$db=new DB_Example;
 	$dbin=new DB_Example;
