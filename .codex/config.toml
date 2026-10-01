@@ -8,3 +8,4 @@ args = [
 [mcp_servers.codebase-memory]
 command = "codebase-memory-mcp"
 args = ["serve"]
+model = "gpt-6-luna"
